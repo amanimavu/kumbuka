@@ -1,0 +1,32 @@
+:host ::ng-deep #ui-screenshot::after {
+	content: "";
+	z-index: -1;
+	display: block;
+	width: 55%;
+	position: absolute;
+	top: -18%;
+	right:-7%;
+	height: 130%;
+	border-radius: 15vw;
+	border: solid;
+	border-width: 1px;
+	background: linear-gradient(30deg, rgba(220, 233, 255, 30%) 0%, rgba(220, 233, 255, 0) 100%);
+	filter: blur(40px);
+	opacity: 90%;
+}
+
+:host ::ng-deep #download-btn button{
+	background-color: #B52614;
+}
+
+:host ::ng-deep #download-btn button:hover{
+	background-color: #D12C17;
+}
+
+:host ::ng-deep #download-btn button:active{
+	background-color: #8E1E10;
+}
+
+:host ::ng-deep #download-btn button:focus{
+	background-color: #FFAD99;
+}

@@ -1,0 +1,127 @@
+<header class="h-20 flex items-center justify-center px-5 border-b-[#F1F5F9] border-b-2 z-10">
+	<kumbuka-brand />
+	<nav class="flex items-center mx-auto gap-10 text-neutral-500">
+		<a>Features</a>
+		<a class="hover:underline" href="#faq">FAQ</a>
+		<a class="hover:underline" href="#why-kumbuka">Why kumbuka?</a>
+	</nav>
+	<a
+		href="{{ baseUrl }}/sign-up"
+		pButton
+		[rounded]="true"
+		target="_blank"
+		rel="noopener noreferrer"
+	>
+		<span pButtonLabel>Get started</span>
+	</a>
+</header>
+<main>
+	<section class="h-[calc(100vh-5rem)] bg-[#f8f9ff] relative">
+		<div class="w-5/12 absolute left-[5%] top-40">
+			<h2 class="text-6xl font-bold">Lend with clarity</h2>
+			<h3 class="text-6xl font-bold mt-1 text-neutral-400">Preserve the bond</h3>
+			<p class="text-xl mt-12 text-kumbukaPrimary-300 text-kumbuka-primary-400">
+				Kumbuka acts as a respectful digital buffer for informal loans, automating reminders
+				and tracking so you never have to "chase" money again
+			</p>
+			<div class="mt-8 flex gap-8">
+				<p-button class="![&>button]:px-3" size="large" [rounded]="true"
+					>Start tracking for free</p-button
+				>
+				<p-button size="large" variant="outlined" [rounded]="true"
+					>See how it works</p-button
+				>
+			</div>
+		</div>
+		<p-image
+			id="ui-screenshot"
+			src="ui-screenshot.png"
+			alt="kumbuka ui screenshot"
+			class="relative top-40 [&>*:first-child]:relative [&>*:first-child]:left-[60%] drop-shadow-2xl"
+		/>
+	</section>
+	<section id="why-kumbuka" class="h-[calc(100vh-5rem)] bg-[#EFF4FF] pt-25">
+		<div class="flex flex-col gap-3 justify-center items-center mx-96">
+			<h2 class="text-5xl font-semibold">Solve the Friction of Lending</h2>
+			<p class="text-lg tracking-wide text-center mb-5 text-neutral-500">
+				Informal lending shouldn't cost you a friendship. We handle the awkward parts so you
+				can focus on the relationship
+			</p>
+		</div>
+		<div class="flex">
+			<problem-card
+				title="Forgetfulness"
+				description="Automated tracking and smart reminders ensures no loan slips through the cracks"
+			>
+				<svg class="w-7" alarm-icon></svg>
+			</problem-card>
+
+			<problem-card
+				title="Social Friction"
+				description='Gentler, third party nudges mean you never have to "be the bad guy" when asking for repayment'
+			>
+				<svg class="w-7" compassion-icon></svg>
+			</problem-card>
+
+			<problem-card
+				title="Lack of Order"
+				description="A centralized, shared ledger for all transactions that both parties can verify anytime."
+			>
+				<svg class="w-7" order-icon></svg>
+			</problem-card>
+
+			<problem-card
+				title="Overextending"
+				description="Smart tools to help you set lending boundaries and track your overall exposure."
+			>
+				<svg class="w-7" shield-person-icon></svg>
+			</problem-card>
+		</div>
+	</section>
+	<section class="h-[calc(100vh-15rem)] bg-[#000915] text-white pt-25">
+		<div class="flex-col items-center gap-10 flex mx-72 text-center">
+			<h2 class="text-5xl/15 font-bold mx-5">Ready for a more peaceful financial life?</h2>
+			<p class="text-lg tracking-wide">
+				Join thousands of people who are protecting their relationships with gentle,
+				automated accountability.
+			</p>
+		</div>
+		<div class="flex justify-center gap-10 mt-10">
+			<p-button id="download-btn" size="large" [rounded]="true"
+				>Download Kumbuka Now</p-button
+			>
+			<p-button size="large" [rounded]="true">Learn More</p-button>
+		</div>
+	</section>
+	<section id="faq" class="h-[calc(100vh-8rem)] bg-[#EFF4FF] border-b-2 border-b-[#E2E8F0] pt-15">
+		<div class="flex text-center justify-center flex-col gap-3 mb-10">
+			<h2 class="text-6xl font-bold">Common Questions</h2>
+			<p class="text-lg tracking-wide text-neutral-500">
+				Everything you need to know about protecting your loans and your friendships
+			</p>
+		</div>
+		<div class="w-1/2 mx-auto">
+			<p-accordion [value]="">
+				@for (tab of tabs; track tab.question) {
+					<p-accordion-panel [value]="tab.answer">
+						<p-accordion-header>{{ tab.question }}</p-accordion-header>
+						<p-accordion-content>
+							<p class="m-0">{{ tab.answer }}</p>
+						</p-accordion-content>
+					</p-accordion-panel>
+				}
+			</p-accordion>
+		</div>
+	</section>
+</main>
+<footer class="h-32 bg-[#EFF4FF] p-5 flex justify-between items-center">
+	<div class="flex flex-col gap-2">
+		<h5 class="font-bold">Kumbuka</h5>
+		<p class="text-neutral-500">&copy; {{ date }} Kumbuka. Built for gentle accountability</p>
+	</div>
+
+	<div class="flex gap-5 text-neutral-500">
+		<a>Terms of service</a>
+		<a>Privacy Policy</a>
+	</div>
+</footer>
