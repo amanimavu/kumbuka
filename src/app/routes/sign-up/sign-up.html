@@ -15,22 +15,46 @@
 			<form class="pt-2 text-sm">
 				<div class="flex flex-col my-4 gap-1">
 					<label for="full_name">FullName</label>
-					<input variant="filled" pInputText id="full_name" autocomplete="off" />
+					<input
+						variant="filled"
+						pInputText
+						id="full_name"
+						autocomplete="off"
+						placeholder="John Doe"
+					/>
 				</div>
 
 				<div class="flex flex-col my-4 gap-1">
 					<label for="email">Email</label>
-					<input variant="filled" pInputText id="email" autocomplete="off" />
+					<input
+						variant="filled"
+						pInputText
+						id="email"
+						autocomplete="off"
+						placeholder="johndoe@gmail.com"
+					/>
 				</div>
 
 				<div class="flex flex-col my-4 gap-1">
 					<label for="phone_number">Phone number</label>
-					<input variant="filled" pInputText id="phone_number" autocomplete="off" />
+					<input
+						variant="filled"
+						pInputText
+						id="phone_number"
+						autocomplete="off"
+						placeholder="0748513003"
+					/>
 				</div>
 
 				<div class="flex flex-col my-4 gap-1">
 					<label for="password">Password</label>
-					<input variant="filled" pInputText id="phone_number" autocomplete="off" />
+					<p-password
+						class="[&>input]:grow"
+						id="password"
+						autocomplete="off"
+						variant="filled"
+						placeholder="password"
+					/>
 				</div>
 
 				<div class="flex gap-2 my-4">
