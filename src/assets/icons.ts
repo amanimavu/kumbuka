@@ -135,3 +135,29 @@ export class KumbukaLogo {
 export class ArrowRightIcon {
 	readonly viewBox = input<string>('0 -960 960 960');
 }
+
+@Component({
+	selector: 'svg[send-icon]',
+	template: `<svg:path
+		d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class SendIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[arrow-left-icon]',
+	template: `<svg:path d="M400-240 160-480l240-240 56 58-142 142h486v80H314l142 142-56 58Z" />`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class ArrowLeftIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}

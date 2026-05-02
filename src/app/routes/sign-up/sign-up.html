@@ -51,6 +51,7 @@
 					<p-password
 						class="[&>input]:grow"
 						id="password"
+						[toggleMask]="true"
 						autocomplete="off"
 						variant="filled"
 						placeholder="password"
@@ -71,7 +72,14 @@
 
 				<p-divider />
 
-				<p class="text-center mt-2">Already have an account? <a>Log in</a></p>
+				<p class="text-center mt-2">
+					Already have an account?
+					<a
+						routerLink="/auth/login"
+						class="text-[#B52614] hover:underline underline-offset-2"
+						>Log in</a
+					>
+				</p>
 			</form>
 		</p-card>
 		<div

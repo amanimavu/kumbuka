@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
 import { KumbukaLogo } from '../../../assets/icons';
 
-enum Variant {
-	logoOnly = 'logo-only',
-	brandNameOnly = 'brand-name-only',
-	brand = 'brand',
+export enum Variant {
+	LogoOnly = 'logo-only',
+	BrandNameOnly = 'brand-name-only',
+	Brand = 'brand',
 }
 
 @Component({
@@ -13,14 +13,14 @@ enum Variant {
 	template: `
 		<div class="flex gap-2 items-center">
 			@switch (variant()) {
-				@case (Variant.brand) {
+				@case (Variant.Brand) {
 					<svg class="w-8" kumbuka-logo></svg>
 					<p>KUMBUKA</p>
 				}
-				@case (Variant.brandNameOnly) {
+				@case (Variant.BrandNameOnly) {
 					<p>KUMBUKA</p>
 				}
-				@case (Variant.logoOnly) {
+				@case (Variant.LogoOnly) {
 					<svg class="w-7" kumbuka-logo></svg>
 				}
 			}
@@ -30,5 +30,5 @@ enum Variant {
 })
 export class KumbukaBrand {
 	protected Variant = Variant;
-	variant = input<Variant>(Variant.brand);
+	variant = input<`${Variant}`>(Variant.Brand);
 }
