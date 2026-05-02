@@ -20,8 +20,8 @@ import { environment } from '../../../environments/environment';
 		AccordionModule,
 		KumbukaBrand,
 	],
-	templateUrl: './app.html',
-	styleUrl: './app.css',
+	templateUrl: 'landing.html',
+	styleUrl: 'landing.css',
 })
 export class LandingPage {
 	date = new Date().getFullYear();
