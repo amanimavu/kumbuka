@@ -161,3 +161,115 @@ export class SendIcon {
 export class ArrowLeftIcon {
 	readonly viewBox = input<string>('0 -960 960 960');
 }
+
+@Component({
+	selector: 'svg[settings-icon]',
+	template: `<svg:path
+		d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class SettingsIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[notification-icon]',
+	template: `<svg:path
+		d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class NotificationIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[dashboard-icon]',
+	template: `<svg:path
+		d="M520-600v-240h320v240H520ZM120-440v-400h320v400H120Zm400 320v-400h320v400H520Zm-400 0v-240h320v240H120Zm80-400h160v-240H200v240Zm400 320h160v-240H600v240Zm0-480h160v-80H600v80ZM200-200h160v-80H200v80Zm160-320Zm240-160Zm0 240ZM360-280Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class DashboardIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[logout-icon]',
+	template: `<svg:path
+		d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class LogoutIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[money-bag-icon]',
+	template: `<svg:path
+		d="M336-120q-91 0-153.5-62.5T120-336q0-38 13-74t37-65l142-171-97-194h530l-97 194 142 171q24 29 37 65t13 74q0 91-63 153.5T624-120H336Zm144-200q-33 0-56.5-23.5T400-400q0-33 23.5-56.5T480-480q33 0 56.5 23.5T560-400q0 33-23.5 56.5T480-320Zm-95-360h190l40-80H345l40 80Zm-49 480h288q57 0 96.5-39.5T760-336q0-24-8.5-46.5T728-423L581-600H380L232-424q-15 18-23.5 41t-8.5 47q0 57 39.5 96.5T336-200Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class MoneyBagIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[search-icon]',
+	template: `<svg:path
+		d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class SearchIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[verified-icon]',
+	template: `<svg:path
+		d="m344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class VerifiedIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[merge-icon]',
+	template: `<svg:path
+		d="m256-120-56-56 193-194q23-23 35-52t12-61v-204l-64 63-56-56 160-160 160 160-56 56-64-63v204q0 32 12 61t35 52l193 194-56 56-224-224-224 224Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class MergeIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}

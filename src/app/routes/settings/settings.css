@@ -1,0 +1,35 @@
+:host ::ng-deep .p-menu{
+	background: transparent;
+	border: none
+}
+
+:host ::ng-deep .p-menu-item-content{
+	padding: 5px;
+}
+
+:host ::ng-deep .p-menu-item .p-menu-item-content:has(.p-menu-item-link-active){
+	background-color: white !important;
+}
+
+:host ::ng-deep .p-menu-separator{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+:host ::ng-deep .p-divider-horizontal{
+	margin: 1.5rem 0
+}
+
+:host ::ng-deep #danger-zone.p-card{
+	background-color: #FEF2F280;
+	border: solid 1px #FEE2E2
+}
+
+:host ::ng-deep #danger-zone .p-divider-horizontal:before{
+	border-block-start-color: #FEE2E280;
+}
+
+:host ::ng-deep [id] {
+	scroll-margin-top: 8rem;
+	display: block;
+}

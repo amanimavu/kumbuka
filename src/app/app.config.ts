@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
@@ -9,7 +9,7 @@ import { KumbukaPreset } from './core/theme/kumbuka-preset';
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideBrowserGlobalErrorListeners(),
-		provideRouter(routes),
+		provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled' })),
 		provideClientHydration(withEventReplay()),
 		providePrimeNG({
 			theme: {

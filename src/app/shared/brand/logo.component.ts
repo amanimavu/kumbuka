@@ -21,7 +21,7 @@ export enum Variant {
 					<p>KUMBUKA</p>
 				}
 				@case (Variant.LogoOnly) {
-					<svg class="w-7" kumbuka-logo></svg>
+					<svg class="w-10" kumbuka-logo></svg>
 				}
 			}
 		</div>

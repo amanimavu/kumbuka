@@ -1,0 +1,145 @@
+<div class="w-[85%] mx-auto min-h-[70vh] px-10 flex gap-10 relative">
+	<nav class="w-1/4 sticky top-24 self-start">
+		<p-menu [model]="items" />
+	</nav>
+	<section class="w-3/4 flex flex-col gap-8">
+		<p-card>
+			<a id="account" class="block relative -top-50 invisible"></a>
+			<div class="flex items-start justify-between mb-6">
+				<div class="flex gap-6">
+					<p-avatar label="JD" size="xlarge" shape="circle" />
+					<div class="flex flex-col">
+						<span class="font-bold">Juliana Dorsey</span>
+						<span class="text-sm">The generous giver</span>
+					</div>
+				</div>
+				<button pButton rounded="true">
+					<span>Edit Profile</span>
+				</button>
+			</div>
+			<div class="flex justify-between">
+				<div class="flex flex-col basis-[45%] gap-1">
+					<label class="text-sm" for="email">EMAIL ADDRESS</label>
+					<input id="email" pInputText variant="filled" />
+				</div>
+				<div class="flex flex-col basis-[45%] gap-1">
+					<label class="text-sm" for="phone_number">PHONE NUMBER</label>
+					<input id="phone_number" pInputText variant="filled" />
+				</div>
+			</div>
+		</p-card>
+
+		<p-card>
+			<a id="lending-limits" class="block relative -top-50 invisible"></a>
+			<ng-template #header>
+				<div class="border-b p-5 border-b-[#e2e8f0]">
+					<h5 class="font-semibold text-lg">Lending Limits</h5>
+					<span class="text-sm"
+						>Define your preferred lending boundaries and transaction limits</span
+					>
+				</div>
+			</ng-template>
+			<ng-template #content>
+				<label for="max-lending-amount" class="block mb-1 font-semibold"
+					>Max Lending Amount per Transaction</label
+				>
+				<input pInputText id="max-lending-amount" class="w-[45%]" variant="filled" />
+			</ng-template>
+		</p-card>
+
+		<p-card>
+			<a id="notification-controls" class="block relative -top-50 invisible"></a>
+			<ng-template #header>
+				<div class="border-b p-5 border-b-[#e2e8f0]">
+					<h5 class="font-semibold text-lg">Notification Controls</h5>
+					<span class="text-sm">Customize how you receive transaction updates</span>
+				</div>
+			</ng-template>
+			<ng-template #content>
+				<div class="flex justify-between items-center mb-4">
+					<div class="flex gap-4 w-[90%]">
+						<div class="p-5 bg-[#F8F9FF] size-fit rounded-md">
+							<svg class="w-7" verified-icon></svg>
+						</div>
+						<div>
+							<h5 class="font-semibold">Immediate Verification</h5>
+							<span class="text-sm"
+								>Real-time alerts as logs occur for lenders who prefer instant
+								updates</span
+							>
+						</div>
+					</div>
+					<p-radiobutton
+						name="reconciliation-option"
+						value="immediate"
+						[(ngModel)]="selectedOption"
+					/>
+				</div>
+				<div class="flex justify-between items-center">
+					<div class="flex gap-4 w-[75%]">
+						<div class="p-5 bg-[#F8F9FF] size-fit rounded-md">
+							<svg class="w-7" merge-icon></svg>
+						</div>
+						<div>
+							<h5 class="font-semibold">Batch Reconciliation</h5>
+							<span class="text-sm"
+								>Set a single, focused reconciliation session at the end of the
+								day</span
+							>
+						</div>
+					</div>
+					<p-radiobutton
+						name="reconciliation-option"
+						value="batch"
+						[(ngModel)]="selectedOption"
+					/>
+				</div>
+			</ng-template>
+		</p-card>
+
+		<p-card>
+			<a id="security" class="block relative -top-50 invisible"></a>
+			<h5 class="font-semibold text-lg mb-1">Two-Factor Authentication</h5>
+			<div class="flex gap-20">
+				<p>
+					Secure your account with a simple two-step process: enter your password followed
+					by a one-time verification code sent to your registered email address.
+				</p>
+				<button pButton>Enable 2FA</button>
+			</div>
+		</p-card>
+
+		<p-card id="danger-zone">
+			<ng-template #header>
+				<div class="border-b p-5 border-b-[#FEE2E2]/50">
+					<h5 class="font-semibold text-lg text-[#E64A33]">Danger Zone</h5>
+					<span class="text-sm"
+						>Critical actions regarding your account and data permanence</span
+					>
+				</div>
+			</ng-template>
+			<ng-template #content>
+				<div class="flex justify-between gap-10">
+					<div class="flex flex-col w-[90%]">
+						<h6>Deactivate Account</h6>
+						<span class="text-sm"
+							>Temporarily disable access to your dashboard and lending services</span
+						>
+					</div>
+					<p-button severity="danger" variant="outlined">Deactivate</p-button>
+				</div>
+				<p-divider />
+				<div class="flex justify-between gap-10">
+					<div class="flex flex-col w-[90%]">
+						<h6 class="text-[#E64A33]">Delete Data</h6>
+						<span class="text-sm"
+							>Permanently purge all transaction history and profile records. This
+							action cannot be undone.</span
+						>
+					</div>
+					<p-button severity="danger" variant="outlined">Delete permanently</p-button>
+				</div>
+			</ng-template>
+		</p-card>
+	</section>
+</div>

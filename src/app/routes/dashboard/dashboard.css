@@ -1,0 +1,16 @@
+:host ::ng-deep .p-datatable-table-container{
+	border-radius: 0.5rem;
+	border: solid 1px #e2e8f0;
+}
+
+:host ::ng-deep .p-progressbar{
+	background: rgba(255, 255, 255, 0.5);
+}
+
+:host ::ng-deep .p-progressbar-value{
+	background: white;
+}
+
+:host ::ng-deep .p-progressbar-label{
+	color: transparent;
+}
