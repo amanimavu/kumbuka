@@ -5,6 +5,8 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { KumbukaPreset } from './core/theme/kumbuka-preset';
+import { MessageService } from 'primeng/api';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -19,5 +21,7 @@ export const appConfig: ApplicationConfig = {
 				},
 			},
 		}),
+		MessageService,
+		provideHttpClient(withFetch()),
 	],
 };
