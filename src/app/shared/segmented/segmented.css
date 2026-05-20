@@ -1,0 +1,54 @@
+:host{
+	background-color: var(--color-neutral-200);
+	border-radius: var(--radius-lg);
+	padding: 0.8rem 0.28rem
+}
+
+.controls{
+	display: inline-flex;
+	gap: 0.6rem;
+	position: relative;
+	cursor: pointer;
+}
+
+.controls::before{
+	content: "";
+	position: absolute;
+	display: block;
+	background-color: #122130;
+	height: 100%;
+	width: var(--highlight-width);
+	z-index: 0;
+	transform: translateX(var(--highlight-x-pos));
+	transition: transform 0.3s ease, width 0.3s ease;
+	border-radius: var(--radius-lg)
+}
+
+.segmented-item.active{
+	color: white;
+}
+
+.segmented-item{
+	flex-grow: 1;
+	position: relative;
+	z-index: 10;
+	padding: 0.5rem 1rem;
+}
+
+.segmented-item:not(.active):hover{
+	border-radius: var(--radius-lg);
+	background-color: var(--color-neutral-300);
+}
+
+.segmented-item[active="true"]::before{
+	content: "";
+	display: block;
+	background-color: transparent;
+	width: 100%;
+	top: 0;
+	left: 0;
+	height: 100%;
+	position: absolute;
+	box-sizing: border-box;
+	z-index: 0;
+}
