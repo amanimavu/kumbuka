@@ -1,3 +1,4 @@
+<p-toast />
 <div class="w-1/4 mx-auto">
 	<div class="flex flex-col items-center text-center mb-8 gap-1">
 		<svg class="w-16" kumbuka-logo></svg>
@@ -7,23 +8,35 @@
 		</p>
 	</div>
 	<p-card class="text-sm">
-		<p-tabs value="password">
+		<p-tabs [scrollable]="false" value="password">
 			<p-tablist>
-				<p-tab class="grow" value="password">Password</p-tab>
-				<p-tab class="grow" value="password-less">Password less</p-tab>
+				<p-tab (click)="changeLoginStep('login')" class="grow" value="password"
+					>Password</p-tab
+				>
+				<p-tab (click)="changeLoginStep('get-otp')" class="grow" value="password-less"
+					>Password less</p-tab
+				>
 			</p-tablist>
 			<p-tabpanels>
 				<p-tabpanel value="password">
-					<form>
+					<form [formGroup]="PasswordLoginForm" (ngSubmit)="onSubmit('password')">
 						<div class="flex flex-col gap-1 my-3">
 							<label for="email">Email</label>
-							<input
-								id="email"
-								type="text"
-								pInputText
-								variant="filled"
-								placeholder="johndoe@gmail.com"
-							/>
+							<div class="flex flex-col gap-1">
+								<input
+									id="email"
+									formControlName="email"
+									type="text"
+									pInputText
+									variant="filled"
+									placeholder="johndoe@gmail.com"
+								/>
+								@if (isInvalid('email', 'password')) {
+									<p-message severity="error" size="small" variant="simple">{{
+										getErrorMessage('email', 'password')
+									}}</p-message>
+								}
+							</div>
 						</div>
 						<div class="flex flex-col gap-1 my-3">
 							<div class="flex justify-between">
@@ -34,42 +47,85 @@
 									>forgot password?</a
 								>
 							</div>
-							<p-password
-								[feedback]="false"
-								class="[&>input]:grow"
-								id="password"
-								[toggleMask]="true"
-								autocomplete="off"
-								variant="filled"
-								placeholder="password"
-							/>
+							<div class="flex flex-col gap-1">
+								<p-password
+									formControlName="password"
+									[feedback]="false"
+									class="[&>input]:grow"
+									inputId="password"
+									[toggleMask]="true"
+									autocomplete="off"
+									variant="filled"
+									placeholder="password"
+									[invalid]="isInvalid('password', 'password')"
+								/>
+								@if (isInvalid('password', 'password')) {
+									<p-message severity="error" size="small" variant="simple">{{
+										getErrorMessage('password', 'password')
+									}}</p-message>
+								}
+							</div>
 						</div>
-						<button pButton class="w-full mt-4">
+						<button [loading]="isLoading" type="submit" pButton class="w-full mt-4">
 							<span pButtonLabel>Login</span>
-							<svg class="w-7 text-white" arrow-right-icon></svg>
+							<svg
+								[class.hidden]="isLoading"
+								class="w-7 text-white"
+								arrow-right-icon
+							></svg>
 						</button>
 					</form>
 				</p-tabpanel>
 				<p-tabpanel value="password-less">
-					<form>
+					<form
+						[formGroup]="PasswordlessLoginForm"
+						(ngSubmit)="onSubmit('password-less')"
+					>
 						<div class="flex flex-col gap-1 my-3">
 							<label for="email">Email</label>
-							<input
-								id="email"
-								type="text"
-								pInputText
-								variant="filled"
-								placeholder="johndoe@gmail.com"
-							/>
+							<div class="flex flex-col gap-1">
+								<input
+									id="email"
+									formControlName="email"
+									type="text"
+									pInputText
+									variant="filled"
+									placeholder="johndoe@gmail.com"
+								/>
+								@if (isInvalid('email', 'password-less')) {
+									<p-message severity="error" size="small" variant="simple">{{
+										getErrorMessage('email', 'password-less')
+									}}</p-message>
+								}
+							</div>
 						</div>
-						<div class="flex flex-col gap-1 my-3">
+						<div [class.hidden]="step !== 'login'" class="flex flex-col gap-1 my-3">
 							<label for="otp">OTP</label>
-							<p-inputotp id="otp" [length]="6" class="justify-between" />
+							<div class="flex flex-col gap-1">
+								<p-inputotp
+									formControlName="otp"
+									id="otp"
+									[length]="6"
+									class="justify-between"
+								/>
+								@if (isInvalid('otp', 'password-less')) {
+									<p-message severity="error" size="small" variant="simple">{{
+										getErrorMessage('otp', 'password-less')
+									}}</p-message>
+								}
+							</div>
 						</div>
-						<button pButton class="w-full mt-4">
-							<span pButtonLabel>Login</span>
-							<svg class="w-7 text-white" arrow-right-icon></svg>
-						</button>
+						@if (step === 'login') {
+							<button pButton class="w-full mt-4">
+								<span pButtonLabel>Login</span>
+								<svg class="w-7 text-white" arrow-right-icon></svg>
+							</button>
+						} @else {
+							<button pButton class="w-full mt-4">
+								<span pButtonLabel>Get OTP</span>
+								<svg class="w-7 text-white" arrow-right-icon></svg>
+							</button>
+						}
 					</form>
 				</p-tabpanel>
 			</p-tabpanels>
