@@ -15,6 +15,10 @@ html{
 	overflow-x: hidden;
 }
 
+html:has(auth-layout){
+	overflow-y: clip;
+}
+
 @theme{
 	--color-kumbuka-primary-50: #f1f4f6;
 	--color-kumbuka-primary-100: #d5e1ec;
