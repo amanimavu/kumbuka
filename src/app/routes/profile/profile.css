@@ -1,0 +1,31 @@
+:host {
+  --p-avatar-xl-width: 9rem;
+  --p-avatar-xl-height: 9rem;
+  --p-avatar-xl-font-size: 3.5rem
+}
+
+#profile_avatar{
+	/* filter: drop-shadow(0 10px 15px rgba(0,0,0,0.10)); */
+	box-shadow: 0 10px 15px -3px rgba(0,0,0, 0.10), 0 4px 6px -4px rgba(0,0,0, 0.10);
+}
+
+:host ::ng-deep #metric-section{
+	background-color: #122130 !important;
+	background-image: linear-gradient(-45deg, #122130 40%, #274461 50%, #122130 60%) !important;
+	background-size: 200% 100% !important;
+	background-repeat: no-repeat !important;
+	/* 5s total duration = 2s animation + 3s pause */
+	animation: shimmer 5s linear infinite !important;
+}
+
+@keyframes shimmer{
+	0% {
+		background-position: 200% 0;
+	}
+	40% {
+		background-position: -200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}

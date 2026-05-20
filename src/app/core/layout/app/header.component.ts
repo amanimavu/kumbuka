@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToolbarModule } from 'primeng/toolbar';
-import { SettingsIcon, NotificationIcon, SearchIcon } from '../../../../assets/icons';
+import { SettingsIcon, NotificationIcon } from '../../../../assets/icons';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -26,18 +26,6 @@ import { filter, map, startWith } from 'rxjs';
 		<!-- <ng-template #center></ng-template> -->
 		<ng-template #end>
 			<div class="flex gap-4">
-				<p-iconfield iconPosition="left" class="flex! items-end">
-					<p-inputicon>
-						<svg class="w-6" search-icon></svg>
-					</p-inputicon>
-					<input
-						type="text"
-						pInputText
-						placeholder="Search"
-						variant="filled"
-						class="rounded-3xl! border-none!"
-					/>
-				</p-iconfield>
 				<button pButton text="true">
 					<svg class="w-7 text-neutral-400" notification-icon></svg>
 				</button>
@@ -64,7 +52,6 @@ import { filter, map, startWith } from 'rxjs';
 		TooltipModule,
 		ButtonModule,
 		IconFieldModule,
-		SearchIcon,
 		InputIconModule,
 		RouterLink,
 	],
