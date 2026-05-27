@@ -1,16 +1,21 @@
 import {
 	afterRenderEffect,
 	Component,
-	effect,
 	ElementRef,
 	input,
 	output,
 	signal,
+	effect,
 	viewChild,
 	viewChildren,
+	linkedSignal,
+	contentChild,
+	TemplateRef,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 type OnClickData = { elementWidth: string; elementOffset: string; selectedOption: string };
+type OnChange = (value: string) => void;
 
 @Component({
 	selector: 'segmented-option',
@@ -27,11 +32,11 @@ type OnClickData = { elementWidth: string; elementOffset: string; selectedOption
 		#ref
 		(click)="sendElementValues($event, ref)"
 	>
-		{{ label() }}
+		<ng-content />
 	</div>`,
 })
 export class SegmentedItem {
-	label = input<string>();
+	value = input.required<string>();
 	isActive = input<boolean>();
 	internalRef = viewChild<ElementRef<HTMLDivElement>>('ref');
 	onClick = output<OnClickData>();
@@ -40,7 +45,7 @@ export class SegmentedItem {
 		this.onClick.emit({
 			elementWidth: `${element.offsetWidth}px`,
 			elementOffset: `${element.offsetLeft}px`,
-			selectedOption: `${element.innerText}`,
+			selectedOption: this.value(),
 		});
 	}
 }
@@ -49,53 +54,66 @@ export class SegmentedItem {
 	selector: 'segmented',
 	styleUrl: 'segmented.css',
 	standalone: true,
-	imports: [SegmentedItem],
+	imports: [SegmentedItem, NgTemplateOutlet],
 	host: {
-		'[style.--highlight-width]': 'highlightWidth',
-		'[style.--highlight-x-pos]': 'highlightPosition',
+		'[style.--highlight-width]': 'highlightWidth()',
+		'[style.--highlight-x-pos]': 'highlightPosition()',
 	},
 	template: `
 		<div class="controls">
 			@for (option of options(); track option) {
 				<segmented-option
-					[label]="option"
+					[value]="option"
 					(onClick)="onConsumption($event)"
-					[isActive]="value() === option.toLowerCase()"
-				/>
+					[isActive]="value().toLowerCase() === option.toLowerCase()"
+				>
+					@if (segmentedItemTemplate(); as template) {
+						<ng-container
+							*ngTemplateOutlet="template; context: { $implicit: option }"
+						></ng-container>
+					} @else {
+						{{ option }}
+					}
+				</segmented-option>
 			}
 		</div>
 	`,
 })
 export class Segmented {
-	value = signal<string>('money owed');
-	highlightWidth = '0px';
-	highlightPosition = '0px';
-
-	options = input<string[]>();
+	highlightWidth = signal('0px');
+	highlightPosition = signal('0px');
+	onChange = input<OnChange>();
+	options = input.required<string[]>();
+	defaultValue = input<string>();
+	value = linkedSignal(() => {
+		return this.defaultValue() || this.options()[0];
+	});
 
 	segmentedItems = viewChildren(SegmentedItem);
+	segmentedItemTemplate = contentChild(TemplateRef);
 
 	constructor() {
 		afterRenderEffect(() => {
 			this.segmentedItems().forEach((segmentedItem) => {
 				const element = segmentedItem.internalRef()?.nativeElement;
-				if (this.value() === element?.innerText.toLowerCase()) {
-					Promise.resolve().then(() => {
-						this.highlightPosition = `${element.offsetLeft}px`;
-						this.highlightWidth = `${element.offsetWidth}px`;
-					});
+				if (this.value().toLowerCase() === element?.innerText.toLowerCase()) {
+					this.highlightPosition.set(`${element?.offsetLeft}px`);
+					this.highlightWidth.set(`${element?.offsetWidth}px`);
 				}
 			});
 		});
 
 		effect(() => {
-			console.log(this.value());
+			const onChange = this.onChange();
+			if (onChange) {
+				onChange && onChange(this.value());
+			}
 		});
 	}
 
 	onConsumption(data: OnClickData) {
-		this.highlightPosition = data.elementOffset;
-		this.highlightWidth = data.elementWidth;
+		this.highlightPosition.set(data.elementOffset);
+		this.highlightWidth.set(data.elementWidth);
 		this.value.set(data.selectedOption.toLowerCase());
 	}
 }
