@@ -1,0 +1,70 @@
+<form (ngSubmit)="onSubmit(emailVerificationForm)" #emailVerificationForm="ngForm">
+	<div class="flex flex-col my-4 gap-1">
+		<label for="email">Email</label>
+		<div class="flex flex-col gap-1">
+			<input
+				pInputText
+				type="email"
+				id="email"
+				name="email"
+				placeholder="johndoe@gmail.com"
+				[(ngModel)]="model.email"
+				#email="ngModel"
+				required
+				email
+				variant="filled"
+				autocomplete="email"
+				[invalid]="email.invalid && (email.touched || emailVerificationForm.submitted)"
+			/>
+			<small id="username-help">Confirm the email. Change if incorrect</small>
+			@if (email.invalid && (email.touched || emailVerificationForm.submitted)) {
+				<p-message severity="error" size="small" variant="simple">
+					@if (email.hasError('required')) {
+						Email is Required.
+					}
+					@if (email.hasError('email')) {
+						Please enter a valid email.
+					}
+				</p-message>
+			}
+		</div>
+	</div>
+
+	<div class="flex flex-col gap-1 my-8">
+		<label class="hidden" for="otp"></label>
+		<p-inputotp
+			required
+			[length]="6"
+			id="otp"
+			class="justify-between"
+			[(ngModel)]="model.otp"
+			name="otp"
+			[integerOnly]="true"
+			#otp="ngModel"
+			autocomplete="one-time-code"
+			[invalid]="otp.invalid && (otp.touched || emailVerificationForm.submitted)"
+			[minlength]="6"
+		/>
+		@if (otp.invalid && (otp.touched || emailVerificationForm.submitted)) {
+			<p-message severity="error" size="small" variant="simple">OTP is required</p-message>
+		}
+	</div>
+
+	<div class="flex justify-center my-4">
+		<p-button [text]="true" [disabled]="count() !== 0" (onClick)="resendCode()">
+			Resend Code
+			@if (count() !== 0) {
+				({{ count() }}s)
+			}
+		</p-button>
+	</div>
+
+	<button
+		[disabled]="!emailVerificationForm.form.valid"
+		type="submit"
+		pButton
+		class="w-full my-4"
+	>
+		<span pButtonLabel>Activate Account</span>
+	</button>
+</form>
