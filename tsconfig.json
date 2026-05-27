@@ -3,6 +3,14 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
+		"paths": {
+			"@app/*": ["./src/app/*"],
+			"@assets/*": ["./src/assets/*"],
+			"@core/*": ["./src/app/core/*"],
+			"@shared/*": ["./src/app/shared/*"],
+			"@routes/*": ["./src/app/routes/*"],
+			"@env/*": ["./src/environments/*"]
+		},
 		"strict": true,
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
