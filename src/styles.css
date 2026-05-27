@@ -10,9 +10,13 @@ body {
 }
 
 html{
+	overflow: hidden;
+
+}
+
+main > div {
 	scrollbar-width: thin;
 	scroll-behavior: smooth;
-	overflow-x: hidden;
 }
 
 html:has(auth-layout){
