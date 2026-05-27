@@ -1,3 +1,4 @@
+<p-toast position="top-center" />
 <div class="h-[23vh] w-[15vw] rounded-[23vh] -top-5 -left-10 bg-[#E5EEFF] blur-3xl absolute"></div>
 <div class="grid grid-cols-12 gap-6">
 	<div class="col-span-5 col-start-2 w-[85%] flex flex-col justify-center">
@@ -9,78 +10,20 @@
 	</div>
 
 	<div class="col-span-3 col-start-8 relative z-0">
-		<p-card class="block w-full shadow-2xl relative z-10">
-			<h5 class="text-xl font-bold">Create Account</h5>
-			<p class="text-neutral-400 text-sm">Join Kumbuka to start managing your commitment</p>
-			<form class="pt-2 text-sm">
-				<div class="flex flex-col my-4 gap-1">
-					<label for="full_name">FullName</label>
-					<input
-						variant="filled"
-						pInputText
-						id="full_name"
-						autocomplete="off"
-						placeholder="John Doe"
-					/>
-				</div>
-
-				<div class="flex flex-col my-4 gap-1">
-					<label for="email">Email</label>
-					<input
-						variant="filled"
-						pInputText
-						id="email"
-						autocomplete="off"
-						placeholder="johndoe@gmail.com"
-					/>
-				</div>
-
-				<div class="flex flex-col my-4 gap-1">
-					<label for="phone_number">Phone number</label>
-					<input
-						variant="filled"
-						pInputText
-						id="phone_number"
-						autocomplete="off"
-						placeholder="0748513003"
-					/>
-				</div>
-
-				<div class="flex flex-col my-4 gap-1">
-					<label for="password">Password</label>
-					<p-password
-						class="[&>input]:grow"
-						id="password"
-						[toggleMask]="true"
-						autocomplete="off"
-						variant="filled"
-						placeholder="password"
-					/>
-				</div>
-
-				<div class="flex gap-2 my-4">
-					<p-checkbox inputId="terms_agreement" [binary]="true" />
-					<label for="terms_agreement"
-						>I agree to the Terms and Conditions and Privacy Policy</label
-					>
-				</div>
-
-				<button pButton class="w-full mb-2">
-					<span pButtonLabel>Get started</span>
-					<svg class="w-7 text-white" arrow-right-icon></svg>
-				</button>
-
-				<p-divider />
-
-				<p class="text-center mt-2">
-					Already have an account?
-					<a
-						routerLink="/auth/login"
-						class="text-[#B52614] hover:underline underline-offset-2"
-						>Log in</a
-					>
+		<p-card class="block w-full shadow-2xl relative z-10 top-6">
+			@if (step() === 'registration') {
+				<h5 class="text-2xl font-bold">Create Account</h5>
+				<p class="text-neutral-400 text-sm">
+					Join Kumbuka to start managing your commitment
 				</p>
-			</form>
+				<registration-form [(step)]="step" [countdown]="countdown" />
+			} @else {
+				<h5 class="text-2xl text-center font-bold">Verify Your Email</h5>
+				<p class="text-neutral-400 text-sm text-center">
+					Please enter the 6-digit security code sent to your email to verify your account
+				</p>
+				<email-verification-form [countdown]="countdown" />
+			}
 		</p-card>
 		<div
 			class="h-[23vh] w-[15vw] rounded-[23vh] bg-[#E5EEFF] blur-3xl absolute -bottom-22 -right-17 -z-10"

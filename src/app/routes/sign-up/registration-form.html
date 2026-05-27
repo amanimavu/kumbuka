@@ -1,0 +1,119 @@
+<form autocomplete="off" [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="pt-2 text-sm">
+	<div class="flex flex-col my-4 gap-1">
+		<label for="name">Full name</label>
+		<div class="flex flex-col gap-1">
+			<input
+				formControlName="name"
+				variant="filled"
+				pInputText
+				id="name"
+				autocomplete="off"
+				placeholder="John Doe"
+			/>
+			@if (isInvalid('name')) {
+				<p-message severity="error" size="small" variant="simple">{{
+					getErrorMessage('name')
+				}}</p-message>
+			}
+		</div>
+	</div>
+
+	<div class="flex flex-col my-4 gap-1">
+		<label for="email">Email</label>
+		<div class="flex flex-col gap-1">
+			<input
+				variant="filled"
+				pInputText
+				id="email"
+				autocomplete="off"
+				placeholder="johndoe@gmail.com"
+				formControlName="email"
+			/>
+			@if (isInvalid('email')) {
+				<p-message severity="error" size="small" variant="simple">{{
+					getErrorMessage('email')
+				}}</p-message>
+			}
+		</div>
+	</div>
+
+	<div class="flex flex-col my-4 gap-1">
+		<label for="phone_number">Phone number</label>
+		<div class="flex flex-col gap-1">
+			<input
+				required
+				variant="filled"
+				pInputText
+				id="phoneNumber"
+				autocomplete="off"
+				placeholder="0748513003"
+				formControlName="phoneNumber"
+			/>
+			@if (isInvalid('phoneNumber')) {
+				<p-message severity="error" size="small" variant="simple">{{
+					getErrorMessage('phoneNumber')
+				}}</p-message>
+			}
+		</div>
+	</div>
+
+	<div class="flex flex-col my-4 gap-1">
+		<label for="password">Password</label>
+		<div class="flex flex-col gap-1">
+			<p-password
+				class="[&>input]:grow"
+				id="password"
+				[toggleMask]="true"
+				autocomplete="new-password"
+				variant="filled"
+				placeholder="password"
+				required
+				formControlName="password"
+				[autofocus]="false"
+			/>
+			@if (isInvalid('password')) {
+				<p-message severity="error" size="small" variant="simple">{{
+					getErrorMessage('password')
+				}}</p-message>
+			}
+		</div>
+	</div>
+
+	<div class="flex flex-col my-4 gap-1">
+		<label for="confirmPassword">Confirm password</label>
+		<div class="flex flex-col gap-1">
+			<p-password
+				class="[&>input]:grow"
+				id="confirmPassword"
+				[toggleMask]="true"
+				autocomplete="new-password"
+				variant="filled"
+				placeholder="Confirm password"
+				required
+				formControlName="confirmPassword"
+				[autofocus]="false"
+			/>
+			@if (isInvalid('password')) {
+				<p-message severity="error" size="small" variant="simple">{{
+					getErrorMessage('password')
+				}}</p-message>
+			}
+		</div>
+	</div>
+
+	<button [loading]="isLoading()" type="submit" pButton class="w-full mb-2">
+		<span pButtonLabel>Get started</span>
+		@if (!isLoading()) {
+			<svg class="w-7 text-white" arrow-right-icon></svg>
+		}
+	</button>
+
+	<p-divider />
+
+	<p class="text-center mt-2">
+		Already have an account?
+		<a routerLink="/auth/login" class="text-[#B52614] hover:underline underline-offset-2"
+			>Log in</a
+		>
+	</p>
+</form>
