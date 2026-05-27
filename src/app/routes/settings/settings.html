@@ -3,8 +3,7 @@
 		<p-menu [model]="items" />
 	</nav>
 	<section class="w-3/4 flex flex-col gap-8">
-		<p-card>
-			<a id="account" class="block relative -top-50 invisible"></a>
+		<p-card id="account">
 			<div class="flex items-start justify-between mb-6">
 				<div class="flex gap-6">
 					<p-avatar label="JD" size="xlarge" shape="circle" />
@@ -29,8 +28,7 @@
 			</div>
 		</p-card>
 
-		<p-card>
-			<a id="lending-limits" class="block relative -top-50 invisible"></a>
+		<p-card id="lending-limits">
 			<ng-template #header>
 				<div class="border-b p-5 border-b-[#e2e8f0]">
 					<h5 class="font-semibold text-lg">Lending Limits</h5>
@@ -47,8 +45,7 @@
 			</ng-template>
 		</p-card>
 
-		<p-card>
-			<a id="notification-controls" class="block relative -top-50 invisible"></a>
+		<p-card id="notification-controls">
 			<ng-template #header>
 				<div class="border-b p-5 border-b-[#e2e8f0]">
 					<h5 class="font-semibold text-lg">Notification Controls</h5>
@@ -97,8 +94,7 @@
 			</ng-template>
 		</p-card>
 
-		<p-card>
-			<a id="security" class="block relative -top-50 invisible"></a>
+		<p-card id="security">
 			<h5 class="font-semibold text-lg mb-1">Two-Factor Authentication</h5>
 			<div class="flex gap-20">
 				<p>

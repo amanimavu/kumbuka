@@ -32,7 +32,21 @@ export class SettingsPage implements OnInit {
 	items: MenuItem[] = [];
 	selectedOption!: string;
 
+	private route = inject(ActivatedRoute);
+
+	// due to use of custom scroll container
 	ngOnInit() {
+		this.route.fragment.subscribe((fragment) => {
+			if (fragment) {
+				setTimeout(() => {
+					const element = document.getElementById(fragment);
+					if (element) {
+						element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
+				}, 0);
+			}
+		});
+
 		this.items = [
 			{
 				label: 'Account',
