@@ -385,3 +385,43 @@ export class PhoneIcon {
 export class LogIcon {
 	readonly viewBox = input<string>('0 -960 960 960');
 }
+
+@Component({
+	selector: 'svg[check-icon]',
+	template: `<svg:path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class CheckIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[warning-icon]',
+	template: `<svg:path
+		d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm330.5-51.5Q520-263 520-280t-11.5-28.5Q497-320 480-320t-28.5 11.5Q440-297 440-280t11.5 28.5Q463-240 480-240t28.5-11.5ZM440-360h80v-200h-80v200Zm40-100Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class WarningIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[money-icon]',
+	template: `<svg:path
+		d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84h-80Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class MoneyIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
