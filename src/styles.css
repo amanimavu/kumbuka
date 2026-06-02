@@ -23,6 +23,10 @@ html:has(auth-layout){
 	overflow-y: clip;
 }
 
+.notifications-popover .p-popover-content {
+	padding: 0 !important;
+}
+
 @theme{
 	--color-kumbuka-primary-50: #f1f4f6;
 	--color-kumbuka-primary-100: #d5e1ec;
