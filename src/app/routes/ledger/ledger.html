@@ -1,3 +1,144 @@
+<ng-template #accountDisplay let-data>
+	<div class="flex flex-col text-white">
+		<span class="text-[0.7rem] font-bold opacity-60">{{ data.label | uppercase }}</span>
+		<span class="text-2xl font-bold">{{ data.amount | number: '1.0-0' : 'en-US' }}</span>
+	</div>
+</ng-template>
+<p-drawer
+	id="transaction-drawer"
+	[visible]="visible()"
+	position="right"
+	styleClass="w-full! md:w-80! lg:w-120!"
+	(onHide)="handleDrawerHide($event)"
+>
+	<ng-template #header>
+		<div class="flex items-center gap-2">
+			<p-avatar [label]="selectedRecord()?.initials" shape="circle" />
+			<span class="font-bold">{{ selectedRecord()?.borrower }}</span>
+		</div>
+	</ng-template>
+	<ng-template #content>
+		<p-divider class="mt-0!" />
+		<div class="mx-4 pb-8">
+			<p-card class="bg-kumbuka-primary-500!">
+				<div class="flex justify-between">
+					<ng-container
+						*ngTemplateOutlet="
+							accountDisplay;
+							context: {
+								$implicit: {
+									label: 'total principle',
+									amount: selectedRecord()?.principle,
+								},
+							}
+						"
+					></ng-container>
+					<ng-container
+						*ngTemplateOutlet="
+							accountDisplay;
+							context: {
+								$implicit: {
+									label: 'amount paid',
+									amount: selectedRecord()?.amountPaid,
+								},
+							}
+						"
+					></ng-container>
+				</div>
+				<div class="my-6">
+					<p-progressbar
+						color="#e64a33"
+						class="mb-1.5"
+						[value]="
+							((selectedRecord()?.amountPaid ?? 0) /
+								(selectedRecord()?.principle || 1)) *
+							100
+						"
+					>
+						<ng-template #content> </ng-template>
+					</p-progressbar>
+					<div class="flex justify-between text-[0.7rem] text-white font-bold">
+						<span class="opacity-60">REPAYMENT PROGRESS</span>
+						<span class="text-[#e64a33]"
+							>{{
+								((selectedRecord()?.amountPaid ?? 0) /
+									(selectedRecord()?.principle || 1)) *
+									100 | number: '1.0-0'
+							}}%</span
+						>
+					</div>
+				</div>
+				<p-divider class="opacity-30" />
+				<ng-container
+					*ngTemplateOutlet="
+						accountDisplay;
+						context: {
+							$implicit: {
+								label: 'remaining balance',
+								amount: selectedRecord()?.balance,
+							},
+						}
+					"
+				></ng-container>
+			</p-card>
+			<section class="mt-6">
+				<div class="flex justify-between items-center mb-6">
+					<h5 class="text-lg font-bold">Installment History</h5>
+					<p-button class="[&>button]:py-1!" [text]="true" label="View all" />
+				</div>
+				<p-timeline class="items-start" [value]="installments">
+					<ng-template let-installment #marker>
+						@if (installment.status === 'Pending') {
+							<div class="bg-amber-300/20 p-1 rounded-full">
+								<svg class="w-4 text-amber-500" warning-icon></svg>
+							</div>
+						} @else {
+							<div class="bg-green-300/20 p-1 rounded-full">
+								<svg class="w-4 text-green-500" check-icon></svg>
+							</div>
+						}
+					</ng-template>
+					<ng-template #content let-installment>
+						<div
+							class="w-[81cqw] border-2 flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors hover:border-neutral-300"
+							[class.border-neutral-100]="selectedInstallment() !== installment"
+							[class.border-blue-500]="selectedInstallment() === installment"
+							[class.bg-blue-50]="selectedInstallment() === installment"
+							(click)="handleInstallmentSelection(installment)"
+						>
+							<div class="flex justify-between content-box">
+								<span>{{ installment.amount | number: '1.0-0' : 'en-US' }}</span>
+								<p-tag
+									[value]="
+										installment.status.toLowerCase() === 'paid'
+											? 'verified'
+											: 'pending verification'
+									"
+									[rounded]="true"
+									class="text-[0.65rem]!"
+									[severity]="
+										installment.status.toLowerCase() === 'paid'
+											? 'success'
+											: 'warn'
+									"
+								/>
+							</div>
+							<div class="flex justify-between content-box">
+								<span>{{ installment.paymentDate }}</span>
+								<span>{{ installment.transactionCode }}</span>
+							</div>
+						</div>
+					</ng-template>
+				</p-timeline>
+			</section>
+		</div>
+		@if (selectedInstallment()?.status?.toLowerCase() === 'pending') {
+			<div class="mx-4 sticky bottom-4">
+				<p-button fluid label="Verify" />
+			</div>
+		}
+	</ng-template>
+</p-drawer>
 <div class="flex justify-between">
 	<segmented
 		defaultValue="money lent"
@@ -27,6 +168,10 @@
 		<p-table
 			[scrollable]="true"
 			[rowHover]="true"
+			selectionMode="single"
+			dataKey="id"
+			(onRowSelect)="handleRowSelect($event)"
+			[(selection)]="selectedRecord"
 			[scrollHeight]="tableHeight()"
 			[value]="disbursements()"
 			[tableStyle]="{ 'min-width': '50vw' }"
@@ -46,7 +191,7 @@
 				</tr>
 			</ng-template>
 			<ng-template #body let-disbursement>
-				<tr>
+				<tr [pSelectableRow]="disbursement">
 					<td>
 						<div class="flex gap-2 items-center">
 							<p-avatar
@@ -58,7 +203,7 @@
 							{{ disbursement.borrower }}
 						</div>
 					</td>
-					<td>{{ disbursement.amount }}</td>
+					<td>{{ disbursement.principle | number: '1.0-0' : 'en-US' }}</td>
 					<td>{{ disbursement.dueDate | date: 'mediumDate' }}</td>
 					<td>
 						<span
