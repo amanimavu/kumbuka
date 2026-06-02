@@ -5,7 +5,7 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { AlarmIcon, CompassionIcon, OrderIcon, ShieldPersonIcon } from '../../../assets/icons';
 import { KumbukaBrand } from '../../shared/brand/logo.component';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 
 @Component({
 	selector: 'app-root',

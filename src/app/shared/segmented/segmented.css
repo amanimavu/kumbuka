@@ -16,7 +16,7 @@
 	content: "";
 	position: absolute;
 	display: block;
-	background-color: #122130;
+	background-color: var(--color-kumbuka-primary-500);
 	height: 100%;
 	width: var(--highlight-width);
 	z-index: 0;

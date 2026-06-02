@@ -425,3 +425,45 @@ export class WarningIcon {
 export class MoneyIcon {
 	readonly viewBox = input<string>('0 -960 960 960');
 }
+
+@Component({
+	selector: 'svg[help-icon]',
+	template: `<svg:path
+		d="M513.5-254.5Q528-269 528-290t-14.5-35.5Q499-340 478-340t-35.5 14.5Q428-311 428-290t14.5 35.5Q457-240 478-240t35.5-14.5ZM442-394h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class HelpIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[link-icon]',
+	template: `<svg:path
+		d="M318-120q-82 0-140-58t-58-140q0-40 15-76t43-64l134-133 56 56-134 134q-17 17-25.5 38.5T200-318q0 49 34.5 83.5T318-200q23 0 45-8.5t39-25.5l133-134 57 57-134 133q-28 28-64 43t-76 15Zm79-220-57-57 223-223 57 57-223 223Zm251-28-56-57 134-133q17-17 25-38t8-44q0-50-34-85t-84-35q-23 0-44.5 8.5T558-726L425-592l-57-56 134-134q28-28 64-43t76-15q82 0 139.5 58T839-641q0 39-14.5 75T782-502L648-368Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class LinkIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[review-icon]',
+	template: `<svg:path
+		d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Zm40-160h200v-80H200v80Zm382-80 198-198-57-57-141 142-57-57-56 57 113 113Zm-382-80h200v-80H200v80Zm0-160h200v-80H200v80Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class ReviewIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
