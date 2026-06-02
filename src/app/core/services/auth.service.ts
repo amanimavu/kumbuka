@@ -5,7 +5,7 @@ import { Observable, tap, catchError, throwError, shareReplay, map } from 'rxjs'
 import { environment } from '@env/environment';
 import { LocalstorageService } from '@app/shared/services/localstorage.service';
 
-export type AuthResponse = {
+export type LoginResponse = {
 	id: number;
 	userId: number;
 	email: string;
@@ -21,13 +21,23 @@ export type LoginCredentials = {
 	otp?: string;
 };
 
-export type RegistrationPayload = {
+export type RegistrationRequestPayload = {
 	name: string;
 	email: string;
 	phoneNumber: string;
 	password: string;
 	confirmPassword: string;
-	role: 'BORROWER' | 'LENDER';
+};
+
+export type RegistrationResponse = {
+	id: string;
+	userId: string;
+	email: string;
+	token: string;
+	refreshToken: string;
+	tokenExpiration: string;
+	isVerified: true;
+	message: 'User registered successfully';
 };
 
 export interface EmailVerificationPayload {
@@ -45,8 +55,8 @@ export class AuthService {
 	localstorage = inject(LocalstorageService);
 	private platformId = inject(PLATFORM_ID);
 
-	login(credentials: LoginCredentials): Observable<Pick<AuthResponse, 'token' | 'message'>> {
-		return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials).pipe(
+	login(credentials: LoginCredentials) {
+		return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
 			map((data) => ({
 				token: data.token,
 				message: data.message ?? 'Login successful',
@@ -55,13 +65,17 @@ export class AuthService {
 		);
 	}
 
-	register(payload: RegistrationPayload): Observable<string> {
-		return this.http
-			.post(`${this.baseUrl}/register`, payload, {
-				responseType: 'text',
-				headers: { Accept: 'text/plain' },
-			})
-			.pipe(catchError(this.handleError));
+	register(payload: RegistrationRequestPayload) {
+		return this.http.post<RegistrationResponse>(`${this.baseUrl}/register`, payload).pipe(
+			map((data) => ({
+				email: data.email,
+				token: data.token,
+				refreshToken: data.refreshToken,
+				tokenExpiration: data.tokenExpiration,
+				message: data.message,
+			})),
+			catchError(this.handleError),
+		);
 	}
 
 	// verifyEmail(credentials: LoginCredentials): Observable<string> {

@@ -11,7 +11,6 @@ import {
 } from '@angular/forms';
 import { TabsModule } from 'primeng/tabs';
 import { CardModule } from 'primeng/card';
-import { JsonPipe } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from '@angular/router';
@@ -23,11 +22,10 @@ import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputOtpModule } from 'primeng/inputotp';
 import { InputTextModule } from 'primeng/inputtext';
-// import { IconFieldModule } from 'primeng/iconfield';
 import { useCountdown } from '@shared/utils/counter';
 import { AuthService } from '@core/services/auth.service';
 import { KumbukaBrand } from '@shared/brand/logo.component';
-import type { RegistrationPayload } from '@core/services/auth.service';
+import type { RegistrationRequestPayload } from '@core/services/auth.service';
 import { LocalstorageService } from '@shared/services/localstorage.service';
 import { Component, inject, input, model, Signal, signal } from '@angular/core';
 
@@ -93,7 +91,6 @@ export class EmailVerificationForm {
 		RouterLink,
 		MessageModule,
 	],
-	standalone: true,
 })
 export class RegistrationForm {
 	signUpForm: FormGroup;
@@ -162,9 +159,9 @@ export class RegistrationForm {
 		const formIsValid = form.valid;
 
 		if (formIsValid) {
-			const payload = form.getRawValue() as RegistrationPayload;
+			const payload = form.getRawValue() as RegistrationRequestPayload;
 			console.log('PAYLOAD', payload);
-			this.authService.register({ ...payload, role: 'BORROWER' }).subscribe({
+			this.authService.register({ ...payload }).subscribe({
 				next: (res) => {
 					this.isLoading.set(false);
 					this.formSubmitted = false;
@@ -173,14 +170,17 @@ export class RegistrationForm {
 					this.messageService.add({
 						severity: 'success',
 						summary: 'Success',
-						detail: res as string,
+						detail: res.message,
 						life: 3000,
 					});
 
-					this.localstorage.set('email', payload.email);
+					this.localstorage.set('email', res.email);
+					this.localstorage.set('token', res.token);
+					this.localstorage.set('refreshToken', res.refreshToken);
+					this.localstorage.set('tokenExpiration', res.tokenExpiration);
 					// this.step.set('email_verification');
 					// this.countdown().start(); // Start the countdown manually
-					this.router.navigate(['/auth/login']);
+					this.router.navigate(['/app']);
 				},
 				error: (err: Error) => {
 					this.isLoading.set(false);
