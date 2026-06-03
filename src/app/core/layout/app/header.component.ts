@@ -119,6 +119,7 @@ export interface AppNotification {
 							</div>
 							<p-button
 								label="View more"
+								routerLink="/app/notifications"
 								[fluid]="true"
 								class="text-sm! [&>button]:mt-2"
 								variant="outlined"
