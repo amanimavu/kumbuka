@@ -14,7 +14,7 @@ import { Location } from '@angular/common';
 	templateUrl: './not-found.html',
 	styleUrl: './not-found.css',
 })
-export class NotFound {
+export class NotFoundPage {
 	isAuthenticated = true;
 	router = inject(Router);
 	location = inject(Location);
