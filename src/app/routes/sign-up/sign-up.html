@@ -16,7 +16,7 @@
 				<p class="text-neutral-400 text-sm">
 					Join Kumbuka to start managing your commitment
 				</p>
-				<registration-form [(step)]="step" [countdown]="countdown" />
+				<registration-form [countdown]="countdown" (submitted)="register($event)" />
 			} @else {
 				<h5 class="text-2xl text-center font-bold">Verify Your Email</h5>
 				<p class="text-neutral-400 text-sm text-center">
