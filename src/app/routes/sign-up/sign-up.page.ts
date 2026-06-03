@@ -49,7 +49,6 @@ export class SigUpPage {
 				next: (res) => {
 					this.isLoading.set(false);
 
-					console.log(res);
 					this.messageService.add({
 						severity: 'success',
 						summary: 'Success',
@@ -57,10 +56,12 @@ export class SigUpPage {
 						life: 3000,
 					});
 
-					this.localstorage.set('email', res.email);
-					this.localstorage.set('token', res.token);
-					this.localstorage.set('refreshToken', res.refreshToken);
-					this.localstorage.set('tokenExpiration', res.tokenExpiration);
+					this.authService.storeResponseData(res, [
+						'token',
+						'refreshToken',
+						'tokenExpiration',
+						'email',
+					]);
 					// this.step.set('email_verification');
 					// this.countdown().start(); // Start the countdown manually
 					this.router.navigate(['/app']);

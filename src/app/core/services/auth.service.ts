@@ -1,9 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Observable, tap, catchError, throwError, shareReplay, map } from 'rxjs';
+import { catchError, throwError, map } from 'rxjs';
 import { environment } from '@env/environment';
 import { LocalstorageService } from '@app/shared/services/localstorage.service';
+
+type SelectionArg = keyof (LoginResponse & RegistrationResponse);
 
 export type LoginResponse = {
 	id: number;
@@ -12,6 +14,7 @@ export type LoginResponse = {
 	token: string;
 	refreshToken: string;
 	isVerified: boolean;
+	tokenExpiration: number;
 	message: string;
 };
 
@@ -37,7 +40,7 @@ export type RegistrationResponse = {
 	refreshToken: string;
 	tokenExpiration: string;
 	isVerified: true;
-	message: 'User registered successfully';
+	message: string;
 };
 
 export interface EmailVerificationPayload {
@@ -49,7 +52,7 @@ export interface EmailVerificationPayload {
 	providedIn: 'root',
 })
 export class AuthService {
-	private readonly baseUrl = `${environment.backendBaseUrl}/kumbukaa/api/auth`;
+	private readonly baseUrl = `${environment.backendBaseUrl}/api/auth`;
 
 	http = inject(HttpClient);
 	localstorage = inject(LocalstorageService);
@@ -58,6 +61,7 @@ export class AuthService {
 	login(credentials: LoginCredentials) {
 		return this.http.post<LoginResponse>(`${this.baseUrl}/login`, credentials).pipe(
 			map((data) => ({
+				...data,
 				token: data.token,
 				message: data.message ?? 'Login successful',
 			})),
@@ -84,9 +88,14 @@ export class AuthService {
 	// 		.pipe(catchError(this.handleError));
 	// }
 
-	storeToken(token: string): void {
+	storeResponseData(
+		res: Partial<LoginResponse | RegistrationResponse>,
+		selection: SelectionArg[],
+	): void {
 		if (isPlatformBrowser(this.platformId)) {
-			this.localstorage.set('token', token);
+			selection.forEach((item) => {
+				this.localstorage.set(item, res[item]);
+			});
 		}
 	}
 

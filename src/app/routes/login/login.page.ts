@@ -89,7 +89,12 @@ export class LoginPage {
 
 			this.authService.login(credentials).subscribe({
 				next: (res) => {
-					this.authService.storeToken(res.token);
+					this.authService.storeResponseData(res, [
+						'token',
+						'refreshToken',
+						'tokenExpiration',
+						'email',
+					]);
 					this.isLoading = false;
 					this.formSubmitted = false;
 					this.router.navigate(['/app/dashboard']);
