@@ -11,7 +11,8 @@ import { SettingsPage } from '@routes/settings/settings';
 import { ProfilePage } from '@routes/profile/profile';
 import { LedgerPage } from '@routes/ledger/ledger';
 import { authGuard } from './core/guards/auth.guard';
-import { NotFound } from '@routes/not-found/not-found';
+import { NotFoundPage } from '@app/routes/not-found/not-found.page';
+import { NotificationsPage } from './routes/notifications/notifications.page';
 
 export const routes: Routes = [
 	{ path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -37,10 +38,11 @@ export const routes: Routes = [
 			{ path: 'settings', component: SettingsPage, title: 'Settings' },
 			{ path: 'profile', component: ProfilePage, title: 'Profile' },
 			{ path: 'ledger', component: LedgerPage, title: 'Ledger' },
+			{ path: 'notifications', component: NotificationsPage, title: 'Notifications' },
 		],
 	},
 	{
 		path: '**',
-		component: NotFound,
+		component: NotFoundPage,
 	},
 ];

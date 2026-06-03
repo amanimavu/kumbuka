@@ -17,6 +17,10 @@ export const serverRoutes: ServerRoute[] = [
 		path: 'app/ledger',
 		renderMode: RenderMode.Client,
 	},
+	{
+		path: 'app/notifications',
+		renderMode: RenderMode.Client,
+	},
 	// {
 	// 	path: 'app/**',
 	// 	renderMode: RenderMode.Client,
