@@ -6,7 +6,8 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { KumbukaPreset } from './core/theme/kumbuka-preset';
 import { MessageService } from 'primeng/api';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '@shared/interceptor/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -22,6 +23,6 @@ export const appConfig: ApplicationConfig = {
 			},
 		}),
 		MessageService,
-		provideHttpClient(withFetch()),
+		provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
 	],
 };
