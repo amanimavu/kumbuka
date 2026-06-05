@@ -1,0 +1,19 @@
+<div class="flex gap-8">
+	@for (filter of filters; track $index) {
+		<p-chip
+			#filterChip
+			[class.selected]="selectedChips().includes(filter)"
+			(click)="handleChipSelection(filter)"
+			[label]="filter"
+			class="tracking-wider border-2 border-neutral-400 text-sm select-none cursor-pointer"
+		>
+		</p-chip>
+	}
+</div>
+
+@for (notificationSegment of notifications(); track $index) {
+	<notification-list-segment
+		[notificationSegment]="notificationSegment[1]"
+		[segment]="notificationSegment[0]"
+	/>
+}

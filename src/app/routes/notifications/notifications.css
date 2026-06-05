@@ -1,0 +1,19 @@
+:host ::ng-deep .p-chip.selected .p-chip-label::before {
+	content: '\2713';
+	margin-right: 0.4rem;
+	font-weight: 800;
+}
+
+:host ::ng-deep .p-chip.selected {
+	border-color: #3b82f6 !important;
+	background-color: #eff6ff !important;
+}
+
+:host ::ng-deep .p-chip.selected .p-chip-label {
+	color: #3b82f6 !important;
+	font-weight: 600 !important;
+}
+
+:host ::ng-deep .p-chip:not(.selected) {
+	background-color: transparent !important;
+}
