@@ -1,4 +1,4 @@
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -7,11 +7,13 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { AuthService } from '../../services/auth.service';
 import { KumbukaBrand } from '@shared/brand/logo.component';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons';
+import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon, LogIcon } from '@assets/icons';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LenderRequestPayload, LoanService } from '@app/routes/services/loan.service';
+import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
 	selector: 'sidebar',
@@ -42,14 +44,25 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 			[style]="{ width: '25rem' }"
 			[dismissableMask]="true"
 		>
-			<form>
+			<form [formGroup]="loanRequestForm" (ngSubmit)="onRequest()">
 				<div class="flex flex-col mb-4 gap-1">
 					<label for="phoneNumber">Phone Number</label>
-					<input placeholder="07XXX" id="phoneNumber" type="text" pInputText />
+					<input
+						formControlName="lenderPhone"
+						placeholder="07XXX"
+						id="phoneNumber"
+						type="text"
+						pInputText
+					/>
 				</div>
 				<div class="flex flex-col mb-4 gap-1">
 					<label for="amount">Amount</label>
-					<p-inputnumber placeholder="7600" id="amount" inputId="integeronly" />
+					<p-inputnumber
+						formControlName="amount"
+						placeholder="7600"
+						id="amount"
+						inputId="integeronly"
+					/>
 				</div>
 				<div class="flex flex-col mb-4 gap-1">
 					<label for="">Due date</label>
@@ -63,9 +76,10 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 						placeholder="dd Mmm yyyy"
 						pInputMask="99 aaa 9999"
 						[showButtonBar]="true"
+						formControlName="dueDate"
 					/>
 				</div>
-				<p-button fluid>REQUEST</p-button>
+				<p-button type="submit" fluid>REQUEST</p-button>
 			</form>
 		</p-dialog>
 		<div
@@ -89,7 +103,7 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 						routerLinkActive="active"
 						pButton
 						[text]="true"
-						pTooltip="Ledger"
+						pTooltip="Credit & Debts"
 						tooltipPosition="right"
 					>
 						<svg class="w-8" wallet-icon></svg>
@@ -99,11 +113,11 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 					<button
 						pButton
 						class="bg-[#e64a33]! hover:bg-[#ff6b42]! border-0! w-[80%] aspect-square rounded-full!"
-						pTooltip="Request loan"
+						pTooltip="Log record"
 						tooltipPosition="right"
 						(click)="handleClick()"
 					>
-						<svg class="w-7" money-icon></svg>
+						<svg class="w-9" log-icon></svg>
 					</button>
 					<button
 						pButton
@@ -120,7 +134,6 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 	`,
 	standalone: true,
 	imports: [
-		MoneyIcon,
 		LogoutIcon,
 		RouterLink,
 		WalletIcon,
@@ -135,23 +148,26 @@ import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon } from '@assets/icons'
 		DatePickerModule,
 		RouterLinkActive,
 		InputNumberModule,
+		ReactiveFormsModule,
+		LogIcon,
 	],
 })
 export class SideNavBar implements OnInit {
 	primaryMenuItems: MenuItem[] | undefined;
 	router = inject(Router);
-	authService = inject(AuthService);
+	LoanService = inject(LoanService);
+	AuthService = inject(AuthService);
+	messageService = inject(MessageService);
 	visible = signal(false);
+	isLoading = signal(false);
+
+	private fb = inject(FormBuilder);
+	loanRequestForm: FormGroup;
 
 	minDate: Date | undefined;
 
 	handleClick() {
 		this.visible.set(true);
-	}
-
-	logOut() {
-		this.authService.logout();
-		this.router.navigate(['/auth/login']);
 	}
 
 	ngOnInit() {
@@ -160,5 +176,53 @@ export class SideNavBar implements OnInit {
 		let date = today.getDate();
 		this.minDate = new Date();
 		this.minDate.setDate(date);
+	}
+
+	constructor() {
+		this.loanRequestForm = this.fb.group({
+			lenderPhone: ['', [Validators.required]],
+			amount: ['', [Validators.required, Validators.min(1)]],
+			dueDate: ['', [Validators.required]],
+		});
+	}
+
+	logOut() {
+		this.AuthService.logout();
+		this.router.navigate(['/auth/login']);
+	}
+
+	onRequest() {
+		this.isLoading.set(true);
+		const form = this.loanRequestForm;
+		const formIsValid = form.valid;
+
+		if (formIsValid) {
+			const payload = form.getRawValue() as LenderRequestPayload;
+			console.log('PAYLOAD', payload);
+			this.LoanService.request({ ...payload }).subscribe({
+				next: (res) => {
+					this.isLoading.set(false);
+
+					this.messageService.add({
+						severity: 'success',
+						summary: 'Success',
+						detail: 'Loan request successful',
+						life: 3000,
+					});
+
+					// this.step.set('email_verification');
+					// this.countdown().start(); // Start the countdown manually
+					this.router.navigate(['/app']);
+				},
+				error: (err: Error) => {
+					this.isLoading.set(false);
+					this.messageService.add({
+						severity: 'error',
+						summary: 'Failed',
+						detail: err.message ?? 'Registration failed',
+					});
+				},
+			});
+		}
 	}
 }

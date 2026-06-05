@@ -47,105 +47,110 @@ export interface AppNotification {
 		>
 		<!-- <ng-template #center></ng-template> -->
 		<ng-template #end>
-			<div class="flex gap-4">
-				<div
-					class="group flex flex-row-reverse items-center rounded-full transition-all duration-300 hover:bg-neutral-100/30"
-				>
-					<button
-						class="rounded-full! w-15 shrink-0 z-10"
-						pButton
-						[text]="true"
-						pTooltip="Share"
-						tooltipPosition="right"
-						(click)="handleCopyText()"
-					>
-						<svg
-							class="w-7 text-neutral-400 transition-colors group-hover:text-neutral-600"
-							link-icon
-						></svg>
-					</button>
+			<div class="hidden">
+				<div class="flex gap-4">
 					<div
-						class="max-w-0 overflow-hidden transition-all duration-500 ease-in-out opacity-0 group-hover:max-w-75 group-hover:pl-5 group-hover:opacity-100 pr-2"
+						class="group flex flex-row-reverse items-center rounded-full transition-all duration-300 hover:bg-neutral-100/30"
 					>
-						<span class="text-sm text-neutral-500 whitespace-nowrap select-all">{{
-							shareUrl
-						}}</span>
-					</div>
-				</div>
-				<button
-					pButton
-					text="true"
-					pTooltip="Notifications"
-					tooltipPosition="left"
-					(click)="notificationsPopover.toggle($event)"
-				>
-					<p-overlaybadge [value]="notifications().length.toString()" severity="info">
-						<svg class="w-7 text-neutral-400" notification-icon></svg>
-					</p-overlaybadge>
-				</button>
-				<p-popover #notificationsPopover styleClass="notifications-popover">
-					<div class="flex flex-col gap-3 w-72">
-						<div class="font-semibold text-neutral-600 mx-4 mt-3">Notifications</div>
-						<p-divider class="m-0!" />
-						<div class="mx-3 mb-3">
-							<div class="flex flex-col gap-2">
-								@for (
-									notification of notifications().slice(0, 3);
-									track notification.id
-								) {
-									<div
-										class="flex flex-col p-2 hover:bg-neutral-50 rounded cursor-pointer transition-colors"
-									>
-										<div class="flex justify-between">
-											<span class="text-sm font-semibold text-neutral-700">{{
-												notification.title
-											}}</span>
-											@if (notification.type === 'payment_received') {
-												<button
-													[text]="true"
-													[outlined]="true"
-													pButton
-													class="px-1! py-0.5!"
-												>
-													<svg class="w-4" review-icon></svg>
-												</button>
-											}
-										</div>
-										<span class="text-xs text-neutral-500">{{
-											notification.message
-										}}</span>
-									</div>
-								}
-							</div>
-							<p-button
-								label="View more"
-								routerLink="/app/notifications"
-								[fluid]="true"
-								class="text-sm! [&>button]:mt-2"
-								variant="outlined"
-							></p-button>
+						<button
+							class="rounded-full! w-15 shrink-0 z-10"
+							pButton
+							[text]="true"
+							pTooltip="Share"
+							tooltipPosition="right"
+							(click)="handleCopyText()"
+						>
+							<svg
+								class="w-7 text-neutral-400 transition-colors group-hover:text-neutral-600"
+								link-icon
+							></svg>
+						</button>
+						<div
+							class="max-w-0 overflow-hidden transition-all duration-500 ease-in-out opacity-0 group-hover:max-w-75 group-hover:pl-5 group-hover:opacity-100 pr-2"
+						>
+							<span class="text-sm text-neutral-500 whitespace-nowrap select-all">{{
+								shareUrl
+							}}</span>
 						</div>
 					</div>
-				</p-popover>
-				<a
-					routerLink="/app/settings"
-					fragment="account"
-					text="true"
-					pButton
-					pTooltip="Settings"
-					tooltipPosition="left"
-				>
-					<svg class="w-7 text-neutral-400" settings-icon></svg>
-				</a>
-				<button
-					routerLink="/app/profile"
-					pButton
-					[text]="true"
-					pTooltip="Profile"
-					tooltipPosition="left"
-				>
-					<p-avatar label="P" shape="circle" />
-				</button>
+					<button
+						pButton
+						text="true"
+						pTooltip="Notifications"
+						tooltipPosition="left"
+						(click)="notificationsPopover.toggle($event)"
+					>
+						<p-overlaybadge [value]="notifications().length.toString()" severity="info">
+							<svg class="w-7 text-neutral-400" notification-icon></svg>
+						</p-overlaybadge>
+					</button>
+					<p-popover #notificationsPopover styleClass="notifications-popover">
+						<div class="flex flex-col gap-3 w-72">
+							<div class="font-semibold text-neutral-600 mx-4 mt-3">
+								Notifications
+							</div>
+							<p-divider class="m-0!" />
+							<div class="mx-3 mb-3">
+								<div class="flex flex-col gap-2">
+									@for (
+										notification of notifications().slice(0, 3);
+										track notification.id
+									) {
+										<div
+											class="flex flex-col p-2 hover:bg-neutral-50 rounded cursor-pointer transition-colors"
+										>
+											<div class="flex justify-between">
+												<span
+													class="text-sm font-semibold text-neutral-700"
+													>{{ notification.title }}</span
+												>
+												@if (notification.type === 'payment_received') {
+													<button
+														[text]="true"
+														[outlined]="true"
+														pButton
+														class="px-1! py-0.5!"
+													>
+														<svg class="w-4" review-icon></svg>
+													</button>
+												}
+											</div>
+											<span class="text-xs text-neutral-500">{{
+												notification.message
+											}}</span>
+										</div>
+									}
+								</div>
+								<p-button
+									label="View more"
+									routerLink="/app/notifications"
+									[fluid]="true"
+									class="text-sm! [&>button]:mt-2"
+									variant="outlined"
+								></p-button>
+							</div>
+						</div>
+					</p-popover>
+					<a
+						routerLink="/app/settings"
+						fragment="account"
+						text="true"
+						pButton
+						pTooltip="Settings"
+						tooltipPosition="left"
+					>
+						<svg class="w-7 text-neutral-400" settings-icon></svg>
+					</a>
+					<button
+						routerLink="/app/profile"
+						pButton
+						[text]="true"
+						pTooltip="Profile"
+						tooltipPosition="left"
+					>
+						<p-avatar label="P" shape="circle" />
+					</button>
+				</div>
 			</div>
 		</ng-template>
 	</p-toolbar>`,
