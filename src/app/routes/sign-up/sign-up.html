@@ -1,7 +1,9 @@
 <p-toast position="top-center" />
 <div class="h-[23vh] w-[15vw] rounded-[23vh] -top-5 -left-10 bg-[#E5EEFF] blur-3xl absolute"></div>
 <div class="grid grid-cols-12 gap-6">
-	<div class="col-span-5 col-start-2 w-[85%] flex flex-col justify-center">
+	<div
+		class="xl:col-span-5 xl:col-start-2 lg:col-span-4 w-[85%] lg:col-start-2 md:col-span-5 md:col-start-1 lg:ml-0 md:ml-6 sm:flex flex-col justify-center hidden"
+	>
 		<kumbuka-brand />
 		<h3 class="text-4xl font-bold">Gentle Accountability</h3>
 		<p class="text-lg tracking-wide text-neutral-400">
@@ -9,7 +11,9 @@
 		</p>
 	</div>
 
-	<div class="col-span-3 col-start-8 relative z-0">
+	<div
+		class="xl:col-span-3 xl:col-start-8 lg:col-span-5 lg:col-start-7 md:col-span-5 md:col-start-7 col-span-12 mx-3 sm:mx-0 relative z-0"
+	>
 		<p-card class="block w-full shadow-2xl relative z-10 top-6">
 			@if (step() === 'registration') {
 				<h5 class="text-2xl font-bold">Create Account</h5>

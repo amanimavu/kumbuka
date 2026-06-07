@@ -1,16 +1,16 @@
 <form autocomplete="off" [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="pt-2 text-sm">
 	<div class="flex flex-col my-4 gap-1">
-		<label for="name">Full name</label>
+		<label for="fullName">Full name</label>
 		<div class="flex flex-col gap-1">
 			<input
-				formControlName="name"
+				formControlName="fullName"
 				variant="filled"
 				pInputText
-				id="name"
+				id="fullName"
 				autocomplete="off"
 				placeholder="John Doe"
 			/>
-			@if (isInvalid('name')) {
+			@if (isInvalid('fullName')) {
 				<p-message severity="error" size="small" variant="simple">{{
 					getErrorMessage('name')
 				}}</p-message>
@@ -38,7 +38,7 @@
 	</div>
 
 	<div class="flex flex-col my-4 gap-1">
-		<label for="phone_number">Phone number</label>
+		<label for="phoneNumber">Phone number</label>
 		<div class="flex flex-col gap-1">
 			<input
 				required
@@ -93,7 +93,7 @@
 				formControlName="confirmPassword"
 				[autofocus]="false"
 			/>
-			@if (isInvalid('password')) {
+			@if (isInvalid('confirmPassword')) {
 				<p-message severity="error" size="small" variant="simple">{{
 					getErrorMessage('password')
 				}}</p-message>

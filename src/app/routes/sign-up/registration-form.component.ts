@@ -52,7 +52,7 @@ export class RegistrationForm {
 	constructor() {
 		this.signUpForm = this.fb.group(
 			{
-				name: ['', [Validators.required]],
+				fullName: ['', [Validators.required]],
 				email: ['', [Validators.required, Validators.email]],
 				phoneNumber: ['', [Validators.required]],
 				password: ['', [Validators.required, this.createPasswordStrengthValidator()]],

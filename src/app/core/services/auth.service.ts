@@ -8,14 +8,12 @@ import { LocalstorageService } from '@app/shared/services/localstorage.service';
 type SelectionArg = keyof (LoginResponse & RegistrationResponse);
 
 export type LoginResponse = {
-	id: number;
 	userId: number;
 	email: string;
+	name: string;
+	message: string;
 	token: string;
 	refreshToken: string;
-	isVerified: boolean;
-	tokenExpiration: number;
-	message: string;
 };
 
 export type LoginCredentials = {
@@ -25,7 +23,7 @@ export type LoginCredentials = {
 };
 
 export type RegistrationRequestPayload = {
-	name: string;
+	fullName: string;
 	email: string;
 	phoneNumber: string;
 	password: string;
@@ -33,14 +31,12 @@ export type RegistrationRequestPayload = {
 };
 
 export type RegistrationResponse = {
-	id: string;
-	userId: string;
+	userId: number;
 	email: string;
+	name: string;
+	message: string;
 	token: string;
 	refreshToken: string;
-	tokenExpiration: string;
-	isVerified: true;
-	message: string;
 };
 
 export interface EmailVerificationPayload {
@@ -75,7 +71,7 @@ export class AuthService {
 				email: data.email,
 				token: data.token,
 				refreshToken: data.refreshToken,
-				tokenExpiration: data.tokenExpiration,
+				// tokenExpiration: data.tokenExpiration,
 				message: data.message,
 			})),
 			catchError(this.handleError),

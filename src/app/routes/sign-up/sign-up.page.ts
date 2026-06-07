@@ -56,12 +56,7 @@ export class SigUpPage {
 						life: 3000,
 					});
 
-					this.authService.storeResponseData(res, [
-						'token',
-						'refreshToken',
-						'tokenExpiration',
-						'email',
-					]);
+					this.authService.storeResponseData(res, ['token', 'refreshToken', 'email']);
 					// this.step.set('email_verification');
 					// this.countdown().start(); // Start the countdown manually
 					this.router.navigate(['/app']);
