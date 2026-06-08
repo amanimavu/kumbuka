@@ -3,6 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { catchError, map, throwError } from 'rxjs';
 
+export type DebtStatus = 'PAID' | 'PARTIALLY_PAID';
+
 export type LoanBorrowedResponse = {
 	id: number;
 	personName: string;
@@ -12,10 +14,25 @@ export type LoanBorrowedResponse = {
 	balance: number;
 	dateBorrowed: string;
 	dueDate: string;
-	status: string;
+	status: DebtStatus;
 	notes: string;
 	createdAt: string;
 	updatedAt: string;
+};
+
+export type LoanBorrowed = {
+	id: number;
+	personName: string;
+	phoneNumber: string;
+	amount: {
+		borrowed: number;
+		paid: number;
+		balance: number;
+	};
+	dueDate: string;
+	dateBorrowed: string;
+	status: DebtStatus;
+	notes: string;
 };
 
 export type RecordBorrowedLoanPayload = {
@@ -37,20 +54,22 @@ export class LoansBorrowedService {
 	getLoansBorrowed() {
 		return this.http.get<LoanBorrowedResponse[]>(`${this.baseUrl}/loans-borrowed`).pipe(
 			map((data) =>
-				data.map((item) => ({
-					id: item.id,
-					personName: item.personName,
-					phoneNumber: item.phoneNumber,
-					amount: {
-						borrowed: item.amountBorrowed,
-						paid: item.amountPaid,
-						balance: item.balance,
-					},
-					dueDate: item.dueDate,
-					dateBorrowed: item.dateBorrowed,
-					status: item.status,
-					notes: item.notes,
-				})),
+				data.map(
+					(item): LoanBorrowed => ({
+						id: item.id,
+						personName: item.personName,
+						phoneNumber: item.phoneNumber,
+						amount: {
+							borrowed: item.amountBorrowed,
+							paid: item.amountPaid,
+							balance: item.balance,
+						},
+						dueDate: item.dueDate,
+						dateBorrowed: item.dateBorrowed,
+						status: item.status,
+						notes: item.notes,
+					}),
+				),
 			),
 			catchError(this.handleError),
 		);

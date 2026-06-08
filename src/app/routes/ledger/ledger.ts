@@ -14,7 +14,7 @@ import { Segmented } from '@shared/segmented/segmented.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { SearchIcon, LogIcon, CheckIcon, WarningIcon } from '@assets/icons';
+import { SearchIcon, LogIcon, CheckIcon, WarningIcon, EditIcon, PlusIcon } from '@assets/icons';
 import { TableModule } from 'primeng/table';
 import {
 	DatePipe,
@@ -28,7 +28,6 @@ import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
-import { obligations } from '@routes/ledger/data';
 import { debounce } from '@app/shared/utils/debounce';
 import { DrawerModule } from 'primeng/drawer';
 import { DividerModule } from 'primeng/divider';
@@ -39,6 +38,12 @@ import {
 	LoansLentService,
 	type LoanLent,
 } from '@routes/ledger/services/loans-lent.service';
+import {
+	DebtStatus,
+	LoanBorrowed,
+	LoanBorrowedResponse,
+	LoansBorrowedService,
+} from './services/loans-borrowed.service';
 
 type Installment = {
 	amount: number;
@@ -47,16 +52,7 @@ type Installment = {
 	transactionCode: null | string;
 };
 
-export type DebtStatus = 'pending' | 'overdue' | 'repaid';
 export type Severity = 'danger' | 'warn' | 'success';
-export interface Obligation {
-	id: string;
-	name: string;
-	category: 'family' | 'friend' | 'shopkeeper' | 'colleague';
-	amountDue: number;
-	dueDate: string;
-	status: DebtStatus;
-}
 
 @Component({
 	selector: 'app-ledger',
@@ -85,6 +81,8 @@ export interface Obligation {
 		WarningIcon,
 		DialogModule,
 		ReactiveFormsModule,
+		EditIcon,
+		PlusIcon,
 	],
 	templateUrl: './ledger.html',
 	styleUrl: './ledger.css',
@@ -93,13 +91,13 @@ export class LedgerPage {
 	router = inject(Router);
 	route = inject(ActivatedRoute);
 	loanLentService = inject(LoansLentService);
+	loanBorrowedService = inject(LoansBorrowedService);
 	segmentOptions = ['Money Lent', 'My Debts'];
 	segment = signal('money_lent');
-	selected_id = signal(null);
-	selectedRecord: LoanLent | null = null;
+	selected_id = signal<string | null>(null);
 
 	private readonly _disbursements = signal<LoanLent[] | null>(null);
-	private readonly _obligations = signal(obligations);
+	private readonly _obligations = signal<LoanBorrowed[] | null>(null);
 	selectedInstallment = signal<Installment | null>(null);
 
 	private readonly colors = ['#5D87FF80', '#FFAE1F80', '#FA896B80', '#13DEB980', '#763EBD80'];
@@ -129,12 +127,54 @@ export class LedgerPage {
 		amount: [null, [Validators.required, Validators.min(1)]],
 	});
 
+	isBorrowedPaymentModalVisible = signal(false);
+	isSavingBorrowedPayment = signal(false);
+	borrowedPaymentRecordId = signal<number | null>(null);
+	borrowedPaymentForm: FormGroup = this.fb.group({
+		amount: [null, [Validators.required, Validators.min(1)]],
+	});
+
+	isBorrowedEditModalVisible = signal(false);
+	isSavingBorrowedEdit = signal(false);
+	borrowedEditingRecordId = signal<number | null>(null);
+	borrowedEditForm: FormGroup = this.fb.group({
+		personName: ['', Validators.required],
+		phoneNumber: ['', Validators.required],
+		amountBorrowed: [0, [Validators.required, Validators.min(1)]],
+		dateBorrowed: ['', Validators.required],
+		dueDate: ['', Validators.required],
+		notes: [''],
+	});
+
+	isCreateLentModalVisible = signal(false);
+	isSavingNewLent = signal(false);
+	createLentForm: FormGroup = this.fb.group({
+		personName: ['', Validators.required],
+		phoneNumber: ['', Validators.required],
+		amountLent: [null, [Validators.required, Validators.min(1)]],
+		dateLent: ['', Validators.required],
+		dueDate: ['', Validators.required],
+		notes: [''],
+	});
+
+	isCreateBorrowedModalVisible = signal(false);
+	isSavingNewBorrowed = signal(false);
+	createBorrowedForm: FormGroup = this.fb.group({
+		personName: ['', Validators.required],
+		phoneNumber: ['', Validators.required],
+		amountBorrowed: [null, [Validators.required, Validators.min(1)]],
+		dateBorrowed: ['', Validators.required],
+		dueDate: ['', Validators.required],
+		notes: [''],
+	});
+
 	handleInstallmentSelection(installment: Installment) {
 		const selectedInstallment = this.selectedInstallment() === installment ? null : installment;
 		this.selectedInstallment.set(selectedInstallment);
 	}
 
 	handleRowSelect(event: any) {
+		console.log(event);
 		const data = event.data;
 		this.router.navigate(['.'], {
 			queryParams: { drawer: true, selected_id: data.id },
@@ -149,6 +189,16 @@ export class LedgerPage {
 			queryParamsHandling: 'merge',
 			relativeTo: this.route,
 		});
+	}
+
+	openCreateModal() {
+		if (this.segment() === 'money_lent') {
+			this.createLentForm.reset();
+			this.isCreateLentModalVisible.set(true);
+		} else {
+			this.createBorrowedForm.reset();
+			this.isCreateBorrowedModalVisible.set(true);
+		}
 	}
 
 	openEditModal(record: LoanLent) {
@@ -186,6 +236,32 @@ export class LedgerPage {
 				error: (err) => {
 					console.error('Error updating loan', err);
 					this.isSaving.set(false);
+				},
+			});
+		}
+	}
+
+	saveNewLentLoan() {
+		if (this.createLentForm.valid) {
+			this.isSavingNewLent.set(true);
+			const payload = this.createLentForm.value;
+			this.loanLentService.recordLoan(payload).subscribe({
+				next: () => {
+					this.loanLentService.getLoansLent().subscribe({
+						next: (loans) => {
+							this._disbursements.set(loans);
+							this.isSavingNewLent.set(false);
+							this.isCreateLentModalVisible.set(false);
+						},
+						error: (err) => {
+							console.error('Failed to refetch loans: ', err);
+							this.isSavingNewLent.set(false);
+						},
+					});
+				},
+				error: (err) => {
+					console.error('Error creating loan', err);
+					this.isSavingNewLent.set(false);
 				},
 			});
 		}
@@ -230,21 +306,153 @@ export class LedgerPage {
 		}
 	}
 
+	openBorrowedPaymentModal(record: LoanBorrowed) {
+		this.borrowedPaymentRecordId.set(record.id);
+		this.borrowedPaymentForm.reset({ amount: null });
+		this.borrowedPaymentForm.controls['amount'].setValidators([
+			Validators.required,
+			Validators.min(1),
+			Validators.max(record.amount.balance),
+		]);
+		this.borrowedPaymentForm.controls['amount'].updateValueAndValidity();
+		this.isBorrowedPaymentModalVisible.set(true);
+	}
+
+	saveBorrowedPayment() {
+		if (this.borrowedPaymentForm.valid && this.borrowedPaymentRecordId() !== null) {
+			this.isSavingBorrowedPayment.set(true);
+			const amount = this.borrowedPaymentForm.value.amount;
+			this.loanBorrowedService
+				.recordPayment(this.borrowedPaymentRecordId()!, amount)
+				.subscribe({
+					next: () => {
+						this.loanBorrowedService.getLoansBorrowed().subscribe({
+							next: (loans) => {
+								this._obligations.set(loans);
+								this.isSavingBorrowedPayment.set(false);
+								this.isBorrowedPaymentModalVisible.set(false);
+							},
+						});
+					},
+					error: (err) => {
+						console.error('Error recording borrowed payment', err);
+						this.isSavingBorrowedPayment.set(false);
+					},
+				});
+		}
+	}
+
+	openBorrowedEditModal(record: LoanBorrowed) {
+		this.borrowedEditingRecordId.set(record.id);
+		this.borrowedEditForm.patchValue({
+			personName: record.personName,
+			phoneNumber: record.phoneNumber,
+			amountBorrowed: record.amount.borrowed,
+			dateBorrowed: record.dateBorrowed,
+			dueDate: record.dueDate,
+			notes: record.notes,
+		});
+		this.isBorrowedEditModalVisible.set(true);
+	}
+
+	saveBorrowedEdit() {
+		if (this.borrowedEditForm.valid && this.borrowedEditingRecordId() !== null) {
+			this.isSavingBorrowedEdit.set(true);
+			const payload = this.borrowedEditForm.value;
+			this.loanBorrowedService
+				.updateLoanBorrowed(this.borrowedEditingRecordId()!, payload)
+				.subscribe({
+					next: () => {
+						this.loanBorrowedService.getLoansBorrowed().subscribe({
+							next: (loans) => {
+								this._obligations.set(loans);
+								this.isSavingBorrowedEdit.set(false);
+								this.isBorrowedEditModalVisible.set(false);
+							},
+							error: (err) => {
+								console.error('Failed to refetch borrowed loans: ', err);
+								this.isSavingBorrowedEdit.set(false);
+							},
+						});
+					},
+					error: (err) => {
+						console.error('Error updating borrowed loan', err);
+						this.isSavingBorrowedEdit.set(false);
+					},
+				});
+		}
+	}
+
+	saveNewBorrowedLoan() {
+		if (this.createBorrowedForm.valid) {
+			this.isSavingNewBorrowed.set(true);
+			const payload = this.createBorrowedForm.value;
+			this.loanBorrowedService.recordLoan(payload).subscribe({
+				next: () => {
+					this.loanBorrowedService.getLoansBorrowed().subscribe({
+						next: (loans) => {
+							this._obligations.set(loans);
+							this.isSavingNewBorrowed.set(false);
+							this.isCreateBorrowedModalVisible.set(false);
+						},
+						error: (err) => {
+							console.error('Failed to refetch borrowed loans: ', err);
+							this.isSavingNewBorrowed.set(false);
+						},
+					});
+				},
+				error: (err) => {
+					console.error('Error creating borrowed loan', err);
+					this.isSavingNewBorrowed.set(false);
+				},
+			});
+		}
+	}
+
 	constructor() {
 		this.route.queryParams.subscribe((params) => {
 			const segment = params['segment'];
 			segment && this.segment.set(segment);
 
-			const drawer = params['drawer'] === 'true' || params['drawer'] === true;
-			this.visible.set(drawer);
-
 			const selected_id = params['selected_id'];
 			this.selected_id.set(selected_id ?? null);
+
+			const drawer = params['drawer'] === 'true' || params['drawer'] === true;
+			// If we are initially loading and data isn't present, defer opening the drawer
+			// to prevent blocking the main thread during the slide-in animation.
+			if (drawer && this._disbursements() === null) {
+				return;
+			}
+
+			this.visible.set(drawer);
 		});
 
 		this.loanLentService.getLoansLent().subscribe({
 			next: (loans) => {
 				this._disbursements.set(loans);
+
+				const params = this.route.snapshot.queryParams;
+				if (params['drawer'] === 'true' || params['drawer'] === true) {
+					// Yield to the browser paint cycle to ensure the background table
+					// is fully rendered before we start the drawer's CSS animation.
+					setTimeout(() => this.visible.set(true), 50);
+				}
+			},
+			error: (err) => {
+				console.log(err);
+			},
+		});
+
+		this.loanBorrowedService.getLoansBorrowed().subscribe({
+			next: (loans) => {
+				this._obligations.set(loans);
+
+				const params = this.route.snapshot.queryParams;
+				if (params['drawer'] === 'true' || params['drawer'] === true) {
+					// Yield to the browser paint cycle to ensure the background table
+					// is fully rendered before we start the drawer's CSS animation.
+					setTimeout(() => this.visible.set(true), 50);
+				}
 			},
 			error: (err) => {
 				console.log(err);
@@ -293,6 +501,12 @@ export class LedgerPage {
 		return matches?.join('').toUpperCase();
 	}
 
+	selectedRecord = computed(() => {
+		const id = this.selected_id();
+		if (!id) return null;
+		return this.disbursements().find((d) => d.id.toString() === id.toString()) ?? null;
+	});
+
 	disbursements = computed(() => {
 		const result =
 			this._disbursements()?.map((disbursement) => {
@@ -323,17 +537,17 @@ export class LedgerPage {
 	});
 
 	obligations = computed(() => {
-		const result = this._obligations().map((obligation) => {
-			const severity = this.getSeverity(obligation.status);
-			return {
-				...obligation,
-				amountDue: formatNumber(obligation.amountDue, 'en-US'),
-				severity,
-			};
-		});
+		const result =
+			this._obligations()?.map((obligation) => {
+				const severity = this.getSeverity(obligation.status);
+				return {
+					...obligation,
+					severity,
+				};
+			}) ?? [];
 		return this.segment() === 'my_debts'
-			? result.filter((obligation) =>
-					obligation.name
+			? result?.filter((obligation) =>
+					obligation.personName
 						.toLowerCase()
 						.startsWith(LedgerPage.searchInput().toLowerCase()),
 				)
@@ -374,12 +588,12 @@ export class LedgerPage {
 
 	getSeverity(status: DebtStatus): Severity {
 		switch (status) {
-			case 'overdue':
-				return 'danger';
-			case 'pending':
+			case 'PARTIALLY_PAID':
 				return 'warn';
-			case 'repaid':
+			case 'PAID':
 				return 'success';
+			default:
+				return 'danger';
 		}
 	}
 }

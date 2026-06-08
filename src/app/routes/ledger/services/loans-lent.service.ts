@@ -12,10 +12,21 @@ type LoanLentResponse = {
 	balance: number;
 	dateLent: string;
 	dueDate: string; // 2026-06-03
-	status: string;
+	status: LoanLentStatus;
 	notes: string;
 	createdAt: string; //2026-06-06T11:02:53.063172
 	updatedAt: string; //2026-06-06T11:02:53.063172
+};
+export type LoanLentStatus = 'ACTIVE' | 'PARTIALLY_PAID';
+export type LoanLent = {
+	id: number;
+	borrower: string;
+	phoneNumber: string;
+	amount: { lent: number; paid: number; balance: number };
+	dueDate: string;
+	dateLent: string;
+	status: LoanLentStatus;
+	notes: string;
 };
 
 type RecordLoanPayload = {
@@ -52,16 +63,22 @@ export class LoansLentService {
 	getLoansLent() {
 		return this.http.get<LoanLentResponse[]>(`${this.baseUrl}/loans-lent`).pipe(
 			map((data) =>
-				data.map((item) => ({
-					id: item.id,
-					personName: item.personName,
-					phoneNumber: item.phoneNumber,
-					amount: { lent: item.amountLent, paid: item.amountPaid, balance: item.balance },
-					dueDate: item.dueDate,
-					dateLent: item.dateLent,
-					status: item.status,
-					notes: item.notes,
-				})),
+				data.map(
+					(item): LoanLent => ({
+						id: item.id,
+						borrower: item.personName,
+						phoneNumber: item.phoneNumber,
+						amount: {
+							lent: item.amountLent,
+							paid: item.amountPaid,
+							balance: item.balance,
+						},
+						dueDate: item.dueDate,
+						dateLent: item.dateLent,
+						status: item.status,
+						notes: item.notes,
+					}),
+				),
 			),
 			catchError(this.handleError),
 		);
