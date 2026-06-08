@@ -37,7 +37,7 @@ export const routes: Routes = [
 			{ path: 'dashboard', component: DashboardPage, title: 'Dashboard' },
 			{ path: 'settings', component: SettingsPage, title: 'Settings' },
 			{ path: 'profile', component: ProfilePage, title: 'Profile' },
-			{ path: 'ledger', component: LedgerPage, title: 'Ledger' },
+			{ path: 'ledger', component: LedgerPage, title: 'Debts and Credits' },
 			{ path: 'notifications', component: NotificationsPage, title: 'Notifications' },
 		],
 	},
