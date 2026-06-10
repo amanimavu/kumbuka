@@ -2,15 +2,8 @@
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
 	"compileOnSave": false,
+
 	"compilerOptions": {
-		"paths": {
-			"@app/*": ["./src/app/*"],
-			"@assets/*": ["./src/assets/*"],
-			"@core/*": ["./src/app/core/*"],
-			"@shared/*": ["./src/app/shared/*"],
-			"@routes/*": ["./src/app/routes/*"],
-			"@env/*": ["./src/environments/*"]
-		},
 		"strict": true,
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
@@ -32,10 +25,22 @@
 	"files": [],
 	"references": [
 		{
-			"path": "./tsconfig.app.json"
+			"path": "./projects/kumbuka-app/tsconfig.app.json"
 		},
 		{
 			"path": "./tsconfig.spec.json"
+		},
+		{
+			"path": "./projects/kumbuka-portal/tsconfig.app.json"
+		},
+		{
+			"path": "./projects/kumbuka-portal/tsconfig.spec.json"
+		},
+		{
+			"path": "./projects/kumbuka-website/tsconfig.app.json"
+		},
+		{
+			"path": "./projects/kumbuka-website/tsconfig.spec.json"
 		}
 	]
 }

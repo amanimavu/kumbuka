@@ -2,37 +2,37 @@
 	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
 	"version": 1,
 	"cli": {
-		"packageManager": "npm",
+		"packageManager": "pnpm",
 		"analytics": false
 	},
 	"newProjectRoot": "projects",
 	"projects": {
-		"kumbuka": {
+		"kumbuka-app": {
 			"projectType": "application",
 			"schematics": {},
-			"root": "",
-			"sourceRoot": "src",
+			"root": "projects/kumbuka-app",
+			"sourceRoot": "projects/kumbuka-app/src",
 			"prefix": "app",
 			"architect": {
 				"build": {
 					"builder": "@angular/build:application",
 					"options": {
-						"browser": "src/main.ts",
-						"tsConfig": "tsconfig.app.json",
+						"browser": "projects/kumbuka-app/src/main.ts",
+						"tsConfig": "projects/kumbuka-app/tsconfig.app.json",
 						"assets": [
 							{
 								"glob": "**/*",
-								"input": "public"
+								"input": "projects/kumbuka-app/public"
 							}
 						],
-						"styles": ["src/styles.css"],
-						"server": "src/main.server.ts",
+						"styles": ["projects/kumbuka-app/src/styles.css"],
+						"server": "projects/kumbuka-app/src/main.server.ts",
 						"outputMode": "server",
 						"security": {
 							"allowedHosts": []
 						},
 						"ssr": {
-							"entry": "src/server.ts"
+							"entry": "projects/kumbuka-app/src/server.ts"
 						}
 					},
 					"configurations": {
@@ -57,8 +57,8 @@
 							"sourceMap": true,
 							"fileReplacements": [
 								{
-									"replace": "src/environments/environment.ts",
-									"with": "src/environments/environment.development.ts"
+									"replace": "projects/kumbuka-app/src/environments/environment.ts",
+									"with": "projects/kumbuka-app/src/environments/environment.development.ts"
 								}
 							]
 						}
@@ -69,10 +69,148 @@
 					"builder": "@angular/build:dev-server",
 					"configurations": {
 						"production": {
-							"buildTarget": "kumbuka:build:production"
+							"buildTarget": "kumbuka-app:build:production"
 						},
 						"development": {
-							"buildTarget": "kumbuka:build:development"
+							"buildTarget": "kumbuka-app:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test"
+				}
+			}
+		},
+		"kumbuka-portal": {
+			"projectType": "application",
+			"schematics": {},
+			"root": "projects/kumbuka-portal",
+			"sourceRoot": "projects/kumbuka-portal/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "projects/kumbuka-portal/src/main.ts",
+						"tsConfig": "projects/kumbuka-portal/tsconfig.app.json",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/kumbuka-portal/public"
+							}
+						],
+						"styles": ["projects/kumbuka-portal/src/styles.css"],
+						"server": "projects/kumbuka-portal/src/main.server.ts",
+						"outputMode": "server",
+						"security": {
+							"allowedHosts": []
+						},
+						"ssr": {
+							"entry": "projects/kumbuka-portal/src/server.ts"
+						}
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "1MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "4kB",
+									"maximumError": "8kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "kumbuka-portal:build:production"
+						},
+						"development": {
+							"buildTarget": "kumbuka-portal:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test"
+				}
+			}
+		},
+		"kumbuka-website": {
+			"projectType": "application",
+			"schematics": {},
+			"root": "projects/kumbuka-website",
+			"sourceRoot": "projects/kumbuka-website/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "projects/kumbuka-website/src/main.ts",
+						"tsConfig": "projects/kumbuka-website/tsconfig.app.json",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/kumbuka-website/public"
+							}
+						],
+						"styles": ["projects/kumbuka-website/src/styles.css"],
+						"server": "projects/kumbuka-website/src/main.server.ts",
+						"outputMode": "server",
+						"security": {
+							"allowedHosts": []
+						},
+						"ssr": {
+							"entry": "projects/kumbuka-website/src/server.ts"
+						}
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "1MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "4kB",
+									"maximumError": "8kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "kumbuka-website:build:production"
+						},
+						"development": {
+							"buildTarget": "kumbuka-website:build:development"
 						}
 					},
 					"defaultConfiguration": "development"

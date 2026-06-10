@@ -12,7 +12,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon, LogIcon } from '@assets/icons';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LenderRequestPayload, LoanService } from '@app/routes/services/loan.service';
 import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
@@ -37,51 +36,6 @@ import { AuthService } from '@app/core/services/auth.service';
 		}
 	`,
 	template: `
-		<p-dialog
-			header="Request loan"
-			[(visible)]="visible"
-			[modal]="true"
-			[style]="{ width: '25rem' }"
-			[dismissableMask]="true"
-		>
-			<form [formGroup]="loanRequestForm" (ngSubmit)="onRequest()">
-				<div class="flex flex-col mb-4 gap-1">
-					<label for="phoneNumber">Phone Number</label>
-					<input
-						formControlName="lenderPhone"
-						placeholder="07XXX"
-						id="phoneNumber"
-						type="text"
-						pInputText
-					/>
-				</div>
-				<div class="flex flex-col mb-4 gap-1">
-					<label for="amount">Amount</label>
-					<p-inputnumber
-						formControlName="amount"
-						placeholder="7600"
-						id="amount"
-						inputId="integeronly"
-					/>
-				</div>
-				<div class="flex flex-col mb-4 gap-1">
-					<label for="">Due date</label>
-					<p-datepicker
-						[minDate]="minDate"
-						appendTo="body"
-						[iconDisplay]="'input'"
-						[showIcon]="true"
-						inputId="icondisplay"
-						dateFormat="dd M yy"
-						placeholder="dd Mmm yyyy"
-						pInputMask="99 aaa 9999"
-						[showButtonBar]="true"
-						formControlName="dueDate"
-					/>
-				</div>
-				<p-button type="submit" fluid>REQUEST</p-button>
-			</form>
-		</p-dialog>
 		<div
 			class="w-20 h-full fixed left-0 border-r border-neutral-300 bg-white flex flex-col items-center p-4 z-30"
 		>
@@ -112,15 +66,6 @@ import { AuthService } from '@app/core/services/auth.service';
 				<div class="flex flex-col items-center gap-6">
 					<button
 						pButton
-						class="bg-[#e64a33]! hover:bg-[#ff6b42]! border-0! w-[80%] aspect-square rounded-full!"
-						pTooltip="Log record"
-						tooltipPosition="right"
-						(click)="handleClick()"
-					>
-						<svg class="w-9" log-icon></svg>
-					</button>
-					<button
-						pButton
 						[text]="true"
 						pTooltip="Logout"
 						tooltipPosition="right"
@@ -149,13 +94,11 @@ import { AuthService } from '@app/core/services/auth.service';
 		RouterLinkActive,
 		InputNumberModule,
 		ReactiveFormsModule,
-		LogIcon,
 	],
 })
 export class SideNavBar implements OnInit {
 	primaryMenuItems: MenuItem[] | undefined;
 	router = inject(Router);
-	LoanService = inject(LoanService);
 	AuthService = inject(AuthService);
 	messageService = inject(MessageService);
 	visible = signal(false);
@@ -197,32 +140,30 @@ export class SideNavBar implements OnInit {
 		const formIsValid = form.valid;
 
 		if (formIsValid) {
-			const payload = form.getRawValue() as LenderRequestPayload;
-			console.log('PAYLOAD', payload);
-			this.LoanService.request({ ...payload }).subscribe({
-				next: (res) => {
-					this.isLoading.set(false);
-
-					this.messageService.add({
-						severity: 'success',
-						summary: 'Success',
-						detail: 'Loan request successful',
-						life: 3000,
-					});
-
-					// this.step.set('email_verification');
-					// this.countdown().start(); // Start the countdown manually
-					this.router.navigate(['/app']);
-				},
-				error: (err: Error) => {
-					this.isLoading.set(false);
-					this.messageService.add({
-						severity: 'error',
-						summary: 'Failed',
-						detail: err.message ?? 'Registration failed',
-					});
-				},
-			});
+			// const payload = form.getRawValue() as LenderRequestPayload;
+			// console.log('PAYLOAD', payload);
+			// this.LoanService.request({ ...payload }).subscribe({
+			// 	next: (res) => {
+			// 		this.isLoading.set(false);
+			// 		this.messageService.add({
+			// 			severity: 'success',
+			// 			summary: 'Success',
+			// 			detail: 'Loan request successful',
+			// 			life: 3000,
+			// 		});
+			// 		// this.step.set('email_verification');
+			// 		// this.countdown().start(); // Start the countdown manually
+			// 		this.router.navigate(['/app']);
+			// 	},
+			// 	error: (err: Error) => {
+			// 		this.isLoading.set(false);
+			// 		this.messageService.add({
+			// 			severity: 'error',
+			// 			summary: 'Failed',
+			// 			detail: err.message ?? 'Registration failed',
+			// 		});
+			// 	},
+			// });
 		}
 	}
 }

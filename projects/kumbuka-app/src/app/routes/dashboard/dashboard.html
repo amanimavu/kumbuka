@@ -1,15 +1,57 @@
 <!-- Summary section -->
-<section class="flex gap-10">
-	<summary-card title="Total lent" [amount]="3000">
-		<svg class="w-6" money-bag-icon></svg>
-	</summary-card>
-	<summary-card>
+<section class="grid grid-cols-2 gap-10">
+	<div class="grid grid-cols-2 gap-5">
+		<summary-card
+			variant="lentCount"
+			title="Active loans Lent"
+			[count]="dashboardAnalytics().activeLoansLent"
+		>
+			<svg class="w-6" money-bag-icon></svg>
+		</summary-card>
+		<summary-card
+			variant="borrowedCount"
+			title="Active loans borrowed"
+			[count]="dashboardAnalytics().activeLoansBorrowed"
+		>
+			<svg class="w-6" money-bag-icon></svg>
+		</summary-card>
+	</div>
+	<summary-card
+		variant="overdueCount"
+		title="Overdue loans"
+		[count]="dashboardAnalytics().overdueLoans"
+	>
 		<svg class="w-6" money-bag-icon></svg>
 	</summary-card>
 </section>
 
+<div class="grid grid-cols-2 gap-10">
+	<p-card class="mt-12">
+		<h3 class="text-center font-semibold text-lg text-neutral-600 mb-4">
+			Total Money Movement
+		</h3>
+		<p-chart
+			type="doughnut"
+			[data]="lentVsBorrowedData"
+			[options]="options"
+			class="w-full md:w-120"
+		/>
+	</p-card>
+	<p-card class="mt-12">
+		<h3 class="text-center font-semibold text-lg text-neutral-600 mb-4">
+			Outstanding Balances
+		</h3>
+		<p-chart
+			type="doughnut"
+			[data]="balancesData"
+			[options]="options"
+			class="w-full md:w-120"
+		/>
+	</p-card>
+</div>
+
 <!-- Quick overview of amount lent and borrowed -->
-<section class="my-10 flex gap-10">
+<!-- <section class="my-10 flex gap-10">
 	<section class="h-full basis-[60%] flex flex-col gap-4">
 		<h4>Borrowers</h4>
 		<p-table [value]="borrowers" [tableStyle]="{ 'min-width': '50rem' }">
@@ -47,9 +89,9 @@
 		<h4 class="py-2">Lenders</h4>
 		<lender-card />
 	</section>
-</section>
+</section> -->
 
-<section
+<!-- <section
 	class="min-h-[35vh] border bg-kumbuka-primary-500 rounded-3xl flex p-8 gap-28 text-white relative z-0 overflow-clip"
 >
 	<div
@@ -84,4 +126,4 @@
 			<p-progressbar color="#e64a33" [value]="50" />
 		</div>
 	</div>
-</section>
+</section> -->
