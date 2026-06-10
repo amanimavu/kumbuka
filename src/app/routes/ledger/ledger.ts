@@ -14,27 +14,13 @@ import { Segmented } from '@shared/segmented/segmented.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { SearchIcon, LogIcon, CheckIcon, WarningIcon, EditIcon, PlusIcon } from '@assets/icons';
-import { TableModule } from 'primeng/table';
-import {
-	DatePipe,
-	formatNumber,
-	UpperCasePipe,
-	NgTemplateOutlet,
-	DecimalPipe,
-} from '@angular/common';
+import { SearchIcon, PlusIcon } from '@assets/icons';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { TagModule } from 'primeng/tag';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AvatarModule } from 'primeng/avatar';
 import { debounce } from '@app/shared/utils/debounce';
-import { DrawerModule } from 'primeng/drawer';
-import { DividerModule } from 'primeng/divider';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { TimelineModule } from 'primeng/timeline';
 import {
 	LoanLentStatus,
+	LoanPayment,
 	LoansLentService,
 	type LoanLent,
 } from '@routes/ledger/services/loans-lent.service';
@@ -44,6 +30,9 @@ import {
 	LoanBorrowedResponse,
 	LoansBorrowedService,
 } from './services/loans-borrowed.service';
+import { TransactionDetailsDrawerComponent } from './components/transaction-details-drawer.component';
+import { DisbursementsListComponent } from './components/disbursements-list.component';
+import { ObligationsListComponent } from './components/obligations-list.component';
 
 type Installment = {
 	amount: number;
@@ -62,27 +51,13 @@ export type Severity = 'danger' | 'warn' | 'success';
 		IconFieldModule,
 		InputIconModule,
 		SearchIcon,
-		TableModule,
-		DatePipe,
 		ButtonModule,
-		CardModule,
-		TagModule,
-		AvatarModule,
-		ButtonModule,
-		LogIcon,
-		UpperCasePipe,
-		DrawerModule,
-		DividerModule,
-		ProgressBarModule,
-		NgTemplateOutlet,
-		TimelineModule,
-		DecimalPipe,
-		CheckIcon,
-		WarningIcon,
 		DialogModule,
 		ReactiveFormsModule,
-		EditIcon,
 		PlusIcon,
+		TransactionDetailsDrawerComponent,
+		DisbursementsListComponent,
+		ObligationsListComponent,
 	],
 	templateUrl: './ledger.html',
 	styleUrl: './ledger.css',
@@ -96,14 +71,16 @@ export class LedgerPage {
 	segment = signal('money_lent');
 	selected_id = signal<string | null>(null);
 
-	private readonly _disbursements = signal<LoanLent[] | null>(null);
-	private readonly _obligations = signal<LoanBorrowed[] | null>(null);
+	private readonly _disbursements = signal<LoanLent[]>([]);
+	private readonly _obligations = signal<LoanBorrowed[]>([]);
 	selectedInstallment = signal<Installment | null>(null);
+
+	isLoadingDisbursements = signal(true);
+	isLoadingObligations = signal(true);
 
 	private readonly colors = ['#5D87FF80', '#FFAE1F80', '#FA896B80', '#13DEB980', '#763EBD80'];
 	searchBox = viewChild.required<ElementRef<HTMLInputElement>>('searchBox');
 	private static searchInput = signal('');
-	installments: Installment[];
 	visible = signal(false);
 
 	fb = inject(FormBuilder);
@@ -427,9 +404,14 @@ export class LedgerPage {
 			this.visible.set(drawer);
 		});
 
+		effect(() => {
+			console.log(this.isLoadingDisbursements());
+		});
+
 		this.loanLentService.getLoansLent().subscribe({
 			next: (loans) => {
 				this._disbursements.set(loans);
+				this.isLoadingDisbursements.set(false);
 
 				const params = this.route.snapshot.queryParams;
 				if (params['drawer'] === 'true' || params['drawer'] === true) {
@@ -440,12 +422,14 @@ export class LedgerPage {
 			},
 			error: (err) => {
 				console.log(err);
+				this.isLoadingDisbursements.set(false);
 			},
 		});
 
 		this.loanBorrowedService.getLoansBorrowed().subscribe({
 			next: (loans) => {
 				this._obligations.set(loans);
+				this.isLoadingObligations.set(false);
 
 				const params = this.route.snapshot.queryParams;
 				if (params['drawer'] === 'true' || params['drawer'] === true) {
@@ -456,29 +440,9 @@ export class LedgerPage {
 			},
 			error: (err) => {
 				console.log(err);
+				this.isLoadingObligations.set(false);
 			},
 		});
-
-		this.installments = [
-			{
-				amount: 5000,
-				status: 'Pending',
-				paymentDate: '2023-10-15',
-				transactionCode: null,
-			},
-			{
-				amount: 15000,
-				status: 'Paid',
-				paymentDate: '2023-08-15',
-				transactionCode: 'QNK8T4V9Z',
-			},
-			{
-				amount: 12500,
-				status: 'Paid',
-				paymentDate: '2023-09-15',
-				transactionCode: 'QNL9R2M1X',
-			},
-		];
 	}
 
 	private static handleInput(event: Event) {
@@ -504,18 +468,23 @@ export class LedgerPage {
 	selectedRecord = computed(() => {
 		const id = this.selected_id();
 		if (!id) return null;
-		return this.disbursements().find((d) => d.id.toString() === id.toString()) ?? null;
+		if (this.segment() === 'money_out') {
+			return this.disbursements().find((d) => d.id.toString() === id.toString()) ?? null;
+		} else {
+			return this.obligations().find((d) => d.id.toString() === id.toString()) ?? null;
+		}
 	});
 
 	disbursements = computed(() => {
 		const result =
-			this._disbursements()?.map((disbursement) => {
+			this._disbursements().map((disbursement) => {
 				const statusColor = this.getColor(disbursement.status);
 				const avatarColor = this.getAvatarColor(
 					`${disbursement.borrower}#${disbursement.id}`,
 				);
 				const initials = this.getInitials(disbursement.borrower);
 				const balance = disbursement.amount.balance;
+				console.log('DISBURSEMENT', disbursement);
 				return {
 					...disbursement,
 					balance,
@@ -525,6 +494,12 @@ export class LedgerPage {
 						label: disbursement.status,
 						color: { label: statusColor.label, background: statusColor.background },
 					},
+					payments: [
+						...disbursement.payments.map((payment) => ({
+							...payment,
+							paymentDate: payment.paymentDate + 'Z',
+						})),
+					],
 				};
 			}) ?? [];
 		return this.segment() === 'money_lent'

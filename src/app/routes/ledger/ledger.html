@@ -1,144 +1,8 @@
-<ng-template #accountDisplay let-data>
-	<div class="flex flex-col text-white">
-		<span class="text-[0.7rem] font-bold opacity-60">{{ data.label | uppercase }}</span>
-		<span class="text-2xl font-bold">{{ data.amount | number: '1.0-0' : 'en-US' }}</span>
-	</div>
-</ng-template>
-<p-drawer
-	id="transaction-drawer"
+<app-transaction-details-drawer
 	[visible]="visible()"
-	position="right"
-	styleClass="w-full! md:w-80! lg:w-120!"
-	(onHide)="handleDrawerHide($event)"
->
-	<ng-template #header>
-		<div class="flex items-center gap-2">
-			<p-avatar [label]="getInitials(selectedRecord()?.borrower ?? '')" shape="circle" />
-			<span class="font-bold">{{ selectedRecord()?.borrower }}</span>
-		</div>
-	</ng-template>
-	<ng-template #content>
-		<p-divider class="mt-0!" />
-		<div class="mx-4 pb-8">
-			<p-card class="bg-kumbuka-primary-500!">
-				<div class="flex justify-between">
-					<ng-container
-						*ngTemplateOutlet="
-							accountDisplay;
-							context: {
-								$implicit: {
-									label: 'total principle',
-									amount: selectedRecord()?.amount?.lent,
-								},
-							}
-						"
-					></ng-container>
-					<ng-container
-						*ngTemplateOutlet="
-							accountDisplay;
-							context: {
-								$implicit: {
-									label: 'amount paid',
-									amount: selectedRecord()?.amount?.paid,
-								},
-							}
-						"
-					></ng-container>
-				</div>
-				<div class="my-6">
-					<p-progressbar
-						color="#e64a33"
-						class="mb-1.5"
-						[value]="
-							((selectedRecord()?.amount?.paid ?? 0) /
-								(selectedRecord()?.amount?.lent ?? 0)) *
-							100
-						"
-					>
-						<ng-template #content> </ng-template>
-					</p-progressbar>
-					<div class="flex justify-between text-[0.7rem] text-white font-bold">
-						<span class="opacity-60">REPAYMENT PROGRESS</span>
-						<span class="text-[#e64a33]"
-							>{{
-								((selectedRecord()?.amount?.paid ?? 0) /
-									(selectedRecord()?.amount?.lent ?? 0)) *
-									100 | number: '1.0-0'
-							}}%</span
-						>
-					</div>
-				</div>
-				<p-divider class="opacity-30" />
-				<ng-container
-					*ngTemplateOutlet="
-						accountDisplay;
-						context: {
-							$implicit: {
-								label: 'remaining balance',
-								amount: selectedRecord()?.amount?.balance,
-							},
-						}
-					"
-				></ng-container>
-			</p-card>
-			<section class="mt-6">
-				<div class="flex justify-between items-center mb-6">
-					<h5 class="text-lg font-bold">Installment History</h5>
-					<p-button class="[&>button]:py-1!" [text]="true" label="View all" />
-				</div>
-				<p-timeline class="items-start" [value]="installments">
-					<ng-template let-installment #marker>
-						@if (installment.status === 'Pending') {
-							<div class="bg-amber-300/20 p-1 rounded-full">
-								<svg class="w-4 text-amber-500" warning-icon></svg>
-							</div>
-						} @else {
-							<div class="bg-green-300/20 p-1 rounded-full">
-								<svg class="w-4 text-green-500" check-icon></svg>
-							</div>
-						}
-					</ng-template>
-					<ng-template #content let-installment>
-						<div
-							class="w-[81cqw] border-2 flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors hover:border-neutral-300"
-							[class.border-neutral-100]="selectedInstallment() !== installment"
-							[class.border-blue-500]="selectedInstallment() === installment"
-							[class.bg-blue-50]="selectedInstallment() === installment"
-							(click)="handleInstallmentSelection(installment)"
-						>
-							<div class="flex justify-between content-box">
-								<span>{{ installment.amount | number: '1.0-0' : 'en-US' }}</span>
-								<p-tag
-									[value]="
-										installment.status.toLowerCase() === 'paid'
-											? 'verified'
-											: 'pending verification'
-									"
-									[rounded]="true"
-									class="text-[0.65rem]!"
-									[severity]="
-										installment.status.toLowerCase() === 'paid'
-											? 'success'
-											: 'warn'
-									"
-								/>
-							</div>
-							<div class="flex justify-between content-box">
-								<span>{{ installment.paymentDate }}</span>
-								<span>{{ installment.transactionCode }}</span>
-							</div>
-						</div>
-					</ng-template>
-				</p-timeline>
-			</section>
-		</div>
-		@if (selectedInstallment()?.status?.toLowerCase() === 'pending') {
-			<div class="mx-4 sticky bottom-4">
-				<p-button fluid label="Verify" />
-			</div>
-		}
-	</ng-template>
-</p-drawer>
+	[record]="selectedRecord()"
+	(hide)="handleDrawerHide($event)"
+/>
 <div class="flex justify-between">
 	<segmented
 		defaultValue="money lent"
@@ -170,130 +34,22 @@
 </div>
 
 @if (segment() === 'money_lent') {
-	<p-card class="mt-5">
-		<p-table
-			[scrollable]="true"
-			[rowHover]="true"
-			selectionMode="single"
-			dataKey="id"
-			(onRowSelect)="handleRowSelect($event)"
-			[selection]="selectedRecord()"
-			[scrollHeight]="tableHeight()"
-			[value]="disbursements()"
-			[tableStyle]="{ 'min-width': '50vw' }"
-		>
-			<ng-template #caption>
-				<div class="flex items-center justify-between">
-					<span class="text-xl font-bold">Disbursements</span>
-				</div>
-			</ng-template>
-			<ng-template #header>
-				<tr>
-					<th>BORROWER</th>
-					<th>AMOUNT (KSH)</th>
-					<th>DUE DATE</th>
-					<th>STATUS</th>
-					<th>ACTIONS</th>
-				</tr>
-			</ng-template>
-			<ng-template #body let-disbursement>
-				<tr [pSelectableRow]="disbursement">
-					<td>
-						<div class="flex gap-2 items-center">
-							<p-avatar
-								[label]="disbursement?.initials ?? ''"
-								shape="circle"
-								class="text-sm!"
-								[style.backgroundColor]="disbursement.avatarColor"
-							/>
-							{{ disbursement.borrower }}
-						</div>
-					</td>
-					<td>{{ disbursement.amount.lent | number: '1.0-0' : 'en-US' }}</td>
-					<td>{{ disbursement.dueDate | date: 'mediumDate' }}</td>
-					<td>
-						<span
-							class="rounded-full px-3 py-1 text-xs font-semibold tracking-wide"
-							[style.color]="disbursement.status.color.label"
-							[style.backgroundColor]="disbursement.status.color.background"
-						>
-							{{ disbursement.status.label }}
-						</span>
-					</td>
-					<td>
-						<div class="flex gap-2">
-							<p-button
-								label="RECORD PAYMENT"
-								[size]="'small'"
-								(click)="openPaymentModal(disbursement); $event.stopPropagation()"
-							/>
-							<p-button
-								label="EDIT"
-								[size]="'small'"
-								variant="outlined"
-								(click)="openEditModal(disbursement); $event.stopPropagation()"
-							/>
-						</div>
-					</td>
-				</tr>
-			</ng-template>
-		</p-table>
-	</p-card>
+	<app-disbursements-list
+		[disbursements]="disbursements()"
+		[isLoading]="isLoadingDisbursements()"
+		[selectedRecord]="selectedRecord()"
+		[tableHeight]="tableHeight()"
+		(rowSelect)="handleRowSelect($event)"
+		(recordPayment)="openPaymentModal($event)"
+		(edit)="openEditModal($event)"
+	/>
 } @else {
-	<h3 class="text-xl font-bold my-5">Outstanding Obligations</h3>
-	<div class="grid grid-cols-3 gap-6">
-		@for (obligation of obligations(); track obligation.id) {
-			<p-card>
-				<div class="flex justify-between items-start mb-6">
-					<div class="flex flex-col">
-						<span class="font-bold">{{ obligation.personName }}</span>
-						<!-- <span>{{ obligation.category | uppercase }}</span> -->
-					</div>
-					<p-tag
-						class="font-medium!"
-						[severity]="obligation.severity"
-						[value]="obligation.status"
-						[rounded]="true"
-					/>
-				</div>
-				<div class="mb-10">
-					<div class="flex justify-between">
-						<span class="text-neutral-400">Amount borrowed</span>
-						<span class="font-semibold">{{
-							obligation.amount.borrowed | number: '1.0-0' : 'en-US'
-						}}</span>
-					</div>
-					<div class="flex justify-between">
-						<span class="text-neutral-400">Pending amount</span>
-						<span class="font-semibold">{{
-							obligation.amount.balance | number: '1.0-0' : 'en-US'
-						}}</span>
-					</div>
-					<div class="flex justify-between">
-						<span class="text-neutral-400">Due date</span>
-						<span class="text-red-500 font-semibold">{{
-							obligation.dueDate | date: 'mediumDate'
-						}}</span>
-					</div>
-				</div>
-				<div class="grid grid-cols-2 gap-4">
-					<button class="w-full" pButton (click)="openBorrowedPaymentModal(obligation)">
-						<svg class="w-7" log-icon></svg>
-						<span class="self-start">Log Repayment</span>
-					</button>
-					<button
-						class="w-full"
-						pButton
-						severity="secondary"
-						(click)="openBorrowedEditModal(obligation)"
-					>
-						<svg class="w-7" edit-icon></svg>
-						<span class="self-start">Edit</span>
-					</button>
-				</div>
-			</p-card>
-		}
-	</div>
+	<app-obligations-list
+		[obligations]="obligations()"
+		[isLoading]="isLoadingObligations()"
+		(logRepayment)="openBorrowedPaymentModal($event)"
+		(edit)="openBorrowedEditModal($event)"
+	/>
 }
 
 <!-- Edit Modal -->

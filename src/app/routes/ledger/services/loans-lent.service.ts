@@ -3,8 +3,15 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { catchError, map, throwError } from 'rxjs';
 
+export type LoanPayment = {
+	id: number;
+	amount: number;
+	paymentDate: string;
+};
+
 type LoanLentResponse = {
 	id: number;
+	userId: number;
 	personName: string;
 	phoneNumber: string;
 	amountLent: number;
@@ -14,6 +21,7 @@ type LoanLentResponse = {
 	dueDate: string; // 2026-06-03
 	status: LoanLentStatus;
 	notes: string;
+	payments: LoanPayment[];
 	createdAt: string; //2026-06-06T11:02:53.063172
 	updatedAt: string; //2026-06-06T11:02:53.063172
 };
@@ -27,6 +35,7 @@ export type LoanLent = {
 	dateLent: string;
 	status: LoanLentStatus;
 	notes: string;
+	payments: LoanPayment[];
 };
 
 type RecordLoanPayload = {
@@ -77,6 +86,7 @@ export class LoansLentService {
 						dateLent: item.dateLent,
 						status: item.status,
 						notes: item.notes,
+						payments: item.payments,
 					}),
 				),
 			),
@@ -127,9 +137,7 @@ export class LoansLentService {
 		return throwError(
 			() =>
 				new Error(
-					error.error?.message ||
-						error.error ||
-						'Authentication failed. Please try again.',
+					error.error?.message || error.error || 'Request failed. Please try again.',
 				),
 		);
 	}
