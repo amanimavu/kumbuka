@@ -198,7 +198,13 @@
 						"development": {
 							"optimization": false,
 							"extractLicenses": false,
-							"sourceMap": true
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "projects/kumbuka-website/src/environments/environment.ts",
+									"with": "projects/kumbuka-website/src/environments/environment.development.ts"
+								}
+							]
 						}
 					},
 					"defaultConfiguration": "production"
@@ -217,6 +223,58 @@
 				},
 				"test": {
 					"builder": "@angular/build:unit-test"
+				}
+			}
+		},
+		"kumbuka-icons": {
+			"projectType": "library",
+			"root": "projects/kumbuka-icons",
+			"sourceRoot": "projects/kumbuka-icons/src",
+			"prefix": "lib",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:ng-packagr",
+					"configurations": {
+						"production": {
+							"tsConfig": "projects/kumbuka-icons/tsconfig.lib.prod.json"
+						},
+						"development": {
+							"tsConfig": "projects/kumbuka-icons/tsconfig.lib.json"
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test",
+					"options": {
+						"tsConfig": "projects/kumbuka-icons/tsconfig.spec.json"
+					}
+				}
+			}
+		},
+		"kumbuka-brand": {
+			"projectType": "library",
+			"root": "projects/kumbuka-brand",
+			"sourceRoot": "projects/kumbuka-brand/src",
+			"prefix": "lib",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:ng-packagr",
+					"configurations": {
+						"production": {
+							"tsConfig": "projects/kumbuka-brand/tsconfig.lib.prod.json"
+						},
+						"development": {
+							"tsConfig": "projects/kumbuka-brand/tsconfig.lib.json"
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test",
+					"options": {
+						"tsConfig": "projects/kumbuka-brand/tsconfig.spec.json"
+					}
 				}
 			}
 		}

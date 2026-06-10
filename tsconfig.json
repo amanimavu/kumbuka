@@ -5,6 +5,10 @@
 
 	"compilerOptions": {
 		"strict": true,
+		"paths": {
+			"kumbuka-brand": ["./dist/kumbuka-brand"],
+			"kumbuka-icons": ["./dist/kumbuka-icons"]
+		},
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitReturns": true,
@@ -41,6 +45,18 @@
 		},
 		{
 			"path": "./projects/kumbuka-website/tsconfig.spec.json"
+		},
+		{
+			"path": "./projects/kumbuka-icons/tsconfig.lib.json"
+		},
+		{
+			"path": "./projects/kumbuka-icons/tsconfig.spec.json"
+		},
+		{
+			"path": "./projects/kumbuka-brand/tsconfig.lib.json"
+		},
+		{
+			"path": "./projects/kumbuka-brand/tsconfig.spec.json"
 		}
 	]
 }

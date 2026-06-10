@@ -3,13 +3,8 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"paths": {
-			"@env/*": ["./src/environments/*"]
-		},
-		"rootDir": "src",
-		"outDir": "./out-tsc/app",
-		"types": ["node"]
+		"outDir": "../../out-tsc/spec",
+		"types": ["vitest/globals"]
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["src/**/*.spec.ts"]
+	"include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
 }
