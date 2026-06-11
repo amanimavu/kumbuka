@@ -26,7 +26,7 @@ export type LoginCredentials = {
 	providedIn: 'root',
 })
 export class AuthService {
-	private readonly baseUrl = `${environment.backendBaseUrl}/api/auth`;
+	private readonly baseUrl = `${environment.backendBaseUrl}/api/admin`;
 
 	http = inject(HttpClient);
 	localstorage = inject(LocalstorageService);
