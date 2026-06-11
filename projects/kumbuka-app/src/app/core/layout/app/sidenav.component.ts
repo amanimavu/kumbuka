@@ -7,7 +7,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { KumbukaBrand } from '@shared/brand/logo.component';
+import { KumbukaBrand } from 'kumbuka-brand';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon, LogIcon } from '@assets/icons';

@@ -9,7 +9,9 @@
 			"@core/*": ["./src/app/core/*"],
 			"@shared/*": ["./src/app/shared/*"],
 			"@routes/*": ["./src/app/routes/*"],
-			"@env/*": ["./src/environments/*"]
+			"@env/*": ["./src/environments/*"],
+			"kumbuka-brand": ["../../dist/kumbuka-brand"],
+			"kumbuka-icons": ["../../dist/kumbuka-icons"]
 		},
 		"rootDir": "./src",
 		"outDir": "./out-tsc/app",

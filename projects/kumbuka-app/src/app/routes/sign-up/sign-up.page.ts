@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { useCountdown } from '@shared/utils/counter';
 import { AuthService } from '@core/services/auth.service';
-import { KumbukaBrand } from '@shared/brand/logo.component';
+import { KumbukaBrand } from 'kumbuka-brand';
 import { Component, inject, model, signal } from '@angular/core';
 import { RegistrationForm } from './registration-form.component';
 import { LocalstorageService } from '@shared/services/localstorage.service';

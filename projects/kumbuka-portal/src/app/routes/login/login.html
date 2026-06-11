@@ -1,0 +1,57 @@
+<p-toast />
+<div class="xl:w-1/4 lg:w-1/3 md:w-1/2 w-11/12 mx-auto">
+	<div class="flex flex-col items-center text-center mb-8 gap-1">
+		<svg class="w-16" kumbuka-logo></svg>
+		<h4 class="font-semibold text-2xl">Admin Portal</h4>
+		<p class="text-neutral-400">
+			Sign in to manage users and administrators
+		</p>
+	</div>
+	<p-card class="text-sm">
+		<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+			<div class="flex flex-col gap-1 my-3">
+				<label for="email">Email</label>
+				<div class="flex flex-col gap-1">
+					<input
+						id="email"
+						formControlName="email"
+						type="text"
+						pInputText
+						variant="filled"
+						placeholder="admin@kumbuka.com"
+					/>
+					@if (isInvalid('email')) {
+						<p-message severity="error" size="small" variant="simple">{{
+							getErrorMessage('email')
+						}}</p-message>
+					}
+				</div>
+			</div>
+			<div class="flex flex-col gap-1 my-3">
+				<label for="password">Password</label>
+				<div class="flex flex-col gap-1">
+					<p-password
+						formControlName="password"
+						[feedback]="false"
+						class="[&>input]:grow"
+						inputId="password"
+						[toggleMask]="true"
+						autocomplete="current-password"
+						variant="filled"
+						placeholder="password"
+						[invalid]="!!isInvalid('password')"
+					/>
+					@if (isInvalid('password')) {
+						<p-message severity="error" size="small" variant="simple">{{
+							getErrorMessage('password')
+						}}</p-message>
+					}
+				</div>
+			</div>
+			<button [loading]="isLoading" type="submit" pButton class="w-full mt-4">
+				<span pButtonLabel>Login</span>
+				<svg [class.hidden]="isLoading" class="w-7 text-white" arrow-right-icon></svg>
+			</button>
+		</form>
+	</p-card>
+</div>

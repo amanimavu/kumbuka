@@ -4,7 +4,9 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"paths": {
-			"@env/*": ["./src/environments/*"]
+			"@env/*": ["./src/environments/*"],
+			"kumbuka-brand": ["../../dist/kumbuka-brand"],
+			"kumbuka-icons": ["../../dist/kumbuka-icons"]
 		},
 		"rootDir": "src",
 		"outDir": "./out-tsc/app",

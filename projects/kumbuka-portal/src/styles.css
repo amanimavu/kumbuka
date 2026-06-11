@@ -1,3 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+body {
+	font-family: 'Manrope', sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+}
+
+html {
+	overflow: hidden;
+}
+
+main > div {
+	scrollbar-width: thin;
+	scroll-behavior: smooth;
+}
+
+html:has(auth-layout) {
+	overflow-y: clip;
+}
+
+@theme {
+	--color-kumbuka-primary-50: #f1f4f6;
+	--color-kumbuka-primary-100: #d5e1ec;
+	--color-kumbuka-primary-200: #abc1d6;
+	--color-kumbuka-primary-300: #6487a5;
+	--color-kumbuka-primary-400: #274461;
+	--color-kumbuka-primary-500: #122130;
+	--color-kumbuka-primary-600: #0c1620;
+	--color-kumbuka-primary-700: #080e15;
+	--color-kumbuka-primary-800: #04070a;
+	--color-kumbuka-primary-900: #020305;
+	--color-kumbuka-primary-950: #000000;
+}

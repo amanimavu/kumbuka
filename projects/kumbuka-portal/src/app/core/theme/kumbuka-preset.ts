@@ -1,11 +1,7 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
+import Aura from '@primeuix/themes/aura';
 
 export const KumbukaPreset = definePreset(Aura, {
-	//Your customizations, see the following sections for examples
 	semantic: {
 		primary: {
 			50: '{kumbukaPrimary.50}',
@@ -55,24 +51,16 @@ export const KumbukaPreset = definePreset(Aura, {
 				},
 			},
 		},
+		inputtext: {
+			root: {
+				placeholderColor: '#a1a1a1',
+			},
+		},
+		datatable: {
+			headerCell: {
+				background: '#F8FAFC80',
+			},
+		},
+		progressbar: { root: { height: '0.7rem' } },
 	},
 });
-
-import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-
-export const appConfig: ApplicationConfig = {
-	providers: [
-		provideBrowserGlobalErrorListeners(),
-		provideRouter(routes),
-		provideClientHydration(withEventReplay()),
-		providePrimeNG({
-			theme: {
-				preset: KumbukaPreset,
-				options: {
-					darkModeSelector: 'none', // Disables dark mode completely
-				},
-			},
-		}),
-	],
-};

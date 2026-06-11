@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { SigUpPage } from '@routes/sign-up/sign-up.page';
-import { LandingPage } from '@routes/landing/landing.page';
 import { AuthLayout } from './core/layout/app/auth/index.component';
 import { LoginPage } from '@routes/login/login.page';
 import { ForgetPasswordPage } from '@routes/forget-password/forget-password.page';
@@ -15,9 +14,9 @@ import { NotFoundPage } from '@app/routes/not-found/not-found.page';
 import { NotificationsPage } from './routes/notifications/notifications.page';
 
 export const routes: Routes = [
+	{ path: '', redirectTo: 'auth', pathMatch: 'full' },
 	{ path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
 	{ path: 'app', redirectTo: 'app/dashboard', pathMatch: 'full' },
-	{ path: '', component: LandingPage, pathMatch: 'full' },
 	{
 		path: 'auth',
 		component: AuthLayout,

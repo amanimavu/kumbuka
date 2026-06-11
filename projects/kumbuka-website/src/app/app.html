@@ -101,9 +101,9 @@
 			</p>
 		</div>
 		<div class="w-1/2 mx-auto">
-			<p-accordion [value]="">
+			<p-accordion [value]="tabs[0].question">
 				@for (tab of tabs; track tab.question) {
-					<p-accordion-panel [value]="tab.answer">
+					<p-accordion-panel [value]="tab.question">
 						<p-accordion-header>{{ tab.question }}</p-accordion-header>
 						<p-accordion-content>
 							<p class="m-0">{{ tab.answer }}</p>

@@ -4,15 +4,36 @@ import { ImageModule } from 'primeng/image';
 import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { AlarmIcon, CompassionIcon, OrderIcon, ShieldPersonIcon } from 'kumbuka-icons';
-import { KumbukaBrand } from '../../shared/brand/logo.component';
+import { KumbukaBrand } from 'kumbuka-brand';
 import { environment } from '@env/environment';
+
+@Component({
+	selector: 'problem-card',
+	standalone: true,
+	template: `
+		<div class="mb-4 p-8">
+			<p-card>
+				<div class="inline-flex bg-[#EFF4FF] p-4 rounded-md"><ng-content /></div>
+				<h5 class="text-2xl font-semibold py-5">{{ title() }}</h5>
+				<p class="tracking-wide">
+					{{ description() }}
+				</p>
+			</p-card>
+		</div>
+	`,
+	imports: [CardModule, ImageModule],
+})
+export class ProblemCard {
+	title = input<string>('');
+	description = input<string>('');
+}
 
 @Component({
 	selector: 'app-root',
 	imports: [
 		ButtonModule,
 		ImageModule,
-		forwardRef(() => ProblemCard),
+		ProblemCard,
 		AlarmIcon,
 		CompassionIcon,
 		OrderIcon,
@@ -20,10 +41,10 @@ import { environment } from '@env/environment';
 		AccordionModule,
 		KumbukaBrand,
 	],
-	templateUrl: 'landing.html',
-	styleUrl: 'landing.css',
+	templateUrl: 'app.html',
+	styleUrl: 'app.css',
 })
-export class LandingPage {
+export class App {
 	date = new Date().getFullYear();
 	tabs = [
 		{
@@ -48,25 +69,4 @@ export class LandingPage {
 		},
 	];
 	baseUrl = environment.baseUrl;
-}
-
-@Component({
-	selector: 'problem-card',
-	standalone: true,
-	template: `
-		<div class="mb-4 p-8">
-			<p-card>
-				<div class="inline-flex bg-[#EFF4FF] p-4 rounded-md"><ng-content /></div>
-				<h5 class="text-2xl font-semibold py-5">{{ title() }}</h5>
-				<p class="tracking-wide">
-					{{ description() }}
-				</p>
-			</p-card>
-		</div>
-	`,
-	imports: [CardModule, ImageModule],
-})
-export class ProblemCard {
-	title = input<string>('');
-	description = input<string>('');
 }

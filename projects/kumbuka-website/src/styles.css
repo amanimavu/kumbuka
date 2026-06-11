@@ -1,3 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+body {
+	font-family: "Manrope", sans-serif;
+  	font-optical-sizing: auto;
+  	font-weight: 400;
+  	font-style: normal;
+}
+
+html{
+	overflow-x: hidden;
+	scrollbar-width: thin;
+	scrollbar-color: white #EFF4FF ;
+}

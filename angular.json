@@ -75,7 +75,10 @@
 							"buildTarget": "kumbuka-app:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4200
+					}
 				},
 				"test": {
 					"builder": "@angular/build:unit-test"
@@ -129,7 +132,13 @@
 						"development": {
 							"optimization": false,
 							"extractLicenses": false,
-							"sourceMap": true
+							"sourceMap": true,
+							"fileReplacements": [
+								{
+									"replace": "projects/kumbuka-portal/src/environments/environment.ts",
+									"with": "projects/kumbuka-portal/src/environments/environment.development.ts"
+								}
+							]
 						}
 					},
 					"defaultConfiguration": "production"
@@ -144,7 +153,10 @@
 							"buildTarget": "kumbuka-portal:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4201
+					}
 				},
 				"test": {
 					"builder": "@angular/build:unit-test"
@@ -219,7 +231,10 @@
 							"buildTarget": "kumbuka-website:build:development"
 						}
 					},
-					"defaultConfiguration": "development"
+					"defaultConfiguration": "development",
+					"options": {
+						"port": 4203
+					}
 				},
 				"test": {
 					"builder": "@angular/build:unit-test"
