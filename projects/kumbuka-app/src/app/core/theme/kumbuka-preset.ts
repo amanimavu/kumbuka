@@ -63,5 +63,12 @@ export const KumbukaPreset = definePreset(Aura, {
 			},
 		},
 		progressbar: { root: { height: '0.7rem' } },
+		timeline: {
+			eventMarker: {
+				content: {
+					background: '#e64a33',
+				},
+			},
+		},
 	},
 });

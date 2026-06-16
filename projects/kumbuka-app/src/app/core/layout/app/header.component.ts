@@ -13,7 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { PopoverModule } from 'primeng/popover';
 import { Component, ElementRef, inject, signal } from '@angular/core';
-import { SettingsIcon, NotificationIcon, LinkIcon, ReviewIcon } from '@assets/icons';
+import { SettingsIcon, NotificationIcon, LinkIcon, ReviewIcon } from 'kumbuka-icons';
 import { NavigationEnd, Router, RouterLink, TitleStrategy } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
 

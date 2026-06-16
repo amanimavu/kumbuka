@@ -3,8 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { SideNavBar } from './sidenav.component';
 import { Header } from './header.component';
 import { ToastModule } from 'primeng/toast';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService, MessageService } from 'primeng/api';
 @Component({
 	template: ` <p-toast position="top-center" />
+		<p-confirmpopup />
 		<div class="relative h-screen overflow-hidden bg-[#F8F9FF]">
 			<sidebar></sidebar>
 			<header></header>
@@ -14,6 +17,7 @@ import { ToastModule } from 'primeng/toast';
 				</div>
 			</main>
 		</div>`,
-	imports: [RouterOutlet, Header, SideNavBar, ToastModule],
+	imports: [RouterOutlet, Header, SideNavBar, ToastModule, ConfirmPopupModule],
+	providers: [ConfirmationService, MessageService],
 })
 export class RootLayout {}

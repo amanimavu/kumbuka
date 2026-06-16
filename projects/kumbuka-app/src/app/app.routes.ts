@@ -8,7 +8,7 @@ import { RootLayout } from './core/layout/app/root.component';
 import { DashboardPage } from '@routes/dashboard/dashboard.page';
 import { SettingsPage } from '@routes/settings/settings';
 import { ProfilePage } from '@routes/profile/profile';
-import { LedgerPage } from '@routes/ledger/ledger';
+import { LedgerPage } from '@routes/ledger/ledger.page';
 import { authGuard } from './core/guards/auth.guard';
 import { NotFoundPage } from '@app/routes/not-found/not-found.page';
 import { NotificationsPage } from './routes/notifications/notifications.page';

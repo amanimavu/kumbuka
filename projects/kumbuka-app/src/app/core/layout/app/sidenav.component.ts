@@ -10,7 +10,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { KumbukaBrand } from 'kumbuka-brand';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon, LogIcon } from '@assets/icons';
+import { DashboardIcon, LogoutIcon, WalletIcon, MoneyIcon, LogIcon } from 'kumbuka-icons';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@app/core/services/auth.service';
 
