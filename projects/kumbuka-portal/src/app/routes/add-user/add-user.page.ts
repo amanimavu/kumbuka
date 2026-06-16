@@ -30,7 +30,6 @@ interface RoleOption {
 		ReactiveFormsModule,
 	],
 	template: `
-		<p-toast />
 		<div class="max-w-2xl mx-auto">
 			<p-card>
 				<h3 class="text-xl font-semibold mb-4">Add User</h3>

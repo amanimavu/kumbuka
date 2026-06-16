@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AuthLayout } from './core/layout/admin/auth/index.component';
+import { AuthLayout } from './core/layout/admin/auth/auth.component';
 import { RootLayout } from './core/layout/admin/root.component';
 import { LoginPage } from '@routes/login/login.page';
 import { UserManagementPage } from '@routes/user-management/user-management.page';
@@ -19,8 +19,8 @@ export const routes: Routes = [
 	{
 		path: 'admin',
 		component: RootLayout,
-		// canActivate: [authGuard],
-		// canActivateChild: [authGuard],
+		canActivate: [authGuard],
+		canActivateChild: [authGuard],
 		children: [
 			{
 				path: 'user-management',
