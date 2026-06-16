@@ -495,3 +495,45 @@ export class EditIcon {
 export class FolderOpenIcon {
 	readonly viewBox = input<string>('0 -960 960 960');
 }
+
+@Component({
+	selector: 'svg[delete-icon]',
+	template: `<svg:path
+		d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class DeleteIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[donut-chart-icon]',
+	template: `<svg:path
+		d="M441-82Q287-97 184-211T81-480q0-155 103-269t257-129v120q-104 14-172 93t-68 185q0 106 68 185t172 93v120Zm80 0v-120q94-12 159-78t79-160h120q-14 143-114.5 243.5T521-82Zm238-438q-14-94-79-160t-159-78v-120q143 14 243.5 114.5T879-520H759Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class DonutChartIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}
+
+@Component({
+	selector: 'svg[copy-icon]',
+	template: `<svg:path
+		d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"
+	/>`,
+	host: {
+		'[attr.viewBox]': 'viewBox()',
+		'[attr.fill]': '"currentColor"',
+	},
+})
+export class CopyIcon {
+	readonly viewBox = input<string>('0 -960 960 960');
+}

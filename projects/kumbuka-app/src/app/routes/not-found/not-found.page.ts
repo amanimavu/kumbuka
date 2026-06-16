@@ -3,7 +3,7 @@ import { CardModule } from 'primeng/card';
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { HelpIcon } from '@assets/icons';
+import { HelpIcon } from 'kumbuka-icons';
 import { LocalstorageService } from '@app/shared/services/localstorage.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';

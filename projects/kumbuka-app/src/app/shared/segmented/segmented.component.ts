@@ -8,14 +8,14 @@ import {
 	effect,
 	viewChild,
 	viewChildren,
-	linkedSignal,
 	contentChild,
 	TemplateRef,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { SkeletonModule } from 'primeng/skeleton';
 
 type OnClickData = { elementWidth: string; elementOffset: string; selectedOption: string };
-type OnChange = (value: string) => void;
+type OnChange<T> = (value: T) => void;
 
 @Component({
 	selector: 'segmented-option',
@@ -54,40 +54,45 @@ export class SegmentedItem {
 	selector: 'segmented',
 	styleUrl: 'segmented.css',
 	standalone: true,
-	imports: [SegmentedItem, NgTemplateOutlet],
+	imports: [SegmentedItem, NgTemplateOutlet, SkeletonModule],
 	host: {
 		'[style.--highlight-width]': 'highlightWidth()',
 		'[style.--highlight-x-pos]': 'highlightPosition()',
 	},
 	template: `
-		<div class="controls">
-			@for (option of options(); track option) {
-				<segmented-option
-					[value]="option"
-					(onClick)="onConsumption($event)"
-					[isActive]="value().toLowerCase() === option.toLowerCase()"
-				>
-					@if (segmentedItemTemplate(); as template) {
-						<ng-container
-							*ngTemplateOutlet="template; context: { $implicit: option }"
-						></ng-container>
-					} @else {
-						{{ option }}
-					}
-				</segmented-option>
-			}
-		</div>
+		@if (value()) {
+			<div class="controls">
+				@for (option of options(); track option) {
+					<segmented-option
+						[value]="option"
+						(onClick)="handleClick($event)"
+						[isActive]="value()?.toLowerCase() === option.toLowerCase()"
+					>
+						@if (segmentedItemTemplate(); as template) {
+							<ng-container
+								*ngTemplateOutlet="template; context: { $implicit: option }"
+							></ng-container>
+						} @else {
+							{{ option }}
+						}
+					</segmented-option>
+				}
+			</div>
+		} @else {
+			<div class="flex">
+				@for (option of options(); track option) {
+					<p-skeleton width="4rem" height="2rem" />
+				}
+			</div>
+		}
 	`,
 })
 export class Segmented {
 	highlightWidth = signal('0px');
 	highlightPosition = signal('0px');
-	onChange = input<OnChange>();
+	onChange = input<OnChange<string>>();
 	options = input.required<string[]>();
-	defaultValue = input<string>();
-	value = linkedSignal(() => {
-		return this.defaultValue() || this.options()[0];
-	});
+	value = input<string>();
 
 	segmentedItems = viewChildren(SegmentedItem);
 	segmentedItemTemplate = contentChild(TemplateRef);
@@ -96,7 +101,7 @@ export class Segmented {
 		afterRenderEffect(() => {
 			this.segmentedItems().forEach((segmentedItem) => {
 				const element = segmentedItem.internalRef()?.nativeElement;
-				if (this.value().toLowerCase() === element?.innerText.toLowerCase()) {
+				if (this.value()?.toLowerCase() === element?.innerText.toLowerCase()) {
 					this.highlightPosition.set(`${element?.offsetLeft}px`);
 					this.highlightWidth.set(`${element?.offsetWidth}px`);
 				}
@@ -104,16 +109,19 @@ export class Segmented {
 		});
 
 		effect(() => {
+			console.log('Value of segment: ', this.value());
 			const onChange = this.onChange();
-			if (onChange) {
-				onChange && onChange(this.value());
+			const value = this.value();
+			if (onChange && value) {
+				onChange(value);
 			}
 		});
 	}
 
-	onConsumption(data: OnClickData) {
+	handleClick(data: OnClickData) {
 		this.highlightPosition.set(data.elementOffset);
 		this.highlightWidth.set(data.elementWidth);
-		this.value.set(data.selectedOption.toLowerCase());
+		const onChange = this.onChange();
+		onChange && onChange(data.selectedOption);
 	}
 }

@@ -3,7 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
-import { ArrowRightIcon, KumbukaLogo } from '../../../assets/icons';
+import { ArrowRightIcon, KumbukaLogo } from 'kumbuka-icons';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { InputOtpModule } from 'primeng/inputotp';

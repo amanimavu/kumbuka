@@ -7,7 +7,7 @@ import { Avatar } from 'primeng/avatar';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
-import { VerifiedIcon, MergeIcon } from '../../../assets/icons';
+import { VerifiedIcon, MergeIcon } from 'kumbuka-icons';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { ActivatedRoute } from '@angular/router';
 

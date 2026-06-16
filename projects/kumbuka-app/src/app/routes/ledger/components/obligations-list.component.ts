@@ -1,9 +1,9 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, input, output } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { LogIcon, EditIcon } from '@assets/icons';
+import { LogIcon, EditIcon } from 'kumbuka-icons';
 import type { LoanBorrowed } from '../services/loans-borrowed.service';
 
 @Component({
@@ -13,7 +13,15 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 		<h3 class="text-xl font-bold my-5">Outstanding Obligations</h3>
 		<div class="grid grid-cols-3 gap-6">
 			@for (obligation of obligations(); track obligation.id) {
-				<p-card>
+				<p-card
+					class="cursor-pointer block"
+					[class]="
+						selectedRecord()?.id == obligation.id
+							? 'border-2 border-blue-500 shadow-md transition-all'
+							: 'border-2 border-transparent hover:border-blue-300 transition-all'
+					"
+					(click)="cardSelect.emit(obligation)"
+				>
 					<div class="flex justify-between items-start mb-6">
 						<div class="flex flex-col">
 							<span class="font-bold">{{ obligation.personName }}</span>
@@ -46,7 +54,11 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 						</div>
 					</div>
 					<div class="grid grid-cols-2 gap-4">
-						<button class="w-full" pButton (click)="logRepayment.emit(obligation)">
+						<button
+							class="w-full"
+							pButton
+							(click)="$event.stopPropagation(); logRepayment.emit(obligation)"
+						>
 							<svg class="w-7" log-icon></svg>
 							<span class="self-start">Log Repayment</span>
 						</button>
@@ -54,7 +66,7 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 							class="w-full"
 							pButton
 							severity="secondary"
-							(click)="edit.emit(obligation)"
+							(click)="$event.stopPropagation(); edit.emit(obligation)"
 						>
 							<svg class="w-7" edit-icon></svg>
 							<span class="self-start">Edit</span>
@@ -68,7 +80,9 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 export class ObligationsListComponent {
 	obligations = input.required<any[]>();
 	isLoading = input.required<boolean>();
+	selectedRecord = input<any>(null);
 
+	cardSelect = output<any>();
 	logRepayment = output<LoanBorrowed>();
 	edit = output<LoanBorrowed>();
 }

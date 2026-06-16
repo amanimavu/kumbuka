@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Password } from 'primeng/password';
-import { ArrowLeftIcon, KumbukaLogo, ArrowRightIcon } from '../../../assets/icons';
+import { ArrowLeftIcon, KumbukaLogo, ArrowRightIcon } from 'kumbuka-icons';
 import { RouterLink } from '@angular/router';
 
 @Component({

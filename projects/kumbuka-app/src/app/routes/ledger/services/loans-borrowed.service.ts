@@ -3,36 +3,39 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { catchError, map, throwError } from 'rxjs';
 
-export type DebtStatus = 'PAID' | 'PARTIALLY_PAID';
+export type DebtStatus = 'PAID' | 'PARTIALLY_PAID' | 'ACTIVE';
+
+export type LoanPayment = {
+	amount: number;
+	paymentDate: string;
+};
 
 export type LoanBorrowedResponse = {
 	id: number;
-	personName: string;
-	phoneNumber: string;
-	amountBorrowed: number;
+	loanAmount: number;
 	amountPaid: number;
 	balance: number;
-	dateBorrowed: string;
+	personName: string;
+	phoneNumber: string;
+	dateBorrowed: string; //'2026-06-22T00:00:00Z'
 	dueDate: string;
 	status: DebtStatus;
-	notes: string;
-	createdAt: string;
-	updatedAt: string;
+	installments: [];
 };
 
 export type LoanBorrowed = {
 	id: number;
-	personName: string;
+	lender: string;
 	phoneNumber: string;
 	amount: {
 		borrowed: number;
 		paid: number;
 		balance: number;
 	};
+	payments: [];
 	dueDate: string;
 	dateBorrowed: string;
 	status: DebtStatus;
-	notes: string;
 };
 
 export type RecordBorrowedLoanPayload = {
@@ -57,17 +60,17 @@ export class LoansBorrowedService {
 				data.map(
 					(item): LoanBorrowed => ({
 						id: item.id,
-						personName: item.personName,
+						lender: item.personName,
 						phoneNumber: item.phoneNumber,
 						amount: {
-							borrowed: item.amountBorrowed,
+							borrowed: item.loanAmount,
 							paid: item.amountPaid,
 							balance: item.balance,
 						},
 						dueDate: item.dueDate,
 						dateBorrowed: item.dateBorrowed,
 						status: item.status,
-						notes: item.notes,
+						payments: item.installments,
 					}),
 				),
 			),

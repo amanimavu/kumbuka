@@ -7,7 +7,6 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
-import type { LoanLent } from '../services/loans-lent.service';
 
 @Component({
 	selector: 'app-transaction-details-drawer',
@@ -42,8 +41,11 @@ import type { LoanLent } from '../services/loans-lent.service';
 		>
 			<ng-template #header>
 				<div class="flex items-center gap-2">
-					<p-avatar [label]="getInitials(record()?.borrower ?? '')" shape="circle" />
-					<span class="font-bold">{{ record()?.borrower }}</span>
+					<p-avatar
+						[label]="getInitials(record()?.borrower ?? record()?.lender ?? '')"
+						shape="circle"
+					/>
+					<span class="font-bold">{{ record()?.borrower ?? record()?.lender }}</span>
 				</div>
 			</ng-template>
 			<ng-template #content>
@@ -57,7 +59,9 @@ import type { LoanLent } from '../services/loans-lent.service';
 									context: {
 										$implicit: {
 											label: 'total principle',
-											amount: record()?.amount?.lent,
+											amount:
+												record()?.amount?.lent ??
+												record()?.amount?.borrowed,
 										},
 									}
 								"
@@ -80,7 +84,9 @@ import type { LoanLent } from '../services/loans-lent.service';
 								class="mb-1.5"
 								[value]="
 									((record()?.amount?.paid ?? 0) /
-										(record()?.amount?.lent ?? 0)) *
+										(record()?.amount?.lent ??
+											record()?.amount?.borrowed ??
+											0)) *
 									100
 								"
 							>
@@ -91,7 +97,9 @@ import type { LoanLent } from '../services/loans-lent.service';
 								<span class="text-[#e64a33]"
 									>{{
 										((record()?.amount?.paid ?? 0) /
-											(record()?.amount?.lent ?? 0)) *
+											(record()?.amount?.lent ??
+												record()?.amount?.borrowed ??
+												0)) *
 											100 | number: '1.0-0'
 									}}%</span
 								>
@@ -113,7 +121,6 @@ import type { LoanLent } from '../services/loans-lent.service';
 					<section class="mt-6">
 						<div class="flex justify-between items-center mb-6">
 							<h5 class="text-lg font-bold">Installment History</h5>
-							<p-button class="[&>button]:py-1!" [text]="true" label="View all" />
 						</div>
 						<p-timeline
 							class="items-start"

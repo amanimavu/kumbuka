@@ -3,7 +3,7 @@ import { Card } from 'primeng/card';
 import { Avatar } from 'primeng/avatar';
 import { ButtonDirective } from 'primeng/button';
 import { Divider } from 'primeng/divider';
-import { ShieldIcon, NetworkIcon, ArrowRightIcon, IDIcon } from '../../../assets/icons';
+import { ShieldIcon, NetworkIcon, ArrowRightIcon, IDIcon } from 'kumbuka-icons';
 import { RouterLink } from '@angular/router';
 
 @Component({

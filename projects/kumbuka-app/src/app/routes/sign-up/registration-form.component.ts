@@ -11,7 +11,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
 import { LocalstorageService } from '@app/shared/services/localstorage.service';
-import { ArrowRightIcon } from '@assets/icons';
+import { ArrowRightIcon } from 'kumbuka-icons';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';

@@ -4,26 +4,23 @@ import { environment } from '@env/environment';
 import { catchError, map, throwError } from 'rxjs';
 
 export type LoanPayment = {
-	id: number;
 	amount: number;
 	paymentDate: string;
 };
 
 type LoanLentResponse = {
 	id: number;
-	userId: number;
-	personName: string;
-	phoneNumber: string;
-	amountLent: number;
+	loanAmount: number;
 	amountPaid: number;
 	balance: number;
-	dateLent: string;
-	dueDate: string; // 2026-06-03
+	personName: string;
+	phoneNumber: string;
+	dueDate: null | string;
+	dateLent: string; // "2026-06-01T00:00:00Z"
+	paymentDate: string | null;
 	status: LoanLentStatus;
 	notes: string;
-	payments: LoanPayment[];
-	createdAt: string; //2026-06-06T11:02:53.063172
-	updatedAt: string; //2026-06-06T11:02:53.063172
+	installments: LoanPayment[];
 };
 export type LoanLentStatus = 'ACTIVE' | 'PARTIALLY_PAID';
 export type LoanLent = {
@@ -31,7 +28,7 @@ export type LoanLent = {
 	borrower: string;
 	phoneNumber: string;
 	amount: { lent: number; paid: number; balance: number };
-	dueDate: string;
+	dueDate: string | null;
 	dateLent: string;
 	status: LoanLentStatus;
 	notes: string;
@@ -78,7 +75,7 @@ export class LoansLentService {
 						borrower: item.personName,
 						phoneNumber: item.phoneNumber,
 						amount: {
-							lent: item.amountLent,
+							lent: item.loanAmount,
 							paid: item.amountPaid,
 							balance: item.balance,
 						},
@@ -86,7 +83,7 @@ export class LoansLentService {
 						dateLent: item.dateLent,
 						status: item.status,
 						notes: item.notes,
-						payments: item.payments,
+						payments: item.installments,
 					}),
 				),
 			),
