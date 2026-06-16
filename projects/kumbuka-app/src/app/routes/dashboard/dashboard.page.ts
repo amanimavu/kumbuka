@@ -1,14 +1,14 @@
-import { Component, effect, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { SummaryCard } from '../../shared/dashboard/summary-card.component';
-import { MoneyBagIcon, PlusIcon, ArrowRightIcon } from '../../../assets/icons';
-import { ButtonDirective, Button } from 'primeng/button';
+import { MoneyBagIcon, DonutChartIcon, PlusIcon } from 'kumbuka-icons';
 import { TableModule } from 'primeng/table';
-import { CurrencyPipe, isPlatformBrowser } from '@angular/common';
-import { LenderCard } from '../../shared/dashboard/lender-card.component';
+import { isPlatformBrowser } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { Card, CardModule } from 'primeng/card';
+import { CardModule } from 'primeng/card';
 import { DashboardService, GetDashboardSummaryResponse } from './dashboard.service';
 import { ChartModule } from 'primeng/chart';
+import { ButtonModule } from 'primeng/button';
+import { SkeletonModule } from 'primeng/skeleton';
 
 type BorrowerStatus = 'Overdue' | 'Pending' | 'Active';
 
@@ -29,21 +29,19 @@ interface Borrower {
 		ProgressBarModule,
 		ChartModule,
 		CardModule,
-		// ButtonDirective,
-		// PlusIcon,
-		// ArrowRightIcon,
-		// Button,
-		// CurrencyPipe,
-		// LenderCard,
-		// Card,
+		DonutChartIcon,
+		ButtonModule,
+		PlusIcon,
+		SkeletonModule,
 	],
 	templateUrl: './dashboard.html',
 	styleUrl: './dashboard.css',
 })
 export class DashboardPage {
+	loading = signal(true);
 	private dashboardService = inject(DashboardService);
-	lentVsBorrowedData: any;
-	balancesData: any;
+	lentVsBorrowedData = signal<any>(null);
+	balancesData = signal<any>(null);
 	options: any;
 	platformId = inject(PLATFORM_ID);
 	dashboardAnalytics = signal<GetDashboardSummaryResponse>({
@@ -56,13 +54,25 @@ export class DashboardPage {
 		overdueLoans: 0,
 	});
 
+	canDisplayOutstandingBalanceGraph = computed(() => {
+		return (
+			this.balancesData()?.datasets?.[0]?.data?.[0] > 0 ||
+			this.balancesData()?.datasets?.[0]?.data?.[1] > 0
+		);
+	});
+	canDisplayMoneyMovementGraph = computed(() => {
+		return (
+			this.lentVsBorrowedData()?.datasets?.[0]?.data?.[0] > 0 ||
+			this.lentVsBorrowedData()?.datasets?.[0]?.data?.[1] > 0
+		);
+	});
+
 	initChart(analytics: GetDashboardSummaryResponse) {
-		console.log(this.dashboardAnalytics());
 		if (isPlatformBrowser(this.platformId)) {
 			const documentStyle = getComputedStyle(document.documentElement);
 			const textColor = documentStyle.getPropertyValue('--p-text-color');
 
-			this.lentVsBorrowedData = {
+			this.lentVsBorrowedData.set({
 				labels: ['Total amount lent out', 'Total amount borrowed'],
 				datasets: [
 					{
@@ -77,9 +87,9 @@ export class DashboardPage {
 						],
 					},
 				],
-			};
+			});
 
-			this.balancesData = {
+			this.balancesData.set({
 				labels: ['Money owed to me (Expected Income)', 'Money I owe(My debts)'],
 				datasets: [
 					{
@@ -94,15 +104,19 @@ export class DashboardPage {
 						],
 					},
 				],
-			};
+			});
 
 			this.options = {
 				cutout: '60%',
 				plugins: {
 					legend: {
+						maxWidth: 160, // Limits the maximum width the legend can take
 						labels: {
 							color: textColor,
+							padding: 20, // Increases space between the items
+							boxWidth: 12, // Reduces the width of the color box
 						},
+						position: 'right',
 					},
 				},
 			};
@@ -118,10 +132,12 @@ export class DashboardPage {
 			error: (err) => {
 				console.log(err);
 			},
+			complete: () => {
+				this.loading.set(false);
+			},
 		});
 
 		effect(() => {
-			console.log(this.dashboardAnalytics());
 			this.initChart(this.dashboardAnalytics());
 		});
 	}
