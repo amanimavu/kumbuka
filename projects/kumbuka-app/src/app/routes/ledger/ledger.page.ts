@@ -14,25 +14,22 @@ import { Segmented } from '@shared/segmented/segmented.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { SearchIcon, PlusIcon } from '@assets/icons';
+import { SearchIcon, PlusIcon } from 'kumbuka-icons';
 import { ButtonModule } from 'primeng/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounce } from '@app/shared/utils/debounce';
 import {
 	LoanLentStatus,
-	LoanPayment,
 	LoansLentService,
 	type LoanLent,
 } from '@routes/ledger/services/loans-lent.service';
-import {
-	DebtStatus,
-	LoanBorrowed,
-	LoanBorrowedResponse,
-	LoansBorrowedService,
-} from './services/loans-borrowed.service';
+import { DebtStatus, LoanBorrowed, LoansBorrowedService } from './services/loans-borrowed.service';
 import { TransactionDetailsDrawerComponent } from './components/transaction-details-drawer.component';
 import { DisbursementsListComponent } from './components/disbursements-list.component';
 import { ObligationsListComponent } from './components/obligations-list.component';
+import { DatePickerModule } from 'primeng/datepicker';
+import { formatDate } from '@angular/common';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 type Installment = {
 	amount: number;
@@ -53,6 +50,7 @@ export type Severity = 'danger' | 'warn' | 'success';
 		SearchIcon,
 		ButtonModule,
 		DialogModule,
+		DatePickerModule,
 		ReactiveFormsModule,
 		PlusIcon,
 		TransactionDetailsDrawerComponent,
@@ -70,6 +68,8 @@ export class LedgerPage {
 	segmentOptions = ['Money Lent', 'My Debts'];
 	segment = signal('money_lent');
 	selected_id = signal<string | null>(null);
+	private messageService = inject(MessageService);
+	private confirmationService = inject(ConfirmationService);
 
 	private readonly _disbursements = signal<LoanLent[]>([]);
 	private readonly _obligations = signal<LoanBorrowed[]>([]);
@@ -99,7 +99,7 @@ export class LedgerPage {
 
 	isPaymentModalVisible = signal(false);
 	isSavingPayment = signal(false);
-	paymentRecordId = signal<number | null>(null);
+	paymentRecord = signal<LoanLent | null>(null);
 	paymentForm: FormGroup = this.fb.group({
 		amount: [null, [Validators.required, Validators.min(1)]],
 	});
@@ -145,6 +145,78 @@ export class LedgerPage {
 		notes: [''],
 	});
 
+	constructor() {
+		this.route.queryParams.subscribe((params) => {
+			// retrieve query params['segment'] and set it
+			// as selected segment
+			const segment = params['segment'];
+			segment && this.segment.set(segment);
+
+			console.log(segment);
+
+			const selected_id = params['selected_id'];
+			this.selected_id.set(selected_id ?? null);
+
+			const drawer = params['drawer'] === 'true';
+			// If we are initially loading and data isn't present, defer opening the drawer
+			// to prevent blocking the main thread during the slide-in animation.
+			if (drawer && this._disbursements() === null) {
+				return;
+			}
+
+			this.visible.set(drawer);
+		});
+
+		effect(() => {
+			console.log(this.isLoadingDisbursements());
+		});
+
+		this.loanLentService.getLoansLent().subscribe({
+			next: (loans) => {
+				this._disbursements.set(loans);
+				this.isLoadingDisbursements.set(false);
+
+				const params = this.route.snapshot.queryParams;
+				if (params['drawer'] === 'true') {
+					// Yield to the browser paint cycle to ensure the background table
+					// is fully rendered before we start the drawer's CSS animation.
+					setTimeout(() => this.visible.set(true), 50);
+				}
+			},
+			error: (err) => {
+				console.log(err);
+				this.isLoadingDisbursements.set(false);
+			},
+		});
+
+		this.loanBorrowedService.getLoansBorrowed().subscribe({
+			next: (loans) => {
+				this._obligations.set(loans);
+				this.isLoadingObligations.set(false);
+
+				const params = this.route.snapshot.queryParams;
+				if (params['drawer'] === 'true') {
+					// Yield to the browser paint cycle to ensure the background table
+					// is fully rendered before we start the drawer's CSS animation.
+					setTimeout(() => this.visible.set(true), 50);
+				}
+			},
+			error: (err) => {
+				console.log(err);
+				this.isLoadingObligations.set(false);
+			},
+		});
+	}
+
+	handleCardSelect(data: any) {
+		console.log(data);
+		this.router.navigate(['.'], {
+			queryParams: { drawer: true, selected_id: data.id },
+			queryParamsHandling: 'merge',
+			relativeTo: this.route,
+		});
+	}
+
 	handleInstallmentSelection(installment: Installment) {
 		const selectedInstallment = this.selectedInstallment() === installment ? null : installment;
 		this.selectedInstallment.set(selectedInstallment);
@@ -179,13 +251,14 @@ export class LedgerPage {
 	}
 
 	openEditModal(record: LoanLent) {
+		console.log(record);
 		this.editingRecordId.set(record.id);
 		this.editForm.patchValue({
 			personName: record.borrower,
 			phoneNumber: record.phoneNumber,
 			amountLent: record.amount.lent,
-			dateLent: record.dateLent,
-			dueDate: record.dueDate,
+			dateLent: record.dateLent ? new Date(record.dateLent) : null,
+			dueDate: record.dueDate ? new Date(record.dueDate) : null,
 			notes: record.notes,
 		});
 		this.isEditModalVisible.set(true);
@@ -194,7 +267,12 @@ export class LedgerPage {
 	saveEdit() {
 		if (this.editForm.valid && this.editingRecordId() !== null) {
 			this.isSaving.set(true);
-			const payload = this.editForm.value;
+			let payload = this.editForm.value;
+			payload = {
+				...payload,
+				dueDate: formatDate(payload.dueDate, 'yyyy-MM-dd', 'en_US'),
+				dateLent: formatDate(payload.dateLent, 'yyyy-MM-dd', 'en_US'),
+			};
 			this.loanLentService.updateLoanLent(this.editingRecordId()!, payload).subscribe({
 				next: () => {
 					// Re-fetch the list so that our table updates seamlessly
@@ -245,7 +323,7 @@ export class LedgerPage {
 	}
 
 	openPaymentModal(record: LoanLent) {
-		this.paymentRecordId.set(record.id);
+		this.paymentRecord.set(record);
 		this.paymentForm.reset({ amount: null });
 		this.paymentForm.controls['amount'].setValidators([
 			Validators.required,
@@ -256,11 +334,62 @@ export class LedgerPage {
 		this.isPaymentModalVisible.set(true);
 	}
 
+	deleteDisbursement(disbursementId: number) {
+		this.loanLentService.deleteLoanLent(disbursementId).subscribe({
+			next: () => {
+				this.messageService.add({
+					severity: 'info',
+					summary: 'Info',
+					detail: 'Disbursement successfully deleted',
+				});
+				this.loanLentService.getLoansLent().subscribe({
+					next: (loans) => {
+						this._disbursements.set(loans);
+					},
+					error: (err) => {
+						console.error('Failed to refetch loans: ', err);
+					},
+				});
+			},
+			error: (err) => {
+				console.error('Failure occurred deleting the record');
+			},
+		});
+	}
+
+	confirmDisbursementDelete(e: { target: EventTarget; disbursement: number }) {
+		this.confirmationService.confirm({
+			target: e.target,
+			message: 'Do you want to delete this record?',
+			icon: 'pi pi-info-circle',
+			rejectButtonProps: {
+				label: 'Cancel',
+				severity: 'secondary',
+				outlined: true,
+			},
+			acceptButtonProps: {
+				label: 'Delete',
+				severity: 'danger',
+			},
+			accept: () => {
+				this.deleteDisbursement(e.disbursement);
+			},
+			reject: () => {
+				this.messageService.add({
+					severity: 'error',
+					summary: 'Rejected',
+					detail: 'You have rejected',
+					life: 3000,
+				});
+			},
+		});
+	}
+
 	savePayment() {
-		if (this.paymentForm.valid && this.paymentRecordId() !== null) {
+		if (this.paymentForm.valid && this.paymentRecord() !== null) {
 			this.isSavingPayment.set(true);
 			const amount = this.paymentForm.value.amount;
-			this.loanLentService.recordPayment(this.paymentRecordId()!, amount).subscribe({
+			this.loanLentService.recordPayment(this.paymentRecord()!.id, amount).subscribe({
 				next: () => {
 					// Re-fetch the list so that our table updates seamlessly
 					this.loanLentService.getLoansLent().subscribe({
@@ -322,12 +451,11 @@ export class LedgerPage {
 	openBorrowedEditModal(record: LoanBorrowed) {
 		this.borrowedEditingRecordId.set(record.id);
 		this.borrowedEditForm.patchValue({
-			personName: record.personName,
+			personName: record.lender,
 			phoneNumber: record.phoneNumber,
 			amountBorrowed: record.amount.borrowed,
-			dateBorrowed: record.dateBorrowed,
-			dueDate: record.dueDate,
-			notes: record.notes,
+			dateBorrowed: record.dateBorrowed ? new Date(record.dateBorrowed) : null,
+			dueDate: record.dueDate ? new Date(record.dueDate) : null,
 		});
 		this.isBorrowedEditModalVisible.set(true);
 	}
@@ -386,65 +514,6 @@ export class LedgerPage {
 		}
 	}
 
-	constructor() {
-		this.route.queryParams.subscribe((params) => {
-			const segment = params['segment'];
-			segment && this.segment.set(segment);
-
-			const selected_id = params['selected_id'];
-			this.selected_id.set(selected_id ?? null);
-
-			const drawer = params['drawer'] === 'true' || params['drawer'] === true;
-			// If we are initially loading and data isn't present, defer opening the drawer
-			// to prevent blocking the main thread during the slide-in animation.
-			if (drawer && this._disbursements() === null) {
-				return;
-			}
-
-			this.visible.set(drawer);
-		});
-
-		effect(() => {
-			console.log(this.isLoadingDisbursements());
-		});
-
-		this.loanLentService.getLoansLent().subscribe({
-			next: (loans) => {
-				this._disbursements.set(loans);
-				this.isLoadingDisbursements.set(false);
-
-				const params = this.route.snapshot.queryParams;
-				if (params['drawer'] === 'true' || params['drawer'] === true) {
-					// Yield to the browser paint cycle to ensure the background table
-					// is fully rendered before we start the drawer's CSS animation.
-					setTimeout(() => this.visible.set(true), 50);
-				}
-			},
-			error: (err) => {
-				console.log(err);
-				this.isLoadingDisbursements.set(false);
-			},
-		});
-
-		this.loanBorrowedService.getLoansBorrowed().subscribe({
-			next: (loans) => {
-				this._obligations.set(loans);
-				this.isLoadingObligations.set(false);
-
-				const params = this.route.snapshot.queryParams;
-				if (params['drawer'] === 'true' || params['drawer'] === true) {
-					// Yield to the browser paint cycle to ensure the background table
-					// is fully rendered before we start the drawer's CSS animation.
-					setTimeout(() => this.visible.set(true), 50);
-				}
-			},
-			error: (err) => {
-				console.log(err);
-				this.isLoadingObligations.set(false);
-			},
-		});
-	}
-
 	private static handleInput(event: Event) {
 		const value = (event.target as HTMLInputElement)?.value;
 		LedgerPage.searchInput.set(value);
@@ -467,8 +536,9 @@ export class LedgerPage {
 
 	selectedRecord = computed(() => {
 		const id = this.selected_id();
-		if (!id) return null;
-		if (this.segment() === 'money_out') {
+		if (id === null) return null;
+
+		if (this.segment() === 'money_lent') {
 			return this.disbursements().find((d) => d.id.toString() === id.toString()) ?? null;
 		} else {
 			return this.obligations().find((d) => d.id.toString() === id.toString()) ?? null;
@@ -497,7 +567,7 @@ export class LedgerPage {
 					payments: [
 						...disbursement.payments.map((payment) => ({
 							...payment,
-							paymentDate: payment.paymentDate + 'Z',
+							paymentDate: payment.paymentDate,
 						})),
 					],
 				};
@@ -514,15 +584,17 @@ export class LedgerPage {
 	obligations = computed(() => {
 		const result =
 			this._obligations()?.map((obligation) => {
+				const initials = this.getInitials(obligation.lender);
 				const severity = this.getSeverity(obligation.status);
 				return {
 					...obligation,
 					severity,
+					initials,
 				};
 			}) ?? [];
 		return this.segment() === 'my_debts'
 			? result?.filter((obligation) =>
-					obligation.personName
+					obligation.lender
 						.toLowerCase()
 						.startsWith(LedgerPage.searchInput().toLowerCase()),
 				)
@@ -530,7 +602,8 @@ export class LedgerPage {
 	});
 
 	handleSegmentChange = (value: string) => {
-		console.log('Has been called');
+		// take value of segment option and put it on
+		// query parameters of the URL
 		const newSegment = value.toLowerCase().replace(/\s/g, '_');
 
 		if (this.segment() !== newSegment) {

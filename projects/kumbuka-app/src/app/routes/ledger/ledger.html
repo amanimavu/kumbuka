@@ -5,6 +5,7 @@
 />
 <div class="flex justify-between">
 	<segmented
+		[value]="segment().replace(/_/g, ' ')"
 		defaultValue="money lent"
 		[onChange]="handleSegmentChange"
 		[options]="segmentOptions"
@@ -41,6 +42,7 @@
 		[tableHeight]="tableHeight()"
 		(rowSelect)="handleRowSelect($event)"
 		(recordPayment)="openPaymentModal($event)"
+		(recordDelete)="confirmDisbursementDelete($event)"
 		(edit)="openEditModal($event)"
 	/>
 } @else {
@@ -49,6 +51,7 @@
 		[isLoading]="isLoadingObligations()"
 		(logRepayment)="openBorrowedPaymentModal($event)"
 		(edit)="openBorrowedEditModal($event)"
+		(cardSelect)="handleCardSelect($event)"
 	/>
 }
 
@@ -77,11 +80,25 @@
 		<div class="flex gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="dateLent" class="font-semibold text-sm">Date Lent</label>
-				<input id="dateLent" type="date" pInputText formControlName="dateLent" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					id="dateLent"
+					placeholder="dd/mm/yyyy"
+					formControlName="dateLent"
+					pInputMask="99/99/9999"
+					appendTo="body"
+				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
 				<label for="dueDate" class="font-semibold text-sm">Due Date</label>
-				<input id="dueDate" type="date" pInputText formControlName="dueDate" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					id="dueDate"
+					placeholder="dd/mm/yyyy"
+					formControlName="dueDate"
+					pInputMask="99/99/9999"
+					appendTo="body"
+				/>
 			</div>
 		</div>
 		<div class="flex flex-col gap-1">
@@ -133,7 +150,14 @@
 			</div>
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDueDate" class="font-semibold text-sm">Due Date</label>
-				<input id="createDueDate" type="date" pInputText formControlName="dueDate" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					id="createDueDate"
+					placeholder="dd/mm/yyyy"
+					formControlName="dueDate"
+					pInputMask="99/99/9999"
+					appendTo="body"
+				/>
 			</div>
 		</div>
 		<div class="flex flex-col gap-1">
@@ -204,20 +228,24 @@
 		<div class="flex gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDateBorrowed" class="font-semibold text-sm">Date Borrowed</label>
-				<input
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					placeholder="dd/mm/yyyy"
 					id="createDateBorrowed"
-					type="date"
-					pInputText
 					formControlName="dateBorrowed"
+					pInputMask="99/99/9999"
+					appendTo="body"
 				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
 				<label for="createBorrowedDueDate" class="font-semibold text-sm">Due Date</label>
-				<input
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					placeholder="dd/mm/yyyy"
 					id="createBorrowedDueDate"
-					type="date"
-					pInputText
 					formControlName="dueDate"
+					pInputMask="99/99/9999"
+					appendTo="body"
 				/>
 			</div>
 		</div>
@@ -270,11 +298,25 @@
 		<div class="flex gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="dateBorrowed" class="font-semibold text-sm">Date Borrowed</label>
-				<input id="dateBorrowed" type="date" pInputText formControlName="dateBorrowed" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					placeholder="dd/mm/yyyy"
+					id="dateBorrowed"
+					formControlName="dateBorrowed"
+					pInputMask="99/99/9999"
+					appendTo="body"
+				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
 				<label for="borrowedDueDate" class="font-semibold text-sm">Due Date</label>
-				<input id="borrowedDueDate" type="date" pInputText formControlName="dueDate" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					placeholder="dd/mm/yyyy"
+					id="borrowedDueDate"
+					formControlName="dueDate"
+					pInputMask="99/99/9999"
+					appendTo="body"
+				/>
 			</div>
 		</div>
 		<div class="flex flex-col gap-1">
@@ -353,7 +395,9 @@
 			<input id="paymentAmount" type="number" pInputText formControlName="amount" />
 			@if (paymentForm.get('amount')?.hasError('max')) {
 				<small class="text-red-500 text-xs mt-1"
-					>Amount cannot exceed the remaining balance.</small
+					>Amount cannot exceed the remaining balance ({{
+						paymentRecord()?.amount?.balance
+					}}).</small
 				>
 			}
 		</div>
