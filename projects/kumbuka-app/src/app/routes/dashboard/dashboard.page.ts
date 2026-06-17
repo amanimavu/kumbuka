@@ -9,6 +9,7 @@ import { DashboardService, GetDashboardSummaryResponse } from './dashboard.servi
 import { ChartModule } from 'primeng/chart';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
+import { Router } from '@angular/router';
 
 type BorrowerStatus = 'Overdue' | 'Pending' | 'Active';
 
@@ -39,6 +40,7 @@ interface Borrower {
 })
 export class DashboardPage {
 	loading = signal(true);
+	private router = inject(Router);
 	private dashboardService = inject(DashboardService);
 	lentVsBorrowedData = signal<any>(null);
 	balancesData = signal<any>(null);
@@ -53,6 +55,10 @@ export class DashboardPage {
 		activeLoansBorrowed: 0,
 		overdueLoans: 0,
 	});
+
+	navigateToCashFlow() {
+		this.router.navigate(['/app/ledger']);
+	}
 
 	canDisplayOutstandingBalanceGraph = computed(() => {
 		return (

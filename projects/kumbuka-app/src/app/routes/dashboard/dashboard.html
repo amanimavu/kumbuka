@@ -46,7 +46,13 @@
 						<p class="text-neutral-500 font-medium text-center">
 							You don't have any loans logged yet. Let’s change that.
 						</p>
-						<button class="text-nowrap" size="small" outlined pButton>
+						<button
+							(click)="navigateToCashFlow()"
+							class="text-nowrap"
+							size="small"
+							outlined
+							pButton
+						>
 							<svg class="w-5" add-icon></svg>
 							<span>Record Your 1st Loan</span>
 						</button>
@@ -76,7 +82,13 @@
 							<p class="text-neutral-500 font-medium">
 								You don't have any loans logged yet. Let’s change that.
 							</p>
-							<button class="text-nowrap" size="small" outlined pButton>
+							<button
+								(click)="navigateToCashFlow()"
+								class="text-nowrap"
+								size="small"
+								outlined
+								pButton
+							>
 								<svg class="w-5" add-icon></svg>
 								<span>Record Your 1st Loan</span>
 							</button>

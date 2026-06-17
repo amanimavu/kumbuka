@@ -24,7 +24,7 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 				>
 					<div class="flex justify-between items-start mb-6">
 						<div class="flex flex-col">
-							<span class="font-bold">{{ obligation.personName }}</span>
+							<span class="font-bold">{{ obligation.lender }}</span>
 						</div>
 						<p-tag
 							class="font-medium!"
