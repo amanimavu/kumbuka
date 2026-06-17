@@ -564,12 +564,13 @@ export class LedgerPage {
 						label: disbursement.status,
 						color: { label: statusColor.label, background: statusColor.background },
 					},
-					payments: [
-						...disbursement.payments.map((payment) => ({
-							...payment,
-							paymentDate: payment.paymentDate,
-						})),
-					],
+					payments: disbursement.payments
+						.map((payment) => ({ ...payment }))
+						.sort(
+							(a, b) =>
+								new Date(b.paymentDate).getTime() -
+								new Date(a.paymentDate).getTime(),
+						),
 				};
 			}) ?? [];
 		return this.segment() === 'money_lent'
@@ -590,6 +591,10 @@ export class LedgerPage {
 					...obligation,
 					severity,
 					initials,
+					payments: [...(obligation.payments ?? [])].sort(
+						(a, b) =>
+							new Date(b.paymentDate).getTime() - new Date(a.paymentDate).getTime(),
+					),
 				};
 			}) ?? [];
 		return this.segment() === 'my_debts'

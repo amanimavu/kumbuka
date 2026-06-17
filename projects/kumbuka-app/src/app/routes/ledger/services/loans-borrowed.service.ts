@@ -32,7 +32,7 @@ export type LoanBorrowed = {
 		paid: number;
 		balance: number;
 	};
-	payments: [];
+	payments: LoanPayment[];
 	dueDate: string;
 	dateBorrowed: string;
 	status: DebtStatus;

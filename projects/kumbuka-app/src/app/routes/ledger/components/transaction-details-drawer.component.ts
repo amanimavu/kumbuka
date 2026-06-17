@@ -122,10 +122,7 @@ import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular
 						<div class="flex justify-between items-center mb-6">
 							<h5 class="text-lg font-bold">Installment History</h5>
 						</div>
-						<p-timeline
-							class="items-start"
-							[value]="record()?.payments?.reverse() ?? []"
-						>
+						<p-timeline class="items-start" [value]="record()?.payments ?? []">
 							<ng-template #content let-installment>
 								<div
 									class="w-[81cqw] flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors border-1 border-neutral-300"
