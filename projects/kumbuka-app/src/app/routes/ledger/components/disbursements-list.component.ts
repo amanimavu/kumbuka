@@ -41,7 +41,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 				<ng-template #header>
 					<tr>
 						<th>BORROWER</th>
-						<th>AMOUNT (KSH)</th>
+						<th>AMT LENT (KSH)</th>
+						<th>BAL (KSH)</th>
 						<th>DUE DATE</th>
 						<th>STATUS</th>
 						<th>ACTIONS</th>
@@ -62,6 +63,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 								</div>
 							</td>
 							<td>{{ disbursement.amount.lent | number: '1.0-0' : 'en-US' }}</td>
+							<td>{{ disbursement.amount.balance | number: '1.0-0' : 'en-US' }}</td>
 							<td>{{ disbursement.dueDate | date: 'mediumDate' }}</td>
 							<td>
 								<span
@@ -105,6 +107,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 								</div>
 							</td>
 						} @else {
+							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
