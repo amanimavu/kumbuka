@@ -8,28 +8,29 @@ import {
 	ElementRef,
 	effect,
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { Segmented } from '@shared/segmented/segmented.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { SearchIcon, PlusIcon } from 'kumbuka-icons';
 import { ButtonModule } from 'primeng/button';
-import { ActivatedRoute, Router } from '@angular/router';
-import { debounce } from '@app/shared/utils/debounce';
 import {
 	LoanLentStatus,
 	LoansLentService,
 	type LoanLent,
 } from '@routes/ledger/services/loans-lent.service';
+import { InputMaskModule } from 'primeng/inputmask';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { SearchIcon, PlusIcon } from 'kumbuka-icons';
+import { DatePickerModule } from 'primeng/datepicker';
+import { debounce } from '@app/shared/utils/debounce';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Segmented } from '@shared/segmented/segmented.component';
+import { ObligationsListComponent } from './components/obligations-list.component';
+import { DisbursementsListComponent } from './components/disbursements-list.component';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DebtStatus, LoanBorrowed, LoansBorrowedService } from './services/loans-borrowed.service';
 import { TransactionDetailsDrawerComponent } from './components/transaction-details-drawer.component';
-import { DisbursementsListComponent } from './components/disbursements-list.component';
-import { ObligationsListComponent } from './components/obligations-list.component';
-import { DatePickerModule } from 'primeng/datepicker';
-import { formatDate } from '@angular/common';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 type Installment = {
 	amount: number;
@@ -43,19 +44,20 @@ export type Severity = 'danger' | 'warn' | 'success';
 @Component({
 	selector: 'app-ledger',
 	imports: [
+		PlusIcon,
 		Segmented,
-		InputTextModule,
-		IconFieldModule,
-		InputIconModule,
 		SearchIcon,
 		ButtonModule,
 		DialogModule,
+		InputMaskModule,
+		InputTextModule,
+		IconFieldModule,
+		InputIconModule,
 		DatePickerModule,
 		ReactiveFormsModule,
-		PlusIcon,
-		TransactionDetailsDrawerComponent,
-		DisbursementsListComponent,
 		ObligationsListComponent,
+		DisbursementsListComponent,
+		TransactionDetailsDrawerComponent,
 	],
 	templateUrl: './ledger.html',
 	styleUrl: './ledger.css',
@@ -456,6 +458,7 @@ export class LedgerPage {
 			amountBorrowed: record.amount.borrowed,
 			dateBorrowed: record.dateBorrowed ? new Date(record.dateBorrowed) : null,
 			dueDate: record.dueDate ? new Date(record.dueDate) : null,
+			notes: record.notes,
 		});
 		this.isBorrowedEditModalVisible.set(true);
 	}

@@ -87,6 +87,7 @@
 					formControlName="dateLent"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
@@ -98,6 +99,7 @@
 					formControlName="dueDate"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 		</div>
@@ -133,20 +135,46 @@
 	>
 		<div class="flex flex-col gap-1">
 			<label for="createPersonName" class="font-semibold text-sm">Borrower Name</label>
-			<input id="createPersonName" type="text" pInputText formControlName="personName" />
+			<input
+				id="createPersonName"
+				type="text"
+				pInputText
+				formControlName="personName"
+				placeholder="John Doe"
+			/>
 		</div>
 		<div class="flex flex-col gap-1">
 			<label for="createPhoneNumber" class="font-semibold text-sm">Phone Number</label>
-			<input id="createPhoneNumber" type="text" pInputText formControlName="phoneNumber" />
+			<input
+				id="createPhoneNumber"
+				type="text"
+				pInputText
+				formControlName="phoneNumber"
+				placeholder="07XXXXXXXX"
+			/>
 		</div>
 		<div class="flex flex-col gap-1">
 			<label for="createAmountLent" class="font-semibold text-sm">Amount Lent (KSH)</label>
-			<input id="createAmountLent" type="number" pInputText formControlName="amountLent" />
+			<input
+				id="createAmountLent"
+				type="number"
+				pInputText
+				formControlName="amountLent"
+				placeholder="500"
+			/>
 		</div>
 		<div class="flex gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDateLent" class="font-semibold text-sm">Date Lent</label>
-				<input id="createDateLent" type="date" pInputText formControlName="dateLent" />
+				<p-datepicker
+					dateFormat="dd/mm/yy"
+					id="createDateLent"
+					placeholder="dd/mm/yyyy"
+					formControlName="dateLent"
+					pInputMask="99/99/9999"
+					appendTo="body"
+					[showButtonBar]="true"
+				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDueDate" class="font-semibold text-sm">Due Date</label>
@@ -157,6 +185,7 @@
 					formControlName="dueDate"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 		</div>
@@ -235,6 +264,7 @@
 					formControlName="dateBorrowed"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
@@ -246,6 +276,7 @@
 					formControlName="dueDate"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 		</div>
@@ -305,6 +336,7 @@
 					formControlName="dateBorrowed"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 			<div class="flex flex-col gap-1 grow">
@@ -316,6 +348,7 @@
 					formControlName="dueDate"
 					pInputMask="99/99/9999"
 					appendTo="body"
+					[showButtonBar]="true"
 				/>
 			</div>
 		</div>

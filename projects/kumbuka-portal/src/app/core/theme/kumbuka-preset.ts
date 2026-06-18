@@ -60,6 +60,9 @@ export const KumbukaPreset = definePreset(Aura, {
 			headerCell: {
 				background: '#F8FAFC80',
 			},
+			row: {
+				hoverBackground: '#f7f7f7',
+			},
 		},
 		progressbar: { root: { height: '0.7rem' } },
 	},

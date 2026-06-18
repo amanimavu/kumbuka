@@ -21,6 +21,7 @@ export type LoanBorrowedResponse = {
 	dueDate: string;
 	status: DebtStatus;
 	installments: [];
+	notes: string;
 };
 
 export type LoanBorrowed = {
@@ -36,6 +37,7 @@ export type LoanBorrowed = {
 	dueDate: string;
 	dateBorrowed: string;
 	status: DebtStatus;
+	notes: string;
 };
 
 export type RecordBorrowedLoanPayload = {
@@ -71,6 +73,7 @@ export class LoansBorrowedService {
 						dateBorrowed: item.dateBorrowed,
 						status: item.status,
 						payments: item.installments,
+						notes: item.notes,
 					}),
 				),
 			),

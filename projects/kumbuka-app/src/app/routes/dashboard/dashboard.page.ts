@@ -96,7 +96,7 @@ export class DashboardPage {
 			});
 
 			this.balancesData.set({
-				labels: ['Money owed to me (Expected Income)', 'Money I owe(My debts)'],
+				labels: ['Expected Cash inflow', 'My debts'],
 				datasets: [
 					{
 						data: [analytics.amountOwedToMe, analytics.amountIOwe],

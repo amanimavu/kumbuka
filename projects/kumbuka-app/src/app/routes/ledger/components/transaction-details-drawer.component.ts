@@ -125,7 +125,7 @@ import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular
 						<p-timeline class="items-start" [value]="record()?.payments ?? []">
 							<ng-template #content let-installment>
 								<div
-									class="w-[81cqw] flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors border-1 border-neutral-300"
+									class="w-[81cqw] flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors border border-neutral-300"
 								>
 									<div class="flex justify-between content-box">
 										<span class="text-lg font-semibold"
