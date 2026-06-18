@@ -77,7 +77,8 @@
 					},
 					"defaultConfiguration": "development",
 					"options": {
-						"port": 4200
+						"port": 4200,
+						"allowedHosts": [".kumbuka.local"]
 					}
 				},
 				"test": {
@@ -155,7 +156,8 @@
 					},
 					"defaultConfiguration": "development",
 					"options": {
-						"port": 4201
+						"port": 4201,
+						"allowedHosts": [".kumbuka.local"]
 					}
 				},
 				"test": {
@@ -233,7 +235,8 @@
 					},
 					"defaultConfiguration": "development",
 					"options": {
-						"port": 4203
+						"port": 4203,
+						"allowedHosts": [".kumbuka.local"]
 					}
 				},
 				"test": {
