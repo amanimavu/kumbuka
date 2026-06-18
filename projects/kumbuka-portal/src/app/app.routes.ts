@@ -4,6 +4,7 @@ import { RootLayout } from './core/layout/admin/root.component';
 import { LoginPage } from '@routes/login/login.page';
 import { UserManagementPage } from '@routes/user-management/user-management.page';
 import { AddUserPage } from '@routes/add-user/add-user.page';
+import { UserDetailsPage } from '@routes/user-details/user-details.page';
 import { NotFoundPage } from '@routes/not-found/not-found.page';
 import { authGuard } from './core/guards/auth.guard';
 
@@ -28,6 +29,11 @@ export const routes: Routes = [
 				title: 'User Management',
 			},
 			{ path: 'add-user', component: AddUserPage, title: 'Add User' },
+			{
+				path: 'user-details/:id',
+				component: UserDetailsPage,
+				title: 'User Details',
+			},
 		],
 	},
 	{

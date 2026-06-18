@@ -1,26 +1,22 @@
-import { Component, inject, OnInit, signal, computed, output } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import { AppUser } from './user.types';
 import { TagModule } from 'primeng/tag';
-import { SelectModule } from 'primeng/select';
-import { ToastModule } from 'primeng/toast';
-import { TooltipModule } from 'primeng/tooltip';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { MessageService, ConfirmationService } from 'primeng/api';
-import { FormsModule } from '@angular/forms';
 import { CopyIcon } from 'kumbuka-icons';
-import { UserManagementService } from './user-management.service';
-import { AppUser, UserRole } from './user.types';
+import { Router } from '@angular/router';
+import { CardModule } from 'primeng/card';
 import { DeleteIcon } from 'kumbuka-icons';
+import { BadgeModule } from 'primeng/badge';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
+import { SelectModule } from 'primeng/select';
+import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
-
-interface RoleOption {
-	label: string;
-	value: UserRole | 'all';
-}
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { UserManagementService } from './user-management.service';
+import { Component, inject, OnInit, signal, computed, output } from '@angular/core';
 
 @Component({
 	selector: 'user-management',
@@ -32,25 +28,28 @@ interface RoleOption {
 		SelectModule,
 		ToastModule,
 		TooltipModule,
-		ConfirmDialogModule,
 		FormsModule,
-		RouterLink,
 		DeleteIcon,
 		TooltipModule,
 		AvatarModule,
 		SkeletonModule,
 		CopyIcon,
+		BadgeModule,
+		ConfirmPopupModule,
 	],
 	providers: [ConfirmationService],
 	template: `
 		<p-card>
+			<p-confirmpopup />
 			<p-table
 				[rows]="10"
+				[(selection)]="selectedProduct"
 				[value]="isLoading() ? [1, 2, 3] : users()"
-				[rowHover]="true"
-				[paginator]="true"
+				[paginator]="users().length > 0 ? true : false"
 				selectionMode="single"
-				styleClass="p-datatable-sm"
+				size="small"
+				dataKey="id"
+				(onRowSelect)="onRowSelect($event)"
 				[rowsPerPageOptions]="[10, 20, 50]"
 			>
 				<ng-template #header>
@@ -58,12 +57,14 @@ interface RoleOption {
 						<th>Full Name</th>
 						<th>Email</th>
 						<th>Phone</th>
+						<th>Loans Lent</th>
+						<th>Loans Borrowed</th>
 						<th>Actions</th>
 					</tr>
 				</ng-template>
 				<ng-template #body let-user>
-					<tr>
-						@if (!isLoading()) {
+					@if (!isLoading()) {
+						<tr [pSelectableRow]="user">
 							<td class="flex gap-2">
 								<p-avatar
 									[label]="user?.initials ?? null"
@@ -74,14 +75,28 @@ interface RoleOption {
 								{{ user.fullName }}
 							</td>
 							<td>
-								<div class="flex items-center">
-									{{ user.email }}
-									<button size="small" pButton [text]="true">
+								<div class="flex gap-2 items-center">
+									<span>{{ user.email }}</span>
+									<button
+										(click)="
+											$event.stopPropagation(); handleEmailCopy(user.email)
+										"
+										size="small"
+										pButton
+										[text]="true"
+									>
 										<svg class="w-4" copy-icon></svg>
 									</button>
 								</div>
 							</td>
 							<td>{{ user.phoneNumber }}</td>
+							<td>
+								<p-badge [value]="user.loansLent" />
+							</td>
+							<td>
+								<p-badge [value]="user.loansBorrowed" />
+							</td>
+
 							<td>
 								<button
 									severity="danger"
@@ -89,29 +104,33 @@ interface RoleOption {
 									[text]="true"
 									pButton
 									size="small"
-									(click)="
-										recordDelete.emit({
-											target: deleteBtn,
-											user: user.id,
-										})
-									"
+									(click)="$event.stopPropagation(); confirmDelete($event, user)"
 								>
 									<svg class="w-4" delete-icon></svg>
 								</button>
 							</td>
-						} @else {
+						</tr>
+					} @else {
+						<tr>
 							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
 							<td><p-skeleton /></td>
-						}
-					</tr>
+							<td><p-skeleton /></td>
+							<td><p-skeleton /></td>
+						</tr>
+					}
 				</ng-template>
 				<ng-template #emptymessage>
 					@if (!isLoading() && users().length === 0) {
 						<tr>
-							<td colspan="6" class="text-center text-neutral-500 py-6">
-								No users found.
+							<td colspan="6">
+								<div
+									class="text-neutral-500 font-medium flex flex-col items-center text-center"
+								>
+									<svg class="w-10 m-2" folder-open-icon></svg>
+									<span class="text-xl">No users records</span>
+								</div>
 							</td>
 						</tr>
 					}
@@ -125,9 +144,9 @@ export class UserManagementPage implements OnInit {
 	private messageService = inject(MessageService);
 	private confirmationService = inject(ConfirmationService);
 	private readonly colors = ['#5D87FF80', '#FFAE1F80', '#FA896B80', '#13DEB980', '#763EBD80'];
-	recordDelete = output<{ target: EventTarget; user: number }>();
 
 	deleteRecord = output();
+	selectedProduct!: any;
 
 	getAvatarColor(name: string): string {
 		let hash = 0;
@@ -143,17 +162,19 @@ export class UserManagementPage implements OnInit {
 		return matches?.join('').toUpperCase();
 	}
 
+	handleEmailCopy(email: string) {
+		navigator.clipboard.writeText(email);
+		this.messageService.add({
+			severity: 'info',
+			summary: `${email}`,
+			detail: `copied`,
+		});
+	}
+
 	private router = inject(Router);
 
 	_users = signal<AppUser[]>([]);
 	isLoading = signal(false);
-	roleFilter: UserRole | 'all' = 'all';
-
-	roleOptions: RoleOption[] = [
-		{ label: 'All', value: 'all' },
-		{ label: 'Users', value: 'user' },
-		{ label: 'Admins', value: 'admin' },
-	];
 
 	users = computed<any[]>(() => {
 		return this._users().map((user) => {
@@ -189,8 +210,14 @@ export class UserManagementPage implements OnInit {
 		});
 	}
 
-	confirmDelete(user: AppUser) {
+	onRowSelect(event: any) {
+		const user = event.data;
+		this.router.navigate(['/admin/user-details', user.id]);
+	}
+
+	confirmDelete(event: Event, user: AppUser) {
 		this.confirmationService.confirm({
+			target: event.currentTarget as EventTarget,
 			message: `Delete ${user.fullName}? This cannot be undone.`,
 			header: 'Confirm Delete',
 			accept: () => this.deleteUser(user),

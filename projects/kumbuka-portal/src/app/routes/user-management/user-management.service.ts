@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { environment } from '@env/environment';
-import { AppUser, CreateUserPayload } from './user.types';
+import { AppUser, CreateUserPayload, UserDetails } from './user.types';
 
 @Injectable({
 	providedIn: 'root',
@@ -14,6 +14,12 @@ export class UserManagementService {
 
 	list() {
 		return this.http.get<AppUser[]>(this.baseUrl).pipe(catchError(this.handleError));
+	}
+
+	get(id: number) {
+		return this.http
+			.get<UserDetails>(`${this.baseUrl}/${id}`)
+			.pipe(catchError(this.handleError));
 	}
 
 	create(payload: CreateUserPayload) {
