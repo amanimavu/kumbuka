@@ -1,13 +1,13 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { providePrimeNG } from 'primeng/config';
-
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { KumbukaPreset } from './core/theme/kumbuka-preset';
 import { MessageService } from 'primeng/api';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { providePrimeNG } from 'primeng/config';
+import { KumbukaPreset } from './core/theme/kumbuka-preset';
 import { authInterceptor } from '@shared/interceptor/auth-interceptor';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideRouter, TitleStrategy, withInMemoryScrolling } from '@angular/router';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { KumbukaTitleStrategyService } from '@core/services/kumbuka-title-strategy.service';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -24,5 +24,6 @@ export const appConfig: ApplicationConfig = {
 		}),
 		MessageService,
 		provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+		{ provide: TitleStrategy, useClass: KumbukaTitleStrategyService },
 	],
 };
