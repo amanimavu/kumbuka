@@ -14,17 +14,17 @@ import { NotFoundPage } from '@app/routes/not-found/not-found.page';
 import { NotificationsPage } from './routes/notifications/notifications.page';
 
 export const routes: Routes = [
-	{ path: '', redirectTo: 'auth', pathMatch: 'full' },
+	{ path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 	{ path: 'auth', redirectTo: 'auth/login', pathMatch: 'full' },
 	{ path: 'app', redirectTo: 'app/dashboard', pathMatch: 'full' },
 	{
 		path: 'auth',
 		component: AuthLayout,
 		children: [
-			{ path: 'sign-up', component: SigUpPage },
-			{ path: 'login', component: LoginPage },
-			{ path: 'forgot-password', component: ForgetPasswordPage },
-			{ path: 'reset-password', component: ResetPasswordPage },
+			{ path: 'sign-up', component: SigUpPage, title: 'Sign Up' },
+			{ path: 'login', component: LoginPage, title: 'Login' },
+			{ path: 'forgot-password', component: ForgetPasswordPage, title: 'Forgot Password' },
+			{ path: 'reset-password', component: ResetPasswordPage, title: 'Reset Password' },
 		],
 	},
 	{
