@@ -1,19 +1,21 @@
-import { Component, inject } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
 import { TabsModule } from 'primeng/tabs';
-import { ArrowRightIcon, KumbukaLogo } from 'kumbuka-icons';
-import { PasswordModule } from 'primeng/password';
-import { DividerModule } from 'primeng/divider';
-import { InputOtpModule } from 'primeng/inputotp';
-import { Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
-import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { DividerModule } from 'primeng/divider';
+import { Component, inject } from '@angular/core';
+import { PasswordModule } from 'primeng/password';
+import { InputOtpModule } from 'primeng/inputotp';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputIconModule } from 'primeng/inputicon';
+import { Router, RouterLink } from '@angular/router';
+import { ArrowRightIcon, KumbukaLogo, MailIcon } from 'kumbuka-icons';
 import { AuthService } from '../../core/services/auth.service';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 type FormType = 'password' | 'password-less';
 type LoginStep = 'get-otp' | 'login';
@@ -41,6 +43,9 @@ type LoginStep = 'get-otp' | 'login';
 		MessageModule,
 		ToastModule,
 		AutoFocusModule,
+		IconFieldModule,
+		MailIcon,
+		InputIconModule,
 	],
 	templateUrl: './login.html',
 })

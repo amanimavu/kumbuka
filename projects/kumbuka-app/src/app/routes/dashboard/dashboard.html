@@ -97,7 +97,13 @@
 							<p class="text-neutral-500 font-medium">
 								Your dashboard is fully up to date. Record a loan to begin tracking
 							</p>
-							<button class="text-nowrap" size="small" outlined pButton>
+							<button
+								(click)="navigateToCashFlow()"
+								class="text-nowrap"
+								size="small"
+								outlined
+								pButton
+							>
 								<svg class="w-5" add-icon></svg>
 								<span>Record a Loan</span>
 							</button>
