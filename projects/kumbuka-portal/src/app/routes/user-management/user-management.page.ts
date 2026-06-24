@@ -1,15 +1,16 @@
 import { AppUser } from './user.types';
 import { TagModule } from 'primeng/tag';
-import { CopyIcon } from 'kumbuka-icons';
+import { CopyIcon, LockResetIcon } from 'kumbuka-icons';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { DeleteIcon } from 'kumbuka-icons';
 import { BadgeModule } from 'primeng/badge';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
+import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -17,6 +18,15 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { UserManagementService } from './user-management.service';
 import { Component, inject, OnInit, signal, computed, output } from '@angular/core';
+import { InputText } from 'primeng/inputtext';
+import { Password } from 'primeng/password';
+
+export class PassReset {
+	constructor(
+		public password?: string,
+		public confirmPassword?: string,
+	) {}
+}
 
 @Component({
 	selector: 'user-management',
@@ -36,9 +46,78 @@ import { Component, inject, OnInit, signal, computed, output } from '@angular/co
 		CopyIcon,
 		BadgeModule,
 		ConfirmPopupModule,
+		LockResetIcon,
+		DialogModule,
+		Password,
 	],
 	providers: [ConfirmationService],
 	template: `
+		<p-dialog
+			[header]="'Reset Password for ' + userBeingReset()?.fullName"
+			[modal]="true"
+			[(visible)]="passResetDialogueIsOpen"
+			[style]="{ width: '30rem' }"
+		>
+			<form
+				id="resetPassForm"
+				#resetPassForm="ngForm"
+				(ngSubmit)="sendPassResetRequest(resetPassForm, userBeingReset()?.id)"
+			>
+				<div class="flex flex-col gap-4 mb-4">
+					<label for="username" class="font-semibold">New Password</label>
+					<div class="flex flex-col gap-1">
+						<p-password
+							id="password"
+							name="password"
+							[toggleMask]="true"
+							class="[&>input]:w-full"
+							autocomplete="off"
+							[(ngModel)]="passReset.password"
+							#password="ngModel"
+							autocomplete="new-password"
+							[invalid]="
+								password.invalid && (password.touched || resetPassForm.submitted)
+							"
+							required
+						/>
+						@if (password.invalid && (password.touched || resetPassForm.submitted)) {
+							<p class="text-xs text-red-500">Password is required</p>
+						}
+					</div>
+				</div>
+				<div class="flex flex-col gap-4 mb-4">
+					<label for="username" class="font-semibold">Confirm New Password</label>
+					<p-password
+						id="confirmPassword"
+						name="confirmPassword"
+						[toggleMask]="true"
+						class="[&>input]:w-full"
+						autocomplete="off"
+						[(ngModel)]="passReset.confirmPassword"
+						#confirmPassword="ngModel"
+						autocomplete="new-password"
+						[invalid]="
+							(confirmPassword.invalid || confirmPassword.value !== password.value) &&
+							(confirmPassword.touched || resetPassForm.submitted)
+						"
+						required
+					/>
+				</div>
+				<div class="flex justify-end gap-2">
+					<p-button
+						label="Cancel"
+						severity="secondary"
+						(click)="cancelPassReset(resetPassForm)"
+					/>
+					<p-button
+						[loading]="loading()"
+						label="Save"
+						type="submit"
+						form="resetPassForm"
+					/>
+				</div>
+			</form>
+		</p-dialog>
 		<p-card>
 			<p-confirmpopup />
 			<p-table
@@ -98,16 +177,30 @@ import { Component, inject, OnInit, signal, computed, output } from '@angular/co
 							</td>
 
 							<td>
-								<button
-									severity="danger"
-									#deleteBtn
-									[text]="true"
-									pButton
-									size="small"
-									(click)="$event.stopPropagation(); confirmDelete($event, user)"
-								>
-									<svg class="w-4" delete-icon></svg>
-								</button>
+								<div class="flex gap-1">
+									<button
+										severity="danger"
+										#deleteBtn
+										[text]="true"
+										pButton
+										size="small"
+										(click)="
+											$event.stopPropagation(); confirmDelete($event, user)
+										"
+									>
+										<svg class="w-4" delete-icon></svg>
+									</button>
+									<button
+										severity="help"
+										#passResetBtn
+										[text]="true"
+										pButton
+										size="small"
+										(click)="$event.stopPropagation(); resetUserPass(user)"
+									>
+										<svg class="w-4" lock-reset-icon></svg>
+									</button>
+								</div>
 							</td>
 						</tr>
 					} @else {
@@ -143,10 +236,53 @@ export class UserManagementPage implements OnInit {
 	private service = inject(UserManagementService);
 	private messageService = inject(MessageService);
 	private confirmationService = inject(ConfirmationService);
+	passResetDialogueIsOpen = signal(false);
+	userBeingReset = signal<AppUser | null>(null);
 	private readonly colors = ['#5D87FF80', '#FFAE1F80', '#FA896B80', '#13DEB980', '#763EBD80'];
+	passReset = new PassReset();
+	loading = signal(false);
 
 	deleteRecord = output();
 	selectedProduct!: any;
+
+	cancelPassReset(form: NgForm) {
+		form.resetForm();
+		this.passResetDialogueIsOpen.set(false);
+	}
+
+	resetUserPass(user: AppUser) {
+		this.passResetDialogueIsOpen.set(true);
+		this.userBeingReset.set(user);
+	}
+
+	sendPassResetRequest(form: NgForm, userId?: number) {
+		if (userId) {
+			const payload = { password: form.value.password };
+			this.loading.set(true);
+			this.service.resetPassword(userId, payload).subscribe({
+				next: (res) => {
+					this.loading.set(false);
+					form.resetForm();
+					this.passResetDialogueIsOpen.set(false);
+
+					this.messageService.add({
+						severity: 'info',
+						summary: 'Success',
+						detail: res.message,
+					});
+				},
+				error: (err: Error) => {
+					this.loading.set(false);
+
+					this.messageService.add({
+						severity: 'error',
+						summary: 'Failure',
+						detail: err.message,
+					});
+				},
+			});
+		}
+	}
 
 	getAvatarColor(name: string): string {
 		let hash = 0;

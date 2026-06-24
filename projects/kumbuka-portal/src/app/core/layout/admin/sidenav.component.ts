@@ -4,7 +4,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { KumbukaBrand } from 'kumbuka-brand';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { UserIcon, LogoutIcon, PlusIcon } from 'kumbuka-icons';
+import { UserIcon, LogoutIcon } from 'kumbuka-icons';
 import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
@@ -45,7 +45,7 @@ import { AuthService } from '@app/core/services/auth.service';
 					>
 						<svg class="w-8" user-icon></svg>
 					</a>
-					<a
+					<!-- <a
 						routerLink="/admin/add-user"
 						routerLinkActive="active"
 						pButton
@@ -54,7 +54,7 @@ import { AuthService } from '@app/core/services/auth.service';
 						tooltipPosition="right"
 					>
 						<svg class="w-8" add-icon></svg>
-					</a>
+					</a> -->
 				</div>
 				<div class="flex flex-col items-center gap-6">
 					<button
@@ -78,7 +78,6 @@ import { AuthService } from '@app/core/services/auth.service';
 		KumbukaBrand,
 		TooltipModule,
 		UserIcon,
-		PlusIcon,
 		RouterLinkActive,
 	],
 })
