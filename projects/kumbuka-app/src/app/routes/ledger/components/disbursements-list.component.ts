@@ -119,7 +119,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 				<ng-template #emptymessage>
 					@if (!isLoading() && disbursements().length === 0) {
 						<tr>
-							<td colspan="5">
+							<td colspan="6">
 								<div
 									class="text-neutral-500 font-medium flex flex-col items-center text-center"
 								>

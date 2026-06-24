@@ -3,12 +3,21 @@ import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { LogIcon, EditIcon } from 'kumbuka-icons';
+import { LogIcon, EditIcon, WalletIcon } from 'kumbuka-icons';
 import type { LoanBorrowed } from '../services/loans-borrowed.service';
 
 @Component({
 	selector: 'app-obligations-list',
-	imports: [CardModule, TagModule, ButtonModule, DatePipe, DecimalPipe, LogIcon, EditIcon],
+	imports: [
+		CardModule,
+		TagModule,
+		ButtonModule,
+		DatePipe,
+		DecimalPipe,
+		LogIcon,
+		EditIcon,
+		WalletIcon,
+	],
 	template: `
 		<h3 class="text-xl font-bold my-5">Outstanding Obligations</h3>
 		<div class="grid grid-cols-3 gap-6">
@@ -73,6 +82,27 @@ import type { LoanBorrowed } from '../services/loans-borrowed.service';
 						</button>
 					</div>
 				</p-card>
+			} @empty {
+				@if (isLoading()) {
+					<div
+						class="col-span-3 flex flex-col items-center justify-center py-20 text-neutral-400"
+					>
+						<p>Loading obligations…</p>
+					</div>
+				} @else {
+					<div
+						class="col-span-3 flex flex-col items-center justify-center py-20 text-center"
+					>
+						<div class="bg-blue-50 rounded-full p-6 mb-5">
+							<svg class="w-10 text-blue-400" wallet-icon></svg>
+						</div>
+						<h4 class="text-lg font-bold mb-2">No outstanding obligations</h4>
+						<p class="text-neutral-400 max-w-sm">
+							You're all caught up. Loans you borrow will appear here so you can track
+							balances and log repayments.
+						</p>
+					</div>
+				}
 			}
 		</div>
 	`,
