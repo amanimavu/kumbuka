@@ -4,6 +4,10 @@ import { catchError, tap, throwError } from 'rxjs';
 import { environment } from '@env/environment';
 import { AppUser, CreateUserPayload, UserDetails } from './user.types';
 
+type PassResetResponse = {
+	message: string;
+	password: string;
+};
 @Injectable({
 	providedIn: 'root',
 })
@@ -28,6 +32,12 @@ export class UserManagementService {
 
 	delete(id: number) {
 		return this.http.delete<void>(`${this.baseUrl}/${id}`).pipe(catchError(this.handleError));
+	}
+
+	resetPassword(id: number, payload: { password: string }) {
+		return this.http
+			.post<PassResetResponse>(`${this.baseUrl}/${id}/reset-password`, payload)
+			.pipe(catchError(this.handleError));
 	}
 
 	private handleError(error: HttpErrorResponse) {
