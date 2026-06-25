@@ -85,11 +85,11 @@ export class LoginPage {
 	}
 
 	login(form: FormGroup<any>) {
-		this.isLoading = true;
 		this.formSubmitted = true;
 		const formIsValid = form.valid;
 
 		if (formIsValid) {
+			this.isLoading = true;
 			const credentials = form.getRawValue();
 
 			this.authService.login(credentials).subscribe({
