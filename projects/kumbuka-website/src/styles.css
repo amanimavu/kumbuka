@@ -10,5 +10,6 @@ body {
 html{
 	overflow-x: hidden;
 	scrollbar-width: thin;
+	scroll-behavior: smooth;
 	scrollbar-color: white #EFF4FF ;
 }

@@ -11,8 +11,8 @@ import { environment } from '@env/environment';
 	selector: 'problem-card',
 	standalone: true,
 	template: `
-		<div class="mb-4 p-8">
-			<p-card>
+		<div class="mb-4">
+			<p-card class="h-full!">
 				<div class="inline-flex bg-[#EFF4FF] p-4 rounded-md"><ng-content /></div>
 				<h5 class="text-2xl font-semibold py-5">{{ title() }}</h5>
 				<p class="tracking-wide">
@@ -68,5 +68,6 @@ export class App {
 			answer: 'No. Your dashboard only shows the shared records between you and that specific lender. Your privacy is maintained across different relationships.',
 		},
 	];
+	activeTab = this.tabs[0].question;
 	baseUrl = environment.baseUrl;
 }

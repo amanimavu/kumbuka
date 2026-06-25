@@ -1,6 +1,8 @@
-<header class="h-20 flex items-center justify-center px-5 border-b-[#F1F5F9] border-b-2 z-10">
+<header
+	class="h-20 flex items-center justify-between lg:justify-center gap-4 px-5 border-b-[#F1F5F9] border-b-2 z-10"
+>
 	<kumbuka-brand />
-	<nav class="flex items-center mx-auto gap-10 text-neutral-500">
+	<nav class="hidden lg:flex items-center mx-auto gap-10 text-neutral-500">
 		<a>Features</a>
 		<a class="hover:underline" href="#faq">FAQ</a>
 		<a class="hover:underline" href="#why-kumbuka">Why kumbuka?</a>
@@ -16,15 +18,21 @@
 	</a>
 </header>
 <main>
-	<section class="h-[calc(100vh-5rem)] bg-[#f8f9ff] relative">
-		<div class="w-5/12 absolute left-[5%] top-40">
-			<h2 class="text-6xl font-bold">Lend with clarity</h2>
-			<h3 class="text-6xl font-bold mt-1 text-neutral-400">Preserve the bond</h3>
-			<p class="text-xl mt-12 text-kumbukaPrimary-300 text-kumbuka-primary-400">
+	<section
+		class="relative bg-[#f8f9ff] flex flex-col lg:block min-h-[calc(100vh-5rem)] overflow-hidden"
+	>
+		<div class="px-6 pt-12 lg:px-0 lg:pt-0 lg:w-5/12 lg:absolute lg:left-[5%] lg:top-40">
+			<h2 class="text-4xl md:text-5xl lg:text-6xl font-bold">Lend with clarity</h2>
+			<h3 class="text-4xl md:text-5xl lg:text-6xl font-bold mt-1 text-neutral-400">
+				Preserve the bond
+			</h3>
+			<p
+				class="text-lg lg:text-xl mt-8 lg:mt-12 text-kumbukaPrimary-300 text-kumbuka-primary-400"
+			>
 				Kumbuka acts as a respectful digital buffer for informal loans, automating reminders
 				and tracking so you never have to "chase" money again
 			</p>
-			<div class="mt-8 flex gap-8">
+			<div class="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-8">
 				<p-button class="![&>button]:px-3" size="large" [rounded]="true"
 					>Start tracking for free</p-button
 				>
@@ -37,18 +45,20 @@
 			id="ui-screenshot"
 			src="ui-screenshot.png"
 			alt="kumbuka ui screenshot"
-			class="relative top-40 [&>*:first-child]:relative [&>*:first-child]:left-[60%] drop-shadow-2xl"
+			class="block px-6 mt-12 lg:px-0 lg:mt-0 lg:relative lg:top-40 lg:[&>*:first-child]:relative lg:[&>*:first-child]:left-[60%] drop-shadow-2xl"
 		/>
 	</section>
-	<section id="why-kumbuka" class="h-[calc(100vh-5rem)] bg-[#EFF4FF] pt-25">
-		<div class="flex flex-col gap-3 justify-center items-center mx-96">
-			<h2 class="text-5xl font-semibold">Solve the Friction of Lending</h2>
-			<p class="text-lg tracking-wide text-center mb-5 text-neutral-500">
+	<section id="why-kumbuka" class="min-h-[calc(100vh-5rem)] bg-[#EFF4FF] py-16 lg:pt-25 px-6">
+		<div class="flex flex-col gap-3 justify-center items-center max-w-3xl mx-auto">
+			<h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold text-center">
+				Solve the Friction of Lending
+			</h2>
+			<p class="text-base lg:text-lg tracking-wide text-center mb-5 text-neutral-500">
 				Informal lending shouldn't cost you a friendship. We handle the awkward parts so you
 				can focus on the relationship
 			</p>
 		</div>
-		<div class="flex">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto gap-x-6">
 			<problem-card
 				title="Forgetfulness"
 				description="Automated tracking and smart reminders ensures no loan slips through the cracks"
@@ -78,30 +88,32 @@
 			</problem-card>
 		</div>
 	</section>
-	<section class="h-[calc(100vh-15rem)] bg-[#000915] text-white pt-25">
-		<div class="flex-col items-center gap-10 flex mx-72 text-center">
-			<h2 class="text-5xl/15 font-bold mx-5">Ready for a more peaceful financial life?</h2>
-			<p class="text-lg tracking-wide">
+	<section class="bg-[#000915] text-white py-16 lg:py-25 px-6">
+		<div class="flex-col items-center gap-10 flex max-w-4xl mx-auto text-center">
+			<h2 class="text-3xl md:text-4xl lg:text-5xl/15 font-bold lg:mx-20">
+				Ready for a more peaceful financial life?
+			</h2>
+			<p class="text-base lg:text-lg tracking-wide">
 				Join thousands of people who are protecting their relationships with gentle,
 				automated accountability.
 			</p>
 		</div>
-		<div class="flex justify-center gap-10 mt-10">
+		<div class="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 mt-10">
 			<p-button id="download-btn" size="large" [rounded]="true"
 				>Download Kumbuka Now</p-button
 			>
 			<p-button size="large" [rounded]="true">Learn More</p-button>
 		</div>
 	</section>
-	<section id="faq" class="h-[calc(100vh-8rem)] bg-[#EFF4FF] border-b-2 border-b-[#E2E8F0] pt-15">
+	<section id="faq" class="bg-[#EFF4FF] border-b-2 border-b-[#E2E8F0] py-16 lg:pt-15 px-6">
 		<div class="flex text-center justify-center flex-col gap-3 mb-10">
-			<h2 class="text-6xl font-bold">Common Questions</h2>
-			<p class="text-lg tracking-wide text-neutral-500">
+			<h2 class="text-4xl md:text-5xl lg:text-6xl font-bold">Common Questions</h2>
+			<p class="text-base lg:text-lg tracking-wide text-neutral-500">
 				Everything you need to know about protecting your loans and your friendships
 			</p>
 		</div>
-		<div class="w-1/2 mx-auto">
-			<p-accordion [value]="tabs[0].question">
+		<div class="w-full max-w-2xl mx-auto">
+			<p-accordion ngSkipHydration [value]="tabs[0].question">
 				@for (tab of tabs; track tab.question) {
 					<p-accordion-panel [value]="tab.question">
 						<p-accordion-header>{{ tab.question }}</p-accordion-header>
@@ -114,7 +126,9 @@
 		</div>
 	</section>
 </main>
-<footer class="h-32 bg-[#EFF4FF] p-5 flex justify-between items-center">
+<footer
+	class="bg-[#EFF4FF] p-5 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center"
+>
 	<div class="flex flex-col gap-2">
 		<h5 class="font-bold">Kumbuka</h5>
 		<p class="text-neutral-500">&copy; {{ date }} Kumbuka. Built for gentle accountability</p>
