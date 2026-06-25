@@ -16,6 +16,7 @@ import { Component, ElementRef, inject, signal } from '@angular/core';
 import { SettingsIcon, NotificationIcon, LinkIcon, ReviewIcon } from 'kumbuka-icons';
 import { NavigationEnd, Router, RouterLink, TitleStrategy } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
+import { KumbukaBrand } from 'kumbuka-brand';
 
 export type NotificationType =
 	| 'loan_approved'
@@ -39,7 +40,7 @@ export interface AppNotification {
 			z-index: 20;
 		}
 	`,
-	template: ` <p-toolbar class="rounded-none! pl-28!">
+	template: ` <p-toolbar class="rounded-none! pl-4! md:pl-28!">
 		<ng-template #start
 			><h2 class="font-semibold text-xl text-neutral-400">
 				{{ pageTitle() }}
@@ -47,6 +48,7 @@ export interface AppNotification {
 		>
 		<!-- <ng-template #center></ng-template> -->
 		<ng-template #end>
+			<kumbuka-brand variant="logo-only" class="md:hidden" />
 			<div class="hidden">
 				<div class="flex gap-4">
 					<div
@@ -172,6 +174,7 @@ export interface AppNotification {
 		DividerModule,
 		PopoverModule,
 		ReviewIcon,
+		KumbukaBrand,
 	],
 })
 export class Header {

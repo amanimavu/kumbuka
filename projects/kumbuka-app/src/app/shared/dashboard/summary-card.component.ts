@@ -15,7 +15,7 @@ import { UpperCasePipe, NgClass } from '@angular/common';
 			style="border-radius: var(--p-card-border-radius, 0.75rem);"
 		>
 			<div
-				class="h-[95%] absolute rounded-full -right-5 -top-5 aspect-square transition-colors"
+				class="w-24 lg:w-28 max-w-[40%] absolute rounded-full -right-6 -top-6 aspect-square transition-colors"
 				[ngClass]="outerBgClass()"
 			>
 				<div
@@ -27,8 +27,11 @@ import { UpperCasePipe, NgClass } from '@angular/common';
 			</div>
 		</div>
 		<p-card>
-			<div class="flex flex-col gap-2">
-				<h3 style="word-spacing: 0.2rem;" class="text-neutral-400 tracking-wide font-bold">
+			<div class="relative z-10 flex flex-col gap-2 pr-16">
+				<h3
+					style="word-spacing: 0.2rem;"
+					class="text-neutral-400 tracking-wide font-bold leading-snug min-h-11 line-clamp-2"
+				>
 					{{ title() | uppercase }}
 				</h3>
 				<p class="text-xl font-semibold">{{ count() }}</p>

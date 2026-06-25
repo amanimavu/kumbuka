@@ -3,8 +3,9 @@
 	[record]="selectedRecord()"
 	(hide)="handleDrawerHide($event)"
 />
-<div class="flex justify-between">
+<div class="flex flex-col md:flex-row gap-y-2 justify-between">
 	<segmented
+		class="self-start"
 		[value]="segment().replace(/_/g, ' ')"
 		defaultValue="money lent"
 		[onChange]="handleSegmentChange"
@@ -14,7 +15,7 @@
 			<span>{{ option }}</span>
 		</ng-template>
 	</segmented>
-	<div class="flex gap-2 w-[45%] lg:w-[35%]">
+	<div class="flex gap-2 w-full md:w-[60%] lg:w-[50%] xl:w-[40%]">
 		<p-iconfield class="grow">
 			<p-inputicon class="-translate-y-1.5">
 				<svg class="w-6 content-center" search-icon></svg>
@@ -29,7 +30,7 @@
 		</p-iconfield>
 		<p-button (click)="openCreateModal()">
 			<svg class="w-5" add-icon></svg>
-			<span class="ml-1 hidden md:inline">Record</span>
+			<span class="ml-1 hidden lg:inline">Record</span>
 		</p-button>
 	</div>
 </div>
@@ -63,6 +64,7 @@
 	[visible]="isEditModalVisible()"
 	(visibleChange)="isEditModalVisible.set($event)"
 	[style]="{ width: '30vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form [formGroup]="editForm" (ngSubmit)="saveEdit()" class="flex flex-col gap-4 mt-2">
 		<div class="flex flex-col gap-1">
@@ -77,7 +79,7 @@
 			<label for="amountLent" class="font-semibold text-sm">Amount Lent (KSH)</label>
 			<input id="amountLent" type="number" pInputText formControlName="amountLent" />
 		</div>
-		<div class="flex gap-4">
+		<div class="flex flex-col sm:flex-row gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="dateLent" class="font-semibold text-sm">Date Lent</label>
 				<p-datepicker
@@ -127,6 +129,7 @@
 	[visible]="isCreateLentModalVisible()"
 	(visibleChange)="isCreateLentModalVisible.set($event)"
 	[style]="{ width: '30vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form
 		[formGroup]="createLentForm"
@@ -163,7 +166,7 @@
 				placeholder="500"
 			/>
 		</div>
-		<div class="flex gap-4">
+		<div class="flex flex-col sm:flex-row gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDateLent" class="font-semibold text-sm">Date Lent</label>
 				<p-datepicker
@@ -217,6 +220,7 @@
 	[visible]="isCreateBorrowedModalVisible()"
 	(visibleChange)="isCreateBorrowedModalVisible.set($event)"
 	[style]="{ width: '30vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form
 		[formGroup]="createBorrowedForm"
@@ -254,7 +258,7 @@
 				formControlName="amountBorrowed"
 			/>
 		</div>
-		<div class="flex gap-4">
+		<div class="flex flex-col sm:flex-row gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="createDateBorrowed" class="font-semibold text-sm">Date Borrowed</label>
 				<p-datepicker
@@ -308,6 +312,7 @@
 	[visible]="isBorrowedEditModalVisible()"
 	(visibleChange)="isBorrowedEditModalVisible.set($event)"
 	[style]="{ width: '30vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form
 		[formGroup]="borrowedEditForm"
@@ -326,7 +331,7 @@
 			<label for="amountBorrowed" class="font-semibold text-sm">Amount Borrowed (KSH)</label>
 			<input id="amountBorrowed" type="number" pInputText formControlName="amountBorrowed" />
 		</div>
-		<div class="flex gap-4">
+		<div class="flex flex-col sm:flex-row gap-4">
 			<div class="flex flex-col gap-1 grow">
 				<label for="dateBorrowed" class="font-semibold text-sm">Date Borrowed</label>
 				<p-datepicker
@@ -380,6 +385,7 @@
 	[visible]="isBorrowedPaymentModalVisible()"
 	(visibleChange)="isBorrowedPaymentModalVisible.set($event)"
 	[style]="{ width: '25vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form
 		[formGroup]="borrowedPaymentForm"
@@ -421,6 +427,7 @@
 	[visible]="isPaymentModalVisible()"
 	(visibleChange)="isPaymentModalVisible.set($event)"
 	[style]="{ width: '25vw' }"
+	[breakpoints]="{ '768px': '95vw' }"
 >
 	<form [formGroup]="paymentForm" (ngSubmit)="savePayment()" class="flex flex-col gap-4 mt-2">
 		<div class="flex flex-col gap-1">

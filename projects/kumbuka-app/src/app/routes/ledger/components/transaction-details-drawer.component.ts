@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, HostListener, input, output, signal } from '@angular/core';
 import { DrawerModule } from 'primeng/drawer';
 import { AvatarModule } from 'primeng/avatar';
 import { CardModule } from 'primeng/card';
@@ -7,6 +7,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular/common';
+import { FolderOpenIcon } from 'kumbuka-icons';
 
 @Component({
 	selector: 'app-transaction-details-drawer',
@@ -22,6 +23,7 @@ import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular
 		DecimalPipe,
 		NgTemplateOutlet,
 		UpperCasePipe,
+		FolderOpenIcon,
 	],
 	template: `
 		<ng-template #accountDisplay let-data>
@@ -35,8 +37,12 @@ import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular
 		<p-drawer
 			id="transaction-drawer"
 			[visible]="visible()"
-			position="right"
-			styleClass="w-full! md:w-80! lg:w-120!"
+			[position]="position()"
+			[styleClass]="
+				position() === 'bottom'
+					? 'h-[85vh]! w-full! rounded-t-2xl'
+					: 'w-full! md:w-80! lg:w-120!'
+			"
 			(onHide)="hide.emit($event)"
 		>
 			<ng-template #header>
@@ -122,28 +128,45 @@ import { DatePipe, DecimalPipe, NgTemplateOutlet, UpperCasePipe } from '@angular
 						<div class="flex justify-between items-center mb-6">
 							<h5 class="text-lg font-bold">Installment History</h5>
 						</div>
-						<p-timeline class="items-start" [value]="record()?.payments ?? []">
-							<ng-template #content let-installment>
-								<div
-									class="w-[81cqw] flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors border border-neutral-300"
-								>
-									<div class="flex justify-between content-box">
-										<span class="text-lg font-semibold"
-											><span>KSH </span
-											>{{
-												installment.amount | number: '1.0-0' : 'en-US'
-											}}</span
-										>
+						@if ((record()?.payments ?? []).length) {
+							<p-timeline class="items-start" [value]="record()?.payments ?? []">
+								<ng-template #content let-installment>
+									<div
+										class="w-[81cqw] flex flex-col gap-1 p-1.5 rounded-xl text-sm cursor-pointer transition-colors border border-neutral-300"
+									>
+										<div class="flex justify-between content-box">
+											<span class="text-lg font-semibold"
+												><span>KSH </span
+												>{{
+													installment.amount
+														| number: '1.0-0' : 'en-US'
+												}}</span
+											>
+										</div>
+										<div class="flex justify-between content-box">
+											<span class="font-bold text-neutral-400">{{
+												installment.paymentDate
+													| date: 'medium' : 'Africa/Nairobi'
+											}}</span>
+										</div>
 									</div>
-									<div class="flex justify-between content-box">
-										<span class="font-bold text-neutral-400">{{
-											installment.paymentDate
-												| date: 'medium' : 'Africa/Nairobi'
-										}}</span>
-									</div>
+								</ng-template>
+							</p-timeline>
+						} @else {
+							<div
+								class="flex flex-col items-center justify-center text-center py-12 text-neutral-400"
+							>
+								<div class="bg-neutral-100 rounded-full p-5 mb-4">
+									<svg class="w-9" folder-open-icon></svg>
 								</div>
-							</ng-template>
-						</p-timeline>
+								<h6 class="font-semibold text-neutral-600 mb-1">
+									No payments yet
+								</h6>
+								<p class="text-sm max-w-xs">
+									Recorded repayments will show up here as they are logged.
+								</p>
+							</div>
+						}
 					</section>
 				</div>
 			</ng-template>
@@ -155,6 +178,18 @@ export class TransactionDetailsDrawerComponent {
 	record = input.required<any>(); // Using any to smoothly accept your extended disbursement model
 
 	hide = output<any>();
+
+	// Bottom drawer on small screens (< lg), right drawer on lg and up.
+	position = signal<'right' | 'bottom'>(
+		typeof window !== 'undefined' && window.innerWidth < 1024 ? 'bottom' : 'right',
+	);
+
+	@HostListener('window:resize')
+	onResize() {
+		if (typeof window !== 'undefined') {
+			this.position.set(window.innerWidth < 1024 ? 'bottom' : 'right');
+		}
+	}
 
 	getInitials(name: string) {
 		const matches = name.match(/\b[a-zA-Z]/g);

@@ -11,8 +11,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 		<div class="relative h-screen overflow-hidden bg-[#F8F9FF]">
 			<sidebar></sidebar>
 			<header></header>
-			<main class="pl-28 pt-16 h-full">
-				<div class="pr-8 pt-8 pb-20 h-full overflow-y-auto scrollbar-thin relative">
+			<main class="pt-16 pb-16 md:pb-0 md:pl-28 h-full">
+				<div
+					class="px-4 md:px-0 md:pr-8 pt-8 pb-20 h-full overflow-y-auto scrollbar-thin relative"
+				>
 					<router-outlet />
 				</div>
 			</main>

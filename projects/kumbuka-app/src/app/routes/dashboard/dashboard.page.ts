@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, PLATFORM_ID, signal } from '@angular/core';
+import {
+	Component,
+	computed,
+	effect,
+	inject,
+	PLATFORM_ID,
+	signal,
+} from '@angular/core';
 import { SummaryCard } from '../../shared/dashboard/summary-card.component';
 import { MoneyBagIcon, DonutChartIcon, PlusIcon } from 'kumbuka-icons';
 import { TableModule } from 'primeng/table';
@@ -44,8 +51,28 @@ export class DashboardPage {
 	private dashboardService = inject(DashboardService);
 	lentVsBorrowedData = signal<any>(null);
 	balancesData = signal<any>(null);
-	options: any;
 	platformId = inject(PLATFORM_ID);
+	private textColor = signal('');
+	private mobileQuery = isPlatformBrowser(this.platformId)
+		? window.matchMedia('(max-width: 1024px)')
+		: null;
+	// Legend sits at the bottom on mobile, to the right on larger screens.
+	legendPosition = signal<'right' | 'bottom'>(this.mobileQuery?.matches ? 'bottom' : 'right');
+	options = computed(() => ({
+		cutout: '60%',
+		plugins: {
+			legend: {
+				maxWidth: 160, // Limits the maximum width the legend can take
+				labels: {
+					color: this.textColor(),
+					padding: 20, // Increases space between the items
+					boxWidth: 12, // Reduces the width of the color box
+				},
+				position: this.legendPosition(),
+			},
+		},
+	}));
+
 	dashboardAnalytics = signal<GetDashboardSummaryResponse>({
 		totalLent: 0,
 		totalBorrowed: 0,
@@ -112,25 +139,16 @@ export class DashboardPage {
 				],
 			});
 
-			this.options = {
-				cutout: '60%',
-				plugins: {
-					legend: {
-						maxWidth: 160, // Limits the maximum width the legend can take
-						labels: {
-							color: textColor,
-							padding: 20, // Increases space between the items
-							boxWidth: 12, // Reduces the width of the color box
-						},
-						position: 'right',
-					},
-				},
-			};
+			this.textColor.set(textColor);
 			// this.cd.markForCheck();
 		}
 	}
 
 	constructor() {
+		this.mobileQuery?.addEventListener('change', (e) =>
+			this.legendPosition.set(e.matches ? 'bottom' : 'right'),
+		);
+
 		this.dashboardService.getDashboardSummary().subscribe({
 			next: (analytics) => {
 				this.dashboardAnalytics.set(analytics);

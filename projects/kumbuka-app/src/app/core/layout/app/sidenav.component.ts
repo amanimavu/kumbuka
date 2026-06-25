@@ -29,19 +29,34 @@ import { AuthService } from '@app/core/services/auth.service';
 			content: '';
 			display: block;
 			position: absolute;
-			width: 10%;
-			left: 0%;
-			height: 100%;
 			background-color: #e64a33;
+			/* mobile (bottom bar): horizontal bar at the bottom */
+			width: 100%;
+			height: 4px;
+			bottom: 0;
+			left: 0;
+		}
+
+		@media (min-width: 768px) {
+			.active::before {
+				/* md+ (left rail): vertical stripe on the left */
+				width: 10%;
+				height: 100%;
+				top: 0;
+				bottom: auto;
+				left: 0;
+			}
 		}
 	`,
 	template: `
 		<div
-			class="w-20 h-full fixed left-0 border-r border-neutral-300 bg-white flex flex-col items-center p-4 z-30"
+			class="fixed bottom-0 left-0 w-full h-16 border-t border-neutral-300 bg-white flex flex-row items-center justify-around px-4 z-30 md:top-0 md:bottom-auto md:h-full md:w-20 md:flex-col md:justify-start md:border-t-0 md:border-r md:p-4"
 		>
-			<kumbuka-brand variant="logo-only" />
-			<div class="mt-9 flex flex-col items-center grow justify-between">
-				<div class="flex flex-col gap-6">
+			<kumbuka-brand variant="logo-only" class="hidden md:block" />
+			<div
+				class="contents md:mt-9 md:flex md:flex-col md:items-center md:grow md:justify-between"
+			>
+				<div class="flex flex-row gap-6 md:flex-col">
 					<a
 						routerLink="/app/dashboard"
 						routerLinkActive="active"
