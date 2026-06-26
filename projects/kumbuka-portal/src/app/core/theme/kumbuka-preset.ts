@@ -58,7 +58,7 @@ export const KumbukaPreset = definePreset(Aura, {
 		},
 		datatable: {
 			headerCell: {
-				background: '#F8FAFC80',
+				background: '#F8FAFC',
 			},
 			row: {
 				hoverBackground: '#f7f7f7',

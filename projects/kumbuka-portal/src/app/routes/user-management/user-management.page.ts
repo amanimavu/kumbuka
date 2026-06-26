@@ -1,25 +1,24 @@
 import { AppUser } from './user.types';
 import { TagModule } from 'primeng/tag';
-import { CopyIcon, LockResetIcon } from 'kumbuka-icons';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { DeleteIcon } from 'kumbuka-icons';
+import { Password } from 'primeng/password';
 import { BadgeModule } from 'primeng/badge';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
-import { FormsModule, NgForm } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
+import { FormsModule, NgForm } from '@angular/forms';
+import { CopyIcon, LockResetIcon } from 'kumbuka-icons';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { UserManagementService } from './user-management.service';
 import { Component, inject, OnInit, signal, computed, output } from '@angular/core';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
 
 export class PassReset {
 	constructor(
@@ -130,21 +129,22 @@ export class PassReset {
 				dataKey="id"
 				(onRowSelect)="onRowSelect($event)"
 				[rowsPerPageOptions]="[10, 20, 50]"
+				[scrollable]="true"
 			>
 				<ng-template #header>
 					<tr>
-						<th>Full Name</th>
+						<th pFrozenColumn class="min-w-52">Full Name</th>
 						<th>Email</th>
-						<th>Phone</th>
-						<th>Loans Lent</th>
-						<th>Loans Borrowed</th>
+						<th class="min-w-40">Phone</th>
+						<th class="min-w-32">Loans Lent</th>
+						<th class="min-w-36">Loans Borrowed</th>
 						<th>Actions</th>
 					</tr>
 				</ng-template>
 				<ng-template #body let-user>
 					@if (!isLoading()) {
 						<tr [pSelectableRow]="user">
-							<td class="flex gap-2">
+							<td class="flex gap-2" pFrozenColumn>
 								<p-avatar
 									[label]="user?.initials ?? null"
 									shape="circle"
@@ -179,6 +179,8 @@ export class PassReset {
 							<td>
 								<div class="flex gap-1">
 									<button
+										pTooltip="Delete"
+										tooltipPosition="bottom"
 										severity="danger"
 										#deleteBtn
 										[text]="true"
@@ -191,6 +193,8 @@ export class PassReset {
 										<svg class="w-4" delete-icon></svg>
 									</button>
 									<button
+										pTooltip="Reset password"
+										tooltipPosition="bottom"
 										severity="help"
 										#passResetBtn
 										[text]="true"

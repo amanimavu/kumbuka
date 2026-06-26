@@ -96,10 +96,16 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 
 		<p-card class="mb-6 block">
 			<h4 class="text-lg font-bold mb-4">Loans Lent</h4>
-			<p-table [value]="user()?.loansLent ?? []" size="small" dataKey="id">
+			<p-table
+				[value]="user()?.loansLent ?? []"
+				size="small"
+				dataKey="id"
+				[scrollable]="true"
+				[tableStyle]="{ 'min-width': '56rem' }"
+			>
 				<ng-template #header>
 					<tr>
-						<th>Person</th>
+						<th pFrozenColumn>Person</th>
 						<th>Amount</th>
 						<th>Balance</th>
 						<th>Date Lent</th>
@@ -110,7 +116,7 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 				</ng-template>
 				<ng-template #body let-loan>
 					<tr>
-						<td class="flex items-center gap-2">
+						<td class="flex items-center gap-2" pFrozenColumn>
 							<p-avatar
 								[label]="loanInitials(loan)"
 								shape="circle"
@@ -159,10 +165,16 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 
 		<p-card class="block">
 			<h4 class="text-lg font-bold mb-4">Loans Borrowed</h4>
-			<p-table [value]="user()?.loansBorrowed ?? []" size="small" dataKey="id">
+			<p-table
+				[value]="user()?.loansBorrowed ?? []"
+				size="small"
+				dataKey="id"
+				[scrollable]="true"
+				[tableStyle]="{ 'min-width': '56rem' }"
+			>
 				<ng-template #header>
 					<tr>
-						<th>Person</th>
+						<th pFrozenColumn>Person</th>
 						<th>Amount</th>
 						<th>Balance</th>
 						<th>Date Borrowed</th>
@@ -173,7 +185,7 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 				</ng-template>
 				<ng-template #body let-loan>
 					<tr>
-						<td class="flex items-center gap-2">
+						<td class="flex items-center gap-2" pFrozenColumn>
 							<p-avatar
 								[label]="loanInitials(loan)"
 								shape="circle"
