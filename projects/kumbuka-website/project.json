@@ -1,0 +1,82 @@
+{
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"name": "kumbuka-website",
+	"projectType": "application",
+	"generators": {},
+	"sourceRoot": "projects/kumbuka-website/src",
+	"prefix": "app",
+	"targets": {
+		"build": {
+			"executor": "@angular/build:application",
+			"options": {
+				"browser": "projects/kumbuka-website/src/main.ts",
+				"tsConfig": "projects/kumbuka-website/tsconfig.app.json",
+				"assets": [
+					{
+						"glob": "**/*",
+						"input": "projects/kumbuka-website/public"
+					}
+				],
+				"styles": ["projects/kumbuka-website/src/styles.css"],
+				"server": "projects/kumbuka-website/src/main.server.ts",
+				"outputMode": "server",
+				"security": {
+					"allowedHosts": []
+				},
+				"ssr": {
+					"entry": "projects/kumbuka-website/src/server.ts"
+				},
+				"outputPath": "dist/kumbuka-website"
+			},
+			"configurations": {
+				"production": {
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "500kB",
+							"maximumError": "1MB"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "4kB",
+							"maximumError": "8kB"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"development": {
+					"optimization": false,
+					"extractLicenses": false,
+					"sourceMap": true,
+					"fileReplacements": [
+						{
+							"replace": "projects/kumbuka-website/src/environments/environment.ts",
+							"with": "projects/kumbuka-website/src/environments/environment.development.ts"
+						}
+					]
+				}
+			},
+			"defaultConfiguration": "production",
+			"outputs": ["{options.outputPath}"]
+		},
+		"serve": {
+			"executor": "@angular/build:dev-server",
+			"configurations": {
+				"production": {
+					"buildTarget": "kumbuka-website:build:production"
+				},
+				"development": {
+					"buildTarget": "kumbuka-website:build:development"
+				}
+			},
+			"defaultConfiguration": "development",
+			"options": {
+				"port": 4203,
+				"allowedHosts": [".kumbuka.local"]
+			}
+		},
+		"test": {
+			"executor": "@angular/build:unit-test"
+		}
+	}
+}

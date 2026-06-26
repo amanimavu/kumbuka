@@ -8,7 +8,7 @@
 		<a class="hover:underline" href="#why-kumbuka">Why kumbuka?</a>
 	</nav>
 	<a
-		href="{{ baseUrl }}/sign-up"
+		href="http://app.kumbuka.local/"
 		pButton
 		[rounded]="true"
 		target="_blank"
@@ -33,8 +33,15 @@
 				and tracking so you never have to "chase" money again
 			</p>
 			<div class="mt-8 flex flex-col sm:flex-row gap-4 sm:gap-8">
-				<p-button class="![&>button]:px-3" size="large" [rounded]="true"
-					>Start tracking for free</p-button
+				<a
+					pButton
+					href="http://app.kumbuka.local/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="![&>button]:px-3"
+					size="large"
+					[rounded]="true"
+					><span pButtonLabel>Start tracking for free</span></a
 				>
 				<p-button size="large" variant="outlined" [rounded]="true"
 					>See how it works</p-button

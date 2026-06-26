@@ -1,0 +1,82 @@
+{
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"name": "kumbuka-app",
+	"projectType": "application",
+	"generators": {},
+	"sourceRoot": "projects/kumbuka-app/src",
+	"prefix": "app",
+	"targets": {
+		"build": {
+			"executor": "@angular/build:application",
+			"options": {
+				"browser": "projects/kumbuka-app/src/main.ts",
+				"tsConfig": "projects/kumbuka-app/tsconfig.app.json",
+				"assets": [
+					{
+						"glob": "**/*",
+						"input": "projects/kumbuka-app/public"
+					}
+				],
+				"styles": ["projects/kumbuka-app/src/styles.css"],
+				"server": "projects/kumbuka-app/src/main.server.ts",
+				"outputMode": "server",
+				"security": {
+					"allowedHosts": []
+				},
+				"ssr": {
+					"entry": "projects/kumbuka-app/src/server.ts"
+				},
+				"outputPath": "dist/kumbuka-app"
+			},
+			"configurations": {
+				"production": {
+					"budgets": [
+						{
+							"type": "initial",
+							"maximumWarning": "500kB",
+							"maximumError": "1MB"
+						},
+						{
+							"type": "anyComponentStyle",
+							"maximumWarning": "4kB",
+							"maximumError": "8kB"
+						}
+					],
+					"outputHashing": "all"
+				},
+				"development": {
+					"optimization": false,
+					"extractLicenses": false,
+					"sourceMap": true,
+					"fileReplacements": [
+						{
+							"replace": "projects/kumbuka-app/src/environments/environment.ts",
+							"with": "projects/kumbuka-app/src/environments/environment.development.ts"
+						}
+					]
+				}
+			},
+			"defaultConfiguration": "production",
+			"outputs": ["{options.outputPath}"]
+		},
+		"serve": {
+			"executor": "@angular/build:dev-server",
+			"configurations": {
+				"production": {
+					"buildTarget": "kumbuka-app:build:production"
+				},
+				"development": {
+					"buildTarget": "kumbuka-app:build:development"
+				}
+			},
+			"defaultConfiguration": "development",
+			"options": {
+				"port": 4200,
+				"allowedHosts": [".kumbuka.local"]
+			}
+		},
+		"test": {
+			"executor": "@angular/build:unit-test"
+		}
+	}
+}

@@ -1,11 +1,11 @@
-import { Component, input, forwardRef } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { ImageModule } from 'primeng/image';
 import { CardModule } from 'primeng/card';
+import { ImageModule } from 'primeng/image';
+import { KumbukaBrand } from 'kumbuka-brand';
+import { ButtonModule } from 'primeng/button';
+import { environment } from '@env/environment';
+import { Component, input } from '@angular/core';
 import { AccordionModule } from 'primeng/accordion';
 import { AlarmIcon, CompassionIcon, OrderIcon, ShieldPersonIcon } from 'kumbuka-icons';
-import { KumbukaBrand } from 'kumbuka-brand';
-import { environment } from '@env/environment';
 
 @Component({
 	selector: 'problem-card',
