@@ -10,6 +10,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, TitleStrategy } from '@angular/router';
+import { ReloadService } from '@app/core/services/reload.service';
+import { ReloadIcon } from 'kumbuka-icons';
 
 @Component({
 	selector: 'header',
@@ -28,7 +30,11 @@ import { NavigationEnd, Router, TitleStrategy } from '@angular/router';
 				</h2>
 			</ng-template>
 			<ng-template #end>
-				<div class="flex gap-4">
+				<div class="flex gap-4 items-center">
+					<button pButton [rounded]="true" pTooltip="Reload" (click)="reload.trigger()">
+						<svg class="w-5" reload-icon></svg>
+						RELOAD
+					</button>
 					<button pButton [text]="true" pTooltip="Profile" tooltipPosition="left">
 						<p-avatar label="A" shape="circle" />
 					</button>
@@ -46,11 +52,13 @@ import { NavigationEnd, Router, TitleStrategy } from '@angular/router';
 		InputIconModule,
 		AvatarModule,
 		ToastModule,
+		ReloadIcon,
 	],
 })
 export class Header {
 	private router = inject(Router);
 	private titleStrategy = inject(TitleStrategy);
+	reload = inject(ReloadService);
 
 	pageTitle = toSignal(
 		this.router.events.pipe(

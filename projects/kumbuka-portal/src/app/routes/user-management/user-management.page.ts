@@ -18,7 +18,9 @@ import { CopyIcon, LockResetIcon } from 'kumbuka-icons';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { UserManagementService } from './user-management.service';
-import { Component, inject, OnInit, signal, computed, output } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, output, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReloadService } from '@app/core/services/reload.service';
 
 export class PassReset {
 	constructor(
@@ -328,8 +330,14 @@ export class UserManagementPage implements OnInit {
 		});
 	});
 
+	private reload = inject(ReloadService);
+	private destroyRef = inject(DestroyRef);
+
 	ngOnInit() {
 		this.loadUsers();
+		this.reload.reload$
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => this.refreshUsers());
 	}
 
 	loadUsers() {
@@ -344,6 +352,20 @@ export class UserManagementPage implements OnInit {
 				this.messageService.add({
 					severity: 'error',
 					summary: 'Load failed',
+					detail: err.message,
+				});
+			},
+		});
+	}
+
+	/** Background refetch — updates the table silently, no loading skeleton. */
+	private refreshUsers() {
+		this.service.list().subscribe({
+			next: (data) => this._users.set(data),
+			error: (err: Error) => {
+				this.messageService.add({
+					severity: 'error',
+					summary: 'Reload failed',
 					detail: err.message,
 				});
 			},

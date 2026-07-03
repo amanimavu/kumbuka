@@ -12,7 +12,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Loan, UserDetails } from '@routes/user-management/user.types';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReloadService } from '@app/core/services/reload.service';
 import { ArrowLeftIcon, FolderOpenIcon, PaymentsIcon } from 'kumbuka-icons';
 import { UserManagementService } from '@routes/user-management/user-management.service';
 
@@ -323,9 +325,15 @@ export class UserDetailsPage implements OnInit {
 		this.drawerVisible.set(true);
 	}
 
+	private reload = inject(ReloadService);
+	private destroyRef = inject(DestroyRef);
+
 	ngOnInit() {
 		const id = Number(this.route.snapshot.paramMap.get('id'));
 		this.loadUser(id);
+		this.reload.reload$
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe(() => this.refreshUser(Number(this.route.snapshot.paramMap.get('id'))));
 	}
 
 	private loadUser(id: number) {
@@ -341,6 +349,20 @@ export class UserDetailsPage implements OnInit {
 					severity: 'error',
 					summary: 'Error',
 					detail: 'Failed to load user details: ' + err.message,
+				});
+			},
+		});
+	}
+
+	/** Background refetch — updates details silently, no loading skeleton. */
+	private refreshUser(id: number) {
+		this.service.get(id).subscribe({
+			next: (details) => this.user.set(details),
+			error: (err: Error) => {
+				this.messageService.add({
+					severity: 'error',
+					summary: 'Reload failed',
+					detail: 'Failed to reload user details: ' + err.message,
 				});
 			},
 		});
