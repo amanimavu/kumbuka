@@ -328,13 +328,40 @@ export class UserManagementPage implements OnInit {
 		return matches?.join('').toUpperCase();
 	}
 
-	handleEmailCopy(email: string) {
-		navigator.clipboard.writeText(email);
-		this.messageService.add({
-			severity: 'info',
-			summary: `${email}`,
-			detail: `copied`,
-		});
+	async handleEmailCopy(email: string) {
+		const ok = await UserManagementPage.copyToClipboard(email);
+		this.messageService.add(
+			ok
+				? { severity: 'info', summary: `${email}`, detail: 'copied' }
+				: { severity: 'error', summary: 'Copy failed', detail: 'Could not copy to clipboard' },
+		);
+	}
+
+	private static async copyToClipboard(text: string): Promise<boolean> {
+		// navigator.clipboard exists only in secure contexts (HTTPS/localhost).
+		if (navigator.clipboard?.writeText) {
+			try {
+				await navigator.clipboard.writeText(text);
+				return true;
+			} catch {
+				// fall through to legacy fallback
+			}
+		}
+		// Legacy fallback for non-secure contexts.
+		try {
+			const textarea = document.createElement('textarea');
+			textarea.value = text;
+			textarea.style.position = 'fixed';
+			textarea.style.opacity = '0';
+			document.body.appendChild(textarea);
+			textarea.focus();
+			textarea.select();
+			const ok = document.execCommand('copy');
+			document.body.removeChild(textarea);
+			return ok;
+		} catch {
+			return false;
+		}
 	}
 
 	private router = inject(Router);
