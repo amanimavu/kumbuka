@@ -111,18 +111,30 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 		<p-card class="mb-6 block">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
 				<h4 class="text-lg font-bold">Loans Lent</h4>
-				<p-iconfield class="w-full sm:w-[20rem]">
-					<p-inputicon class="-translate-y-1.5">
-						<svg class="w-6 content-center" search-icon></svg>
-					</p-inputicon>
-					<input
-						placeholder="Search person"
-						type="text"
-						pInputText
-						class="w-full"
-						(input)="handleLentInput($event)"
+				<div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+					<p-select
+						[options]="statusOptions"
+						[ngModel]="lentStatus()"
+						(ngModelChange)="lentStatus.set($event)"
+						optionLabel="label"
+						optionValue="value"
+						placeholder="All statuses"
+						[showClear]="true"
+						class="w-full sm:w-48"
 					/>
-				</p-iconfield>
+					<p-iconfield class="w-full sm:w-[20rem]">
+						<p-inputicon class="-translate-y-1.5">
+							<svg class="w-6 content-center" search-icon></svg>
+						</p-inputicon>
+						<input
+							placeholder="Search person"
+							type="text"
+							pInputText
+							class="w-full"
+							(input)="handleLentInput($event)"
+						/>
+					</p-iconfield>
+				</div>
 			</div>
 			<p-table
 				[value]="filteredLoansLent()"
@@ -136,8 +148,10 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 						<th pFrozenColumn>Borrower</th>
 						<th>Amount</th>
 						<th>Balance</th>
-						<th>Date Lent</th>
-						<th>Due Date</th>
+						<th pSortableColumn="dateLent">
+							Date Lent <p-sortIcon field="dateLent" />
+						</th>
+						<th pSortableColumn="dueDate">Due Date <p-sortIcon field="dueDate" /></th>
 						<th>Status</th>
 						<th>Actions</th>
 					</tr>
@@ -183,8 +197,10 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 								>
 									<svg class="w-10 m-2" folder-open-icon></svg>
 									<span class="text-xl">{{
-									lentSearch() ? 'No matching loans' : 'No loans lent'
-								}}</span>
+										lentSearch() || lentStatus()
+											? 'No matching loans'
+											: 'No loans lent'
+									}}</span>
 								</div>
 							</td>
 						</tr>
@@ -196,18 +212,30 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 		<p-card class="block">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
 				<h4 class="text-lg font-bold">Loans Borrowed</h4>
-				<p-iconfield class="w-full sm:w-[20rem]">
-					<p-inputicon class="-translate-y-1.5">
-						<svg class="w-6 content-center" search-icon></svg>
-					</p-inputicon>
-					<input
-						placeholder="Search person"
-						type="text"
-						pInputText
-						class="w-full"
-						(input)="handleBorrowedInput($event)"
+				<div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+					<p-select
+						[options]="statusOptions"
+						[ngModel]="borrowedStatus()"
+						(ngModelChange)="borrowedStatus.set($event)"
+						optionLabel="label"
+						optionValue="value"
+						placeholder="All statuses"
+						[showClear]="true"
+						class="w-full sm:w-48"
 					/>
-				</p-iconfield>
+					<p-iconfield class="w-full sm:w-[20rem]">
+						<p-inputicon class="-translate-y-1.5">
+							<svg class="w-6 content-center" search-icon></svg>
+						</p-inputicon>
+						<input
+							placeholder="Search person"
+							type="text"
+							pInputText
+							class="w-full"
+							(input)="handleBorrowedInput($event)"
+						/>
+					</p-iconfield>
+				</div>
 			</div>
 			<p-table
 				[value]="filteredLoansBorrowed()"
@@ -221,8 +249,10 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 						<th pFrozenColumn>Lender</th>
 						<th>Amount</th>
 						<th>Balance</th>
-						<th>Date Borrowed</th>
-						<th>Due Date</th>
+						<th pSortableColumn="dateBorrowed">
+							Date Borrowed <p-sortIcon field="dateBorrowed" />
+						</th>
+						<th pSortableColumn="dueDate">Due Date <p-sortIcon field="dueDate" /></th>
 						<th>Status</th>
 						<th>Actions</th>
 					</tr>
@@ -268,8 +298,10 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 								>
 									<svg class="w-10 m-2" folder-open-icon></svg>
 									<span class="text-xl">{{
-									borrowedSearch() ? 'No matching loans' : 'No loans borrowed'
-								}}</span>
+										borrowedSearch() || borrowedStatus()
+											? 'No matching loans'
+											: 'No loans borrowed'
+									}}</span>
 								</div>
 							</td>
 						</tr>
