@@ -1,17 +1,5 @@
 import { Routes } from '@angular/router';
-import { SigUpPage } from '@routes/sign-up/sign-up.page';
-import { AuthLayout } from './core/layout/app/auth/index.component';
-import { LoginPage } from '@routes/login/login.page';
-import { ForgetPasswordPage } from '@routes/forget-password/forget-password.page';
-import { ResetPasswordPage } from '@routes/reset-password/reset-password.page';
-import { RootLayout } from './core/layout/app/root.component';
-import { DashboardPage } from '@routes/dashboard/dashboard.page';
-import { SettingsPage } from '@routes/settings/settings';
-import { ProfilePage } from '@routes/profile/profile';
-import { LedgerPage } from '@routes/ledger/ledger.page';
 import { authGuard } from './core/guards/auth.guard';
-import { NotFoundPage } from '@app/routes/not-found/not-found.page';
-import { NotificationsPage } from './routes/notifications/notifications.page';
 
 export const routes: Routes = [
 	{ path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -19,29 +7,69 @@ export const routes: Routes = [
 	{ path: 'app', redirectTo: 'app/dashboard', pathMatch: 'full' },
 	{
 		path: 'auth',
-		component: AuthLayout,
+		loadComponent: () =>
+			import('./core/layout/app/auth/index.component').then((m) => m.AuthLayout),
 		children: [
-			{ path: 'sign-up', component: SigUpPage, title: 'Sign Up' },
-			{ path: 'login', component: LoginPage, title: 'Login' },
-			{ path: 'forgot-password', component: ForgetPasswordPage, title: 'Forgot Password' },
-			{ path: 'reset-password', component: ResetPasswordPage, title: 'Reset Password' },
+			{
+				path: 'sign-up',
+				loadComponent: () => import('@routes/sign-up/sign-up.page').then((m) => m.SigUpPage),
+				title: 'Sign Up',
+			},
+			{
+				path: 'login',
+				loadComponent: () => import('@routes/login/login.page').then((m) => m.LoginPage),
+				title: 'Login',
+			},
+			{
+				path: 'forgot-password',
+				loadComponent: () =>
+					import('@routes/forget-password/forget-password.page').then((m) => m.ForgetPasswordPage),
+				title: 'Forgot Password',
+			},
+			{
+				path: 'reset-password',
+				loadComponent: () =>
+					import('@routes/reset-password/reset-password.page').then((m) => m.ResetPasswordPage),
+				title: 'Reset Password',
+			},
 		],
 	},
 	{
 		path: 'app',
-		component: RootLayout,
+		loadComponent: () => import('./core/layout/app/root.component').then((m) => m.RootLayout),
 		canActivate: [authGuard],
 		canActivateChild: [authGuard],
 		children: [
-			{ path: 'dashboard', component: DashboardPage, title: 'Dashboard' },
-			{ path: 'settings', component: SettingsPage, title: 'Settings' },
-			{ path: 'profile', component: ProfilePage, title: 'Profile' },
-			{ path: 'ledger', component: LedgerPage, title: 'Cash Flows' },
-			{ path: 'notifications', component: NotificationsPage, title: 'Notifications' },
+			{
+				path: 'dashboard',
+				loadComponent: () => import('@routes/dashboard/dashboard.page').then((m) => m.DashboardPage),
+				title: 'Dashboard',
+			},
+			{
+				path: 'settings',
+				loadComponent: () => import('@routes/settings/settings').then((m) => m.SettingsPage),
+				title: 'Settings',
+			},
+			{
+				path: 'profile',
+				loadComponent: () => import('@routes/profile/profile').then((m) => m.ProfilePage),
+				title: 'Profile',
+			},
+			{
+				path: 'ledger',
+				loadComponent: () => import('@routes/ledger/ledger.page').then((m) => m.LedgerPage),
+				title: 'Cash Flows',
+			},
+			{
+				path: 'notifications',
+				loadComponent: () =>
+					import('./routes/notifications/notifications.page').then((m) => m.NotificationsPage),
+				title: 'Notifications',
+			},
 		],
 	},
 	{
 		path: '**',
-		component: NotFoundPage,
+		loadComponent: () => import('@app/routes/not-found/not-found.page').then((m) => m.NotFoundPage),
 	},
 ];
