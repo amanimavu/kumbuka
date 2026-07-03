@@ -9,13 +9,19 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DividerModule } from 'primeng/divider';
 import { TimelineModule } from 'primeng/timeline';
 import { SkeletonModule } from 'primeng/skeleton';
+import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { debounce } from '@app/shared/utils/debounce';
 import { Loan, UserDetails } from '@routes/user-management/user.types';
 import { Component, computed, inject, OnInit, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReloadService } from '@app/core/services/reload.service';
-import { ArrowLeftIcon, FolderOpenIcon, PaymentsIcon } from 'kumbuka-icons';
+import { ArrowLeftIcon, FolderOpenIcon, PaymentsIcon, SearchIcon } from 'kumbuka-icons';
 import { UserManagementService } from '@routes/user-management/user-management.service';
 
 @Component({
@@ -44,6 +50,12 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 		DrawerModule,
 		TimelineModule,
 		DividerModule,
+		InputTextModule,
+		IconFieldModule,
+		InputIconModule,
+		SelectModule,
+		FormsModule,
+		SearchIcon,
 	],
 	template: `
 		<button
@@ -97,9 +109,23 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 		</div>
 
 		<p-card class="mb-6 block">
-			<h4 class="text-lg font-bold mb-4">Loans Lent</h4>
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+				<h4 class="text-lg font-bold">Loans Lent</h4>
+				<p-iconfield class="w-full sm:w-[20rem]">
+					<p-inputicon class="-translate-y-1.5">
+						<svg class="w-6 content-center" search-icon></svg>
+					</p-inputicon>
+					<input
+						placeholder="Search person"
+						type="text"
+						pInputText
+						class="w-full"
+						(input)="handleLentInput($event)"
+					/>
+				</p-iconfield>
+			</div>
 			<p-table
-				[value]="user()?.loansLent ?? []"
+				[value]="filteredLoansLent()"
 				size="small"
 				dataKey="id"
 				[scrollable]="true"
@@ -107,7 +133,7 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 			>
 				<ng-template #header>
 					<tr>
-						<th pFrozenColumn>Person</th>
+						<th pFrozenColumn>Borrower</th>
 						<th>Amount</th>
 						<th>Balance</th>
 						<th>Date Lent</th>
@@ -156,7 +182,9 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 									class="text-neutral-500 font-medium flex flex-col items-center text-center"
 								>
 									<svg class="w-10 m-2" folder-open-icon></svg>
-									<span class="text-xl">No loans lent</span>
+									<span class="text-xl">{{
+									lentSearch() ? 'No matching loans' : 'No loans lent'
+								}}</span>
 								</div>
 							</td>
 						</tr>
@@ -166,9 +194,23 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 		</p-card>
 
 		<p-card class="block">
-			<h4 class="text-lg font-bold mb-4">Loans Borrowed</h4>
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+				<h4 class="text-lg font-bold">Loans Borrowed</h4>
+				<p-iconfield class="w-full sm:w-[20rem]">
+					<p-inputicon class="-translate-y-1.5">
+						<svg class="w-6 content-center" search-icon></svg>
+					</p-inputicon>
+					<input
+						placeholder="Search person"
+						type="text"
+						pInputText
+						class="w-full"
+						(input)="handleBorrowedInput($event)"
+					/>
+				</p-iconfield>
+			</div>
 			<p-table
-				[value]="user()?.loansBorrowed ?? []"
+				[value]="filteredLoansBorrowed()"
 				size="small"
 				dataKey="id"
 				[scrollable]="true"
@@ -176,7 +218,7 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 			>
 				<ng-template #header>
 					<tr>
-						<th pFrozenColumn>Person</th>
+						<th pFrozenColumn>Lender</th>
 						<th>Amount</th>
 						<th>Balance</th>
 						<th>Date Borrowed</th>
@@ -225,7 +267,9 @@ import { UserManagementService } from '@routes/user-management/user-management.s
 									class="text-neutral-500 font-medium flex flex-col items-center text-center"
 								>
 									<svg class="w-10 m-2" folder-open-icon></svg>
-									<span class="text-xl">No loans borrowed</span>
+									<span class="text-xl">{{
+									borrowedSearch() ? 'No matching loans' : 'No loans borrowed'
+								}}</span>
 								</div>
 							</td>
 						</tr>
@@ -308,6 +352,51 @@ export class UserDetailsPage implements OnInit {
 	isLoading = signal(false);
 	selectedLoan = signal<Loan | null>(null);
 	drawerVisible = signal(false);
+	lentSearch = signal('');
+	borrowedSearch = signal('');
+	lentStatus = signal<string | null>(null);
+	borrowedStatus = signal<string | null>(null);
+
+	readonly statusOptions = [
+		{ label: 'Active', value: 'ACTIVE' },
+		{ label: 'Partially Paid', value: 'PARTIALLY_PAID' },
+		{ label: 'Paid', value: 'PAID' },
+		{ label: 'Overdue', value: 'OVERDUE' },
+	];
+
+	filteredLoansLent = computed(() =>
+		UserDetailsPage.filterLoans(
+			this.user()?.loansLent ?? [],
+			this.lentSearch(),
+			this.lentStatus(),
+		),
+	);
+	filteredLoansBorrowed = computed(() =>
+		UserDetailsPage.filterLoans(
+			this.user()?.loansBorrowed ?? [],
+			this.borrowedSearch(),
+			this.borrowedStatus(),
+		),
+	);
+
+	private static filterLoans(loans: Loan[], term: string, status: string | null): Loan[] {
+		const q = term.trim().toLowerCase();
+		return loans.filter((loan) => {
+			const matchesName = !q || loan.personName?.toLowerCase().includes(q);
+			const matchesStatus = !status || loan.status?.toUpperCase() === status;
+			return matchesName && matchesStatus;
+		});
+	}
+
+	private static readInput(event: Event) {
+		return (event.target as HTMLInputElement)?.value ?? '';
+	}
+	handleLentInput = debounce((event: Event) =>
+		this.lentSearch.set(UserDetailsPage.readInput(event)),
+	);
+	handleBorrowedInput = debounce((event: Event) =>
+		this.borrowedSearch.set(UserDetailsPage.readInput(event)),
+	);
 
 	initials = computed(() => UserDetailsPage.getInitials(this.user()?.fullName ?? ''));
 	avatarColor = computed(() =>

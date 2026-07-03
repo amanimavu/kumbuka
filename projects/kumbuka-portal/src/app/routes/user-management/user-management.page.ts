@@ -14,7 +14,11 @@ import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 import { FormsModule, NgForm } from '@angular/forms';
-import { CopyIcon, LockResetIcon } from 'kumbuka-icons';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { debounce } from '@app/shared/utils/debounce';
+import { CopyIcon, LockResetIcon, SearchIcon } from 'kumbuka-icons';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { UserManagementService } from './user-management.service';
@@ -50,6 +54,10 @@ export class PassReset {
 		LockResetIcon,
 		DialogModule,
 		Password,
+		InputTextModule,
+		IconFieldModule,
+		InputIconModule,
+		SearchIcon,
 	],
 	providers: [ConfirmationService],
 	template: `
@@ -121,11 +129,25 @@ export class PassReset {
 		</p-dialog>
 		<p-card>
 			<p-confirmpopup />
+			<div class="flex mb-4">
+				<p-iconfield class="w-full md:w-[24rem]">
+					<p-inputicon class="-translate-y-1.5">
+						<svg class="w-6 content-center" search-icon></svg>
+					</p-inputicon>
+					<input
+						placeholder="Search name, email or phone"
+						type="text"
+						pInputText
+						class="w-full"
+						(input)="handleInput($event)"
+					/>
+				</p-iconfield>
+			</div>
 			<p-table
 				[rows]="10"
 				[(selection)]="selectedProduct"
-				[value]="isLoading() ? [1, 2, 3] : users()"
-				[paginator]="users().length > 0 ? true : false"
+				[value]="isLoading() ? [1, 2, 3] : displayUsers()"
+				[paginator]="displayUsers().length > 0 ? true : false"
 				selectionMode="single"
 				size="small"
 				dataKey="id"
@@ -221,14 +243,16 @@ export class PassReset {
 					}
 				</ng-template>
 				<ng-template #emptymessage>
-					@if (!isLoading() && users().length === 0) {
+					@if (!isLoading() && displayUsers().length === 0) {
 						<tr>
 							<td colspan="6">
 								<div
 									class="text-neutral-500 font-medium flex flex-col items-center text-center"
 								>
 									<svg class="w-10 m-2" folder-open-icon></svg>
-									<span class="text-xl">No users records</span>
+									<span class="text-xl">{{
+										searchTerm() ? 'No matching users' : 'No users records'
+									}}</span>
 								</div>
 							</td>
 						</tr>
@@ -318,6 +342,8 @@ export class UserManagementPage implements OnInit {
 	_users = signal<AppUser[]>([]);
 	isLoading = signal(false);
 
+	searchTerm = signal('');
+
 	users = computed<any[]>(() => {
 		return this._users().map((user) => {
 			const avatarColor = this.getAvatarColor(`${user.fullName}#${user.id}`);
@@ -329,6 +355,24 @@ export class UserManagementPage implements OnInit {
 			};
 		});
 	});
+
+	displayUsers = computed<any[]>(() => {
+		const term = this.searchTerm().trim().toLowerCase();
+		if (!term) return this.users();
+		return this.users().filter((user) =>
+			[user.fullName, user.email, user.phoneNumber]
+				.filter(Boolean)
+				.some((field) => String(field).toLowerCase().includes(term)),
+		);
+	});
+
+	private static handleInput(event: Event) {
+		const value = (event.target as HTMLInputElement)?.value;
+		return value;
+	}
+	handleInput = debounce((event: Event) =>
+		this.searchTerm.set(UserManagementPage.handleInput(event)),
+	);
 
 	private reload = inject(ReloadService);
 	private destroyRef = inject(DestroyRef);
